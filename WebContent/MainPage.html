@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+
+div.product{
+	max-width: 70%;
+}
+
+.image{
+	float: left;
+}
+
+section#products {
+	margin-left: 250px;
+	border: 1px solid gray;
+}
+
+aside#filters {
+	float: left;
+	border: 1px solid black;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333333;
+}
+
+li {
+	float: left;
+}
+
+li a,button {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 16px;
+	text-decoration: none;
+}
+
+li a,button:hover {
+	background-color: #111111;
+}
+</style>
+</head>
+<body onload="loadAllProducts()">
+	<!-- Navigation bar -->
+	<nav id="nav_bar">
+		<ul>
+			<li><a href="#home">FILMOTEKA.BG</a></li>
+			<li><a href="#news">Movies</a></li>
+			<li><a href="#contact">TV Series</a></li>
+			<li><a href="#about">My Account</a></li>
+			<li><button onclick = "logout()">Logout</button></li>
+		</ul>
+	</nav>
+	<hr>
+
+	<!-- Page content -->
+	<div id="content">
+		<aside id="filters"></aside>
+
+		<section id="products">
+		</section>
+	</div>
+	<hr>
+
+	<!-- Footer section -->
+	<div id="footer"></div>
+</body>
+
+<script type="text/javascript">
+	function logout(){
+		var xhttp = new XMLHttpRequest();
+		xhttp.open("GET", "LogoutServlet", true);
+		xhttp.send();
+	}
+	
+	function likeMovie(id){
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				///Read resulting JSON
+				var jsonResult = JSON.parse(this.responseText);
+				//Create table from JSON
+				//document.getElementById("products").innerHTML = jsonResult;
+				loadProductsTableFromJson(jsonResult);
+			}
+		};
+		xhttp.open("POST", "likeServlet", true);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send("movieId=" + id);
+		
+	}
+
+
+	function loadAllProducts() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				///Read resulting JSON
+				var jsonResult = JSON.parse(this.responseText);
+				//Create table from JSON
+				//document.getElementById("products").innerHTML = jsonResult;
+				loadProductsTableFromJson(jsonResult);
+			}
+		};
+		xhttp.open("GET", "loadAllProductsAsJsonServlet", true);
+		xhttp.send();
+	}
+	
+	function loadProductsTableFromJson(json){
+		var products = "";
+		for(var i in json){
+			var product = json[i];
+			var name = product.name;
+			var poster = product.poster;
+			var pgRating = product.pgRating;
+			var duration = product.duration;
+			var description = product.description;
+			var writers = product.writers;
+			var actors = product.actors;
+			
+			products+= '<div class = "product" itemprop = "id"><table cellspacing="0" cellpading="0" border="1"'
+			products+= '<tbody><tr><td class ="image" rowspawn="2" valign="top"><div>'
+			products+= '<img class = "poster" height = "340" width="240" alt = "'+name+' Poster" title = "'+name+'" src = "'+poster+'"'
+			products+= 'itemprop = "poster">';
+			products+= '<div><button float="left" onClick="likeMovie('+product.id+')">Like</button>'
+			products+= '<button onClick="addToWatchList('+product.id+')">Add to Watchlist</button></div>'
+			products+= '</div></td>'
+			
+			products+='<td><h4 itemprop="name">'+name+'</h4> <p><p itemprop="pgRating">PgRating: '+pgRating+'</p>'
+			products+='<time itemprop="duration">Duration: '+duration+'</time><br>'
+			
+			var genres = product.genres;
+			products+='<span>Genres<br>'
+			for (var j = 0; j < genres.length; j++) {
+				products+='<span itemprop = "genre">'+genres[j].value+'</span><span class = ghost>|</span>'
+			}
+			products+='</span>'
+			products+= '<div itemprop="description"><h5>Description:</h5>'+description+'</div>'
+			products+= '<div><h5>Writers:</h5><span itemprop="director">'+ writers+'</span>'
+			products+= '<div><h5>Actors:</h5><span itemprop="actors">'+actors+'</span></div></p></td></tr></tbody></table></div>'
+		}
+		document.getElementById("products").innerHTML = products;
+	}
+</script>
+
+</html>
