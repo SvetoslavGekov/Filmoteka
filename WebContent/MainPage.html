@@ -48,6 +48,11 @@ li {
 	float: left;
 }
 
+span.cartItem{
+	font-size: 20px;
+	color: blue;
+}
+
 span.navigation {
 	display: block;
 	color: white;
@@ -60,6 +65,13 @@ span.navigation:hover {
 	background-color: #111111;
 	cursor: pointer;
 }
+
+div.cartItem{
+	width:75%;
+   	max-width:75%;
+   	display: block;
+}
+
 </style>
 </head>
 <body onload="loadAllProducts()">
@@ -95,6 +107,18 @@ span.navigation:hover {
 		xhttp.send();
 	}
 
+	function removeProductFromCart(id){
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				//Reload cart
+				loadCart();
+			}
+		};
+		xhttp.open("POST", "removeProductFromCartServlet", true);
+		xhttp.send("productId=" + id);
+	}
+	
 	function addProductToCart(id, willBuy) {
 		var xhttp = new XMLHttpRequest();
 		xhttp.open("POST", "addProductToCartServlet", true);
@@ -149,20 +173,45 @@ span.navigation:hover {
 	}
 	
 	function loadCartTableFromJson(json){
-		var cart = "";
+		var cart = "<h3>Your cart</h3>";
+		var totalPrice = 0;
+		if(json.length == 0){
+			document.getElementById("products").innerHTML = "Your cart is currently empty";
+		}
+		
 		for(var i in json){
-			var productName = json[i][0].name;
-			var date = json[i][1]
-			cart+= productName + '   ';
+			var product = json[i][0];
+			var date = json[i][1];
+			
+			
+			var itemNumber = (i+1);
+			var productId = product.id;
+			var productName = product.name;
+			var productYear = product.releaseDate.year;
+			var poster = product.poster;
+			var validity = '-';
+			var productPrice = product.rentCost;
+			
+			cart+= '<div class = "cartItem"><table cellspacing="0" cellpading="0" width="75%" border="1"><tbody>';
+			cart+= '<tr><th>Item Number</th><th colspan = "2">Item</th><th>Validity</th><th>Price</th></tr>';
+			cart+= '<tr><td halign="center" valign="middle"><span>'+itemNumber+'</span></td>';
+			cart+= '<td ><img class="cartPoster" height="150" width="150" alt="'+ productName +' Poster"';
+			cart+= 'title = "'+productName+'" src = "'+poster+'"></td>';
+			cart+= '<td valign="middle"><span class="cartItem">'+productName+'('+productYear+')</span></td>';
 			
 			if(!(date == null)){
-				cart+= date.year + ' ' + date.month + ' ' +date.day;
+				productPrice = product.buyCost;
+				validity = date.day+'-'+date.month+'-'+date.year;
 			}
-			else{
-				cart+= '-';
-			}
-			cart+='<br>';
+			
+			cart+= '<td valign="middle" halign="center" >'+validity+'</td>';
+			cart+= '<td valign="middle" halign="center" >'+productPrice+'</td>';
+			cart+= '<td><img class="toCart" src="icons/cartRemove.png" alt="Remove" title="Remove product"'
+			cart+= 'onclick="removeProductFromCart('+productId+')"></td></tr></tbody></table></div>'
+			
+			totalPrice+= productPrice;
 		}
+		cart+= '<div><span>Total price: '+totalPrice+'</span></div>'
 		document.getElementById("products").innerHTML = cart;
 	}
 	
@@ -178,7 +227,7 @@ span.navigation:hover {
 			var writers = product.writers;
 			var actors = product.actors;
 
-			products += '<div class = "product" itemprop = "id"><table cellspacing="0" cellpading="0" border="1"'
+			products += '<div class = "product" itemprop = "id"><table cellspacing="0" cellpading="0" border="1">'
 			products += '<tbody><tr><td class ="image" rowspawn="2" valign="top"><div>'
 			products += '<img class = "poster" height = "340" width="240" alt = "'+name+' Poster" title = "'+name+'" src = "'+poster+'"'
 			products+= 'itemprop = "poster">';

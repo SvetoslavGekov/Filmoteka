@@ -41,6 +41,7 @@ public class addProductToCartServlet extends HttpServlet {
 		// Check if the productId is valid
 		if (product != null) {
 			// Add product to shopping cart
+			//TODO --> Improve logic when adding items to shopping cart (don't add if already bought);
 			UserManager.getInstance().addProductToShoppingCart(user, product, willBuy);
 		}
 		
