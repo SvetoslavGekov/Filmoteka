@@ -115,7 +115,9 @@ div.cartItem{
 				loadCart();
 			}
 		};
+		
 		xhttp.open("POST", "removeProductFromCartServlet", true);
+		xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 		xhttp.send("productId=" + id);
 	}
 	

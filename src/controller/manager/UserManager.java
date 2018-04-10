@@ -111,4 +111,8 @@ public class UserManager {
 	public void addProductToShoppingCart(User user, Product product, boolean willBuy) {
 		user.addProductToCart(product, willBuy);
 	}
+
+	public void removeProductFromShoppingCart(User user, Product product) {
+		user.removeProductFromCart(product);
+	}
 }
