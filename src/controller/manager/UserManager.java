@@ -1,11 +1,12 @@
 package controller.manager;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.InputMismatchException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import exceptions.InvalidUserDataException;
+import model.Product;
 import model.User;
 import model.dao.UserDao;
 import webSite.WebSite;
@@ -13,9 +14,11 @@ import webSite.WebSite;
 public class UserManager {
 
 	private static UserManager instance;
-
+	private UserDao dao;
+	
 	private UserManager() {
-
+		//Instantiate the dao object
+		this.dao = UserDao.getInstance();
 	}
 
 	public static synchronized UserManager getInstance() {
@@ -31,7 +34,7 @@ public class UserManager {
 			//Create new user with the given information
 			u = new User(firstName, lastName, username, password, email);
 			//Save user in the databse
-			UserDao.getInstance().saveUser(u);
+			this.dao.saveUser(u);
 			//Add user in the users collection
 			WebSite.addUser(u);
 			return true;
@@ -44,7 +47,7 @@ public class UserManager {
 
 	public User logIn(String username, String password) {
 		try {
-			return UserDao.getInstance().getUserByLoginCredentials(username, password);
+			return this.dao.getUserByLoginCredentials(username, password);
 		}
 		catch (SQLException | InvalidUserDataException e) {
 			// TODO Auto-generated catch block
@@ -52,5 +55,57 @@ public class UserManager {
 		}
 		return null;
 	}
-
+	
+	public boolean addOrRemoveProductFromFavorites(User user, Product product) {
+		//Check if user will add or remove the product
+		List<Integer> favorites = new ArrayList<>(user.getFavourites());
+		
+		try {
+			//If the user already has the product in his favorites
+			if(Collections.binarySearch(favorites, product.getId()) >= 0) {
+				//Remove product from user's favorites in the DB and in the POJO
+				this.dao.removeProductFromFavorites(user, product);
+				user.removeFavoriteProduct(product.getId());
+			}
+			//If the user doesn't have the product in his favorites
+			else {
+				//Add product to user's favorites in the DB and in the POJO
+				this.dao.addProductToFavorites(user, product);
+				user.addFavoriteProduct(product.getId());
+			}
+		}
+		catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean addOrRemoveProductFromWatchlist(User user, Product product) {
+		//Check if user will add or remove the product
+		List<Integer> watchlist = new ArrayList<>(user.getWatchList());
+		
+		try {
+			//If the user already has the product in his watchlist
+			if(Collections.binarySearch(watchlist, product.getId()) >= 0) {
+				//Remove product from user's watchlist in the DB and in the POJO
+				this.dao.removeProductFromWatchlist(user, product);
+				user.removeWatchlistProduct(product.getId());
+			}
+			//If the user doesn't have the product in his watchlist
+			else {
+				//Add product to user's watchlist in the DB and in the POJO
+				this.dao.addProductToWatchlist(user, product);
+				user.addWatchlistProduct(product.getId());
+			}
+		}
+		catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 }

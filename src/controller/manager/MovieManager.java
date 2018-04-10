@@ -3,9 +3,7 @@ package controller.manager;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import exceptions.InvalidGenreDataException;
 import exceptions.InvalidProductDataException;
-import model.Genre;
 import model.Movie;
 import model.dao.MovieDao;
 import webSite.WebSite;
@@ -13,7 +11,7 @@ import webSite.WebSite;
 public class MovieManager {
 	//Fields
 	private static MovieManager instance;
-	private static MovieDao dao;
+	private MovieDao dao;
 	
 	//Constructor
 	private MovieManager() {

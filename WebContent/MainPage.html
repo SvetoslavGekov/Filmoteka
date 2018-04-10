@@ -81,21 +81,18 @@ li a,button:hover {
 		xhttp.send();
 	}
 	
-	function likeMovie(id){
+	function addProductToFavorites(id){
 		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				///Read resulting JSON
-				var jsonResult = JSON.parse(this.responseText);
-				//Create table from JSON
-				//document.getElementById("products").innerHTML = jsonResult;
-				loadProductsTableFromJson(jsonResult);
-			}
-		};
-		xhttp.open("POST", "likeServlet", true);
-		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xhttp.send("movieId=" + id);
-		
+		xhttp.open("POST", "addOrRemoveFavoriteProductServlet", true);
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send("productId=" + id);
+	}
+	
+	function addProductToWatchlist(id){
+		var xhttp = new XMLHttpRequest();
+		xhttp.open("POST", "addOrRemoveWatchlistProductServlet", true);
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send("productId=" + id);
 	}
 
 
@@ -130,8 +127,8 @@ li a,button:hover {
 			products+= '<tbody><tr><td class ="image" rowspawn="2" valign="top"><div>'
 			products+= '<img class = "poster" height = "340" width="240" alt = "'+name+' Poster" title = "'+name+'" src = "'+poster+'"'
 			products+= 'itemprop = "poster">';
-			products+= '<div><button float="left" onClick="likeMovie('+product.id+')">Like</button>'
-			products+= '<button onClick="addToWatchList('+product.id+')">Add to Watchlist</button></div>'
+			products+= '<div><button float="left" onClick="addProductToFavorites('+product.id+')">Like</button>'
+			products+= '<button onClick="addProductToWatchlist('+product.id+')">Add to Watchlist</button></div>'
 			products+= '</div></td>'
 			
 			products+='<td><h4 itemprop="name">'+name+'</h4> <p><p itemprop="pgRating">PgRating: '+pgRating+'</p>'

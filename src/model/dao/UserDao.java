@@ -239,8 +239,23 @@ public class UserDao implements IUserDao{
 	}
 	
 	public void removeProductFromFavorites(User user, Product product) throws SQLException {
-		//TODO --> finish 
-		try(PreparedStatement ps = connection.prepareStatement("DELETE FROM user_has_favorite_products WHERE ;")){
+		try(PreparedStatement ps = connection.prepareStatement("DELETE FROM user_has_favorite_products WHERE user_id = ? AND product_id = ?;")){
+			ps.setInt(1, user.getUserId());
+			ps.setInt(2, product.getId());
+			ps.executeUpdate();
+		}
+	}
+	
+	public void addProductToWatchlist(User user, Product product) throws SQLException {
+		try(PreparedStatement ps = connection.prepareStatement("INSERT INTO user_has_watchlist_products (user_id, product_id) VALUES (?,?);")){
+			ps.setInt(1, user.getUserId());
+			ps.setInt(2, product.getId());
+			ps.executeUpdate();
+		}
+	}
+	
+	public void removeProductFromWatchlist(User user, Product product) throws SQLException {
+		try(PreparedStatement ps = connection.prepareStatement("DELETE FROM user_has_watchlist_products WHERE user_id = ? AND product_id = ?;")){
 			ps.setInt(1, user.getUserId());
 			ps.setInt(2, product.getId());
 			ps.executeUpdate();

@@ -3,6 +3,7 @@ package model;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
@@ -207,7 +208,7 @@ public class User {
 	}
 
 	public Set<Integer> getFavourites() {
-		return this.favourites;
+		return Collections.unmodifiableSet(this.favourites);
 	}
 
 	public void setWatchList(Set<Integer> watchList) {
@@ -215,7 +216,7 @@ public class User {
 	}
 
 	public Set<Integer> getWatchList() {
-		return this.watchList;
+		return Collections.unmodifiableSet(this.watchList);
 	}
 
 	public void setProducts(Map<Product, LocalDate> products) {
@@ -223,9 +224,25 @@ public class User {
 	}
 
 	public Map<Product, LocalDate> getProducts() {
-		return this.products;
+		return Collections.unmodifiableMap(this.products);
+	}
+	
+	public void removeFavoriteProduct(Integer productId) {
+		this.favourites.remove(productId);
 	}
 
+	public void addFavoriteProduct(Integer productId) {
+		this.favourites.add(productId);
+	}
+	
+	public void removeWatchlistProduct(Integer productId) {
+		this.watchList.remove(productId);
+	}
+
+	public void addWatchlistProduct(Integer productId) {
+		this.watchList.add(productId);
+	}
+	
 	@Override
 	public String toString() {
 		return String.format(
