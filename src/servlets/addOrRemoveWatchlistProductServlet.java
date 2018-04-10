@@ -19,22 +19,26 @@ import webSite.WebSite;
 @WebServlet("/addOrRemoveWatchlistProductServlet")
 public class addOrRemoveWatchlistProductServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//Get user from session
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// Get user from session
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("USER");
-		
-		//Get product from website
+
+		// Get product from website
 		Integer productId = Integer.valueOf(request.getParameter("productId"));
 		Product product = WebSite.getProductById(productId);
-		
-		//Add or remove product from favorites
-		UserManager.getInstance().addOrRemoveProductFromWatchlist(user, product);
+
+		// Check if productId is valid
+		if (product != null) {
+			// Add or remove product from favorites
+			UserManager.getInstance().addOrRemoveProductFromWatchlist(user, product);
+		}
 	}
 
 }

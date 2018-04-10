@@ -4,12 +4,25 @@
 <head>
 <meta charset="UTF-8">
 <style>
+button.toCollection:hover {
+	background-color: #333333;
+}
 
-div.product{
+img.toCart {
+	halign: center;
+	width: 50px;
+	height: 50px;
+}
+
+img.toCart:hover {
+	cursor: pointer;
+}
+
+div.product {
 	max-width: 70%;
 }
 
-.image{
+.image {
 	float: left;
 }
 
@@ -35,16 +48,17 @@ li {
 	float: left;
 }
 
-li a,button {
+span.navigation {
 	display: block;
 	color: white;
-	text-align: center;
+	valign: top;
 	padding: 16px;
 	text-decoration: none;
 }
 
-li a,button:hover {
+span.navigation:hover {
 	background-color: #111111;
+	cursor: pointer;
 }
 </style>
 </head>
@@ -52,11 +66,12 @@ li a,button:hover {
 	<!-- Navigation bar -->
 	<nav id="nav_bar">
 		<ul>
-			<li><a href="#home">FILMOTEKA.BG</a></li>
-			<li><a href="#news">Movies</a></li>
-			<li><a href="#contact">TV Series</a></li>
-			<li><a href="#about">My Account</a></li>
-			<li><button onclick = "logout()">Logout</button></li>
+			<li><span class="navigation" id="home">FILMOTEKA.BG</span></li>
+			<li><span class="navigation" id="movies">Movies</span></li>
+			<li><span class="navigation" id="tvseries">TV Series</span></li>
+			<li><span class="navigation" id="account">My Account</span></li>
+			<li><span class="navigation" id="cart">My Cart</span></li>
+			<li><span class="navigation" id="logout">Logout</span></li>
 		</ul>
 	</nav>
 	<hr>
@@ -65,8 +80,7 @@ li a,button:hover {
 	<div id="content">
 		<aside id="filters"></aside>
 
-		<section id="products">
-		</section>
+		<section id="products"></section>
 	</div>
 	<hr>
 
@@ -75,26 +89,35 @@ li a,button:hover {
 </body>
 
 <script type="text/javascript">
-	function logout(){
+	function logout() {
 		var xhttp = new XMLHttpRequest();
 		xhttp.open("GET", "LogoutServlet", true);
 		xhttp.send();
 	}
-	
-	function addProductToFavorites(id){
+
+	function addProductToCart(id, willBuy) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.open("POST", "addProductToCartServlet", true);
+		xhttp.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		xhttp.send("productId="+ id +"&willBuy=" + willBuy);
+	}
+
+	function addProductToFavorites(id) {
 		var xhttp = new XMLHttpRequest();
 		xhttp.open("POST", "addOrRemoveFavoriteProductServlet", true);
-		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xhttp.send("productId=" + id);
-	}
-	
-	function addProductToWatchlist(id){
-		var xhttp = new XMLHttpRequest();
-		xhttp.open("POST", "addOrRemoveWatchlistProductServlet", true);
-		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
 		xhttp.send("productId=" + id);
 	}
 
+	function addProductToWatchlist(id) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.open("POST", "addOrRemoveWatchlistProductServlet", true);
+		xhttp.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		xhttp.send("productId=" + id);
+	}
 
 	function loadAllProducts() {
 		var xhttp = new XMLHttpRequest();
@@ -110,10 +133,10 @@ li a,button:hover {
 		xhttp.open("GET", "loadAllProductsAsJsonServlet", true);
 		xhttp.send();
 	}
-	
-	function loadProductsTableFromJson(json){
+
+	function loadProductsTableFromJson(json) {
 		var products = "";
-		for(var i in json){
+		for ( var i in json) {
 			var product = json[i];
 			var name = product.name;
 			var poster = product.poster;
@@ -122,27 +145,41 @@ li a,button:hover {
 			var description = product.description;
 			var writers = product.writers;
 			var actors = product.actors;
-			
-			products+= '<div class = "product" itemprop = "id"><table cellspacing="0" cellpading="0" border="1"'
-			products+= '<tbody><tr><td class ="image" rowspawn="2" valign="top"><div>'
-			products+= '<img class = "poster" height = "340" width="240" alt = "'+name+' Poster" title = "'+name+'" src = "'+poster+'"'
+
+			products += '<div class = "product" itemprop = "id"><table cellspacing="0" cellpading="0" border="1"'
+			products += '<tbody><tr><td class ="image" rowspawn="2" valign="top"><div>'
+			products += '<img class = "poster" height = "340" width="240" alt = "'+name+' Poster" title = "'+name+'" src = "'+poster+'"'
 			products+= 'itemprop = "poster">';
-			products+= '<div><button float="left" onClick="addProductToFavorites('+product.id+')">Like</button>'
-			products+= '<button onClick="addProductToWatchlist('+product.id+')">Add to Watchlist</button></div>'
-			products+= '</div></td>'
-			
-			products+='<td><h4 itemprop="name">'+name+'</h4> <p><p itemprop="pgRating">PgRating: '+pgRating+'</p>'
-			products+='<time itemprop="duration">Duration: '+duration+'</time><br>'
-			
+			products += '<div><button float="left" class="toCollection" onClick="addProductToFavorites('
+					+ product.id + ')">Like</button>'
+			products += '<button class="toCollection" onClick="addProductToWatchlist('
+					+ product.id + ')">Add to Watchlist</button></div>'
+			products += '<div><img class="toCart" src="icons/wallet.png" alt="Buy" title="Buy product" onclick="addProductToCart('
+					+ product.id + ','+true+')">'
+			products += '<img class="toCart" src="icons/clockCoins.png" alt="Rent" title="Rent product" onclick="addProductToCart('
+					+ product.id + ','+false+')"></div>'
+			products += '</div></td>'
+
+			products += '<td><h4 itemprop="name">' + name
+					+ '</h4> <p><p itemprop="pgRating">PgRating: ' + pgRating
+					+ '</p>'
+			products += '<time itemprop="duration">Duration: ' + duration
+					+ '</time><br>'
+
 			var genres = product.genres;
-			products+='<span>Genres<br>'
+			products += '<span>Genres<br>'
 			for (var j = 0; j < genres.length; j++) {
-				products+='<span itemprop = "genre">'+genres[j].value+'</span><span class = ghost>|</span>'
+				products += '<span itemprop = "genre">' + genres[j].value
+						+ '</span><span class = ghost>|</span>'
 			}
-			products+='</span>'
-			products+= '<div itemprop="description"><h5>Description:</h5>'+description+'</div>'
-			products+= '<div><h5>Writers:</h5><span itemprop="director">'+ writers+'</span>'
-			products+= '<div><h5>Actors:</h5><span itemprop="actors">'+actors+'</span></div></p></td></tr></tbody></table></div>'
+			products += '</span>'
+			products += '<div itemprop="description"><h5>Description:</h5>'
+					+ description + '</div>'
+			products += '<div><h5>Writers:</h5><span itemprop="director">'
+					+ writers + '</span>'
+			products += '<div><h5>Actors:</h5><span itemprop="actors">'
+					+ actors
+					+ '</span></div></p></td></tr></tbody></table></div>'
 		}
 		document.getElementById("products").innerHTML = products;
 	}

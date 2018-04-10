@@ -108,4 +108,7 @@ public class UserManager {
 		return true;
 	}
 	
+	public void addProductToShoppingCart(User user, Product product, boolean willBuy) {
+		user.addProductToCart(product, willBuy);
+	}
 }

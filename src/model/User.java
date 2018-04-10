@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import exceptions.InvalidUserDataException;
@@ -16,6 +15,7 @@ import validation.Supp;
 
 public class User {
 	// Fields
+	private static final int RENT_PERIOD = 8; //days
 	private int userId;
 	private int userTypeId;
 	private String firstName;
@@ -25,16 +25,17 @@ public class User {
 	private String email;
 	private String phone = "";
 	private LocalDate registrationDate;
-	private LocalDateTime lastLogin;// TODO LoacalDateTime
+	private LocalDateTime lastLogin;
 	private String profilePicture;
 	private double money;
 
 	// Collections
-	private Set<Integer> favourites = new TreeSet<>();
-	private Set<Integer> watchList = new TreeSet<>();
-	private Map<Product, LocalDate> products = new HashMap<>();
+	private Set<Integer> favourites = new TreeSet<>(); //Set of productId's
+	private Set<Integer> watchList = new TreeSet<>(); //Set of productId's
+	private Map<Product, LocalDate> products = new HashMap<>(); //Key: Product (can be Id) -> Value: Validity date (null for bought products)
+	private Map<Product, LocalDate> shoppingCart = new HashMap<>();
 	// private Collection <Order> ordersHistory = new TreeSet<>();;
-	// private ShoppingCart shoppingCart = new ShoppingCart();
+	
 
 	// Constructors
 	// Constructor for registering a new user
@@ -177,7 +178,9 @@ public class User {
 	}
 
 	private void setRegistrationDate(LocalDate registrationDate) {
-		this.registrationDate = registrationDate;
+		if(registrationDate != null) {
+			this.registrationDate = registrationDate;
+		}
 	}
 
 	public LocalDateTime getLastLogin() {
@@ -185,7 +188,9 @@ public class User {
 	}
 
 	public void setLastLogin(LocalDateTime lastLogin) {
-		this.lastLogin = lastLogin;
+		if(lastLogin != null) {
+			this.lastLogin = lastLogin;
+		}
 	}
 
 	public String getProfilePicture() {
@@ -204,7 +209,9 @@ public class User {
 	}
 
 	public void setFavourites(Set<Integer> favourites) {
-		this.favourites = favourites;
+		if(favourites != null) {
+			this.favourites = favourites;
+		}
 	}
 
 	public Set<Integer> getFavourites() {
@@ -212,7 +219,9 @@ public class User {
 	}
 
 	public void setWatchList(Set<Integer> watchList) {
-		this.watchList = watchList;
+		if(watchList != null) {
+			this.watchList = watchList;
+		}
 	}
 
 	public Set<Integer> getWatchList() {
@@ -220,7 +229,9 @@ public class User {
 	}
 
 	public void setProducts(Map<Product, LocalDate> products) {
-		this.products = products;
+		if(products != null) {
+			this.products = products;
+		}
 	}
 
 	public Map<Product, LocalDate> getProducts() {
@@ -241,6 +252,27 @@ public class User {
 
 	public void addWatchlistProduct(Integer productId) {
 		this.watchList.add(productId);
+	}
+	
+	public void addProductToCart(Product product, boolean willBuy) {
+		if(product != null) {
+			//Add product as rented if willBuy is false (product validity is current date +  RENT_PERIOD)
+			this.shoppingCart.put(product, willBuy ? null : LocalDate.now().plusDays(User.RENT_PERIOD));
+		}
+	}
+	
+	public void removeProductFromCart(Product product) {
+		if(product != null) {
+			this.shoppingCart.remove(product);
+		}
+	}
+	
+	public void cleanCart() {
+		this.shoppingCart.clear();
+	}
+	
+	public Map<Product, LocalDate> getShoppingCart() {
+		return Collections.unmodifiableMap(this.shoppingCart);
 	}
 	
 	@Override
