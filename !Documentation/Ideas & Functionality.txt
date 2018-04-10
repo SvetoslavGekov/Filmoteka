@@ -1,0 +1,133 @@
+﻿Reading legend:
+"-" - things that need to be implemented;
+"+" - things that have been implemented;
+"-->" - things that are probably not going to be implemented in the console demonstration;
+
+Classes:
+	1) WebSite ()
+		+ Collection <String, User> allUsers;
+		---> Collection HashSet<User> subscribers;
+		+ Collection <Product> catalog;
+		+ currentUser (User);
+		+ money;
+		
+	2) Abstract User;
+		+ private static WebSite filmoteka;
+		+ username;
+		+ password;
+		+ names;
+		+ email;
+		+ phone; //Не е задължително
+		+ registrationDate;
+		+ lastLogin;
+		
+		
+		2.1) Administrator implements IAdministrator
+		
+		
+		2.2) Consumer implements IConsumer
+		---> profilePicture;
+		+ Collection <Product> favorites;
+		+ Collection <Product> watchList;
+		---> Map <Product, Review> reviews; 
+		+ Map <Product, LocalDate> products; //Купените филми/сериали имат дата null;
+		---> Collection <Message> messages;
+		+ Collection <Order> ordersHistory; 
+		---> subscription; //абонаментен план
+		+ shoppingCart;
+		+ money;
+		
+	3) Product;
+		//Enumerations
+		+ ProductType;
+		+ Genre
+	
+		//Fields
+		+ private static final int RENT_DURATION;
+		+ private static final double MAX_RATING;
+		
+		+ id;
+		+ name;
+		+ description;
+		+ productType;
+		---> poster;
+		+ trailer;
+		+ writers;
+		+ actors;
+		+ releaseDate;
+		+ viewerRating;
+		+ totalVotes;
+		+ pgRating;
+		+ duration;		
+		+ Collection <Genre> --> Enum;
+		---> Collection <Review> reviews;
+		---> Collection <Award> awards;
+		+ rentCost;
+		+ buyCost;	
+		
+		3.1 Movie extends Product;
+			+ director;
+			
+		3.2 TVSeries extends Product;
+			+ finishedAiringDate;
+			+ Map <Integer, Integer> seasons --> Key: Total Seasons, value: Total episodes per season 
+			---> Collection <Episode> episodes;
+
+			
+	4) Shopping cart;
+		+ Map <Product, Boolean??> products;
+		+ totalCost;
+		
+	--->5) Review;
+		- title;
+		- user;
+		- date;
+		- reviewDescription;
+		- reviewRating;
+		
+	--->6) Subscription;
+		- type --> ENUM?
+		- discount;
+		- cost;
+		- duration;
+		- validUntil;
+		
+	--->8) Message / Mail
+		- sender <Interface> ;
+		- Collection <Interface> receivers;
+		- date;
+		- title;
+		- messageInfo;
+		
+	9) Order
+		+ private static int currentID;
+		+ id;
+		+ date;
+		+ IConsumer consumer;
+		+ shoppingCart;
+		+ totalCost;
+		
+		
+User functionality:
+	+ Login;
+	+ Logout;
+	+ Registration;
+	---> Reset password (Forgotten password);
+	+ Edit User Profile - names, phones, email, password;
+	+ Add product from Admin;
+	+ Edit product info from Admin;
+	+ Delete product from Admin;
+	+ Select products by ID or Name;
+	+ Browse catalog;
+	+ Add items to cart;
+	+ Finalize purchase (rent/buy) (Movies, TV Series);
+	+ View order history;
+	---> Redeem Product Code;
+	+ Rate product;
+	+ Add to favorites product;
+	+ Add to watchList;
+	---> Subscribe for newsletter (информационен бюлетин);
+	---> Subscribe for movies/TV Series --> different subscriptions;
+	---> Check site contact info;
+	---> Write a review;
+	---> Write a message;
