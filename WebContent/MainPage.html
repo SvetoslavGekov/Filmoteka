@@ -66,11 +66,11 @@ span.navigation:hover {
 	<!-- Navigation bar -->
 	<nav id="nav_bar">
 		<ul>
-			<li><span class="navigation" id="home">FILMOTEKA.BG</span></li>
+			<li><span class="navigation" id="home" onclick = "loadAllProducts()">FILMOTEKA.BG</span></li>
 			<li><span class="navigation" id="movies">Movies</span></li>
 			<li><span class="navigation" id="tvseries">TV Series</span></li>
 			<li><span class="navigation" id="account">My Account</span></li>
-			<li><span class="navigation" id="cart">My Cart</span></li>
+			<li><span class="navigation" id="cart" onclick = "loadCart()">My Cart</span></li>
 			<li><span class="navigation" id="logout">Logout</span></li>
 		</ul>
 	</nav>
@@ -134,6 +134,38 @@ span.navigation:hover {
 		xhttp.send();
 	}
 
+	function loadCart(){
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				///Read resulting JSON
+				var jsonResult = JSON.parse(this.responseText);
+				//Create table from JSON
+				loadCartTableFromJson(jsonResult);
+			}
+		};
+		xhttp.open("GET", "loadCartAsJsonServlet", true);
+		xhttp.send();
+	}
+	
+	function loadCartTableFromJson(json){
+		var cart = "";
+		for(var i in json){
+			var productName = json[i][0].name;
+			var date = json[i][1]
+			cart+= productName + '   ';
+			
+			if(!(date == null)){
+				cart+= date.year + ' ' + date.month + ' ' +date.day;
+			}
+			else{
+				cart+= '-';
+			}
+			cart+='<br>';
+		}
+		document.getElementById("products").innerHTML = cart;
+	}
+	
 	function loadProductsTableFromJson(json) {
 		var products = "";
 		for ( var i in json) {

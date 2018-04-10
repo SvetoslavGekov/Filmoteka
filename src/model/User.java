@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import exceptions.InvalidUserDataException;
@@ -33,7 +34,7 @@ public class User {
 	private Set<Integer> favourites = new TreeSet<>(); //Set of productId's
 	private Set<Integer> watchList = new TreeSet<>(); //Set of productId's
 	private Map<Product, LocalDate> products = new HashMap<>(); //Key: Product (can be Id) -> Value: Validity date (null for bought products)
-	private Map<Product, LocalDate> shoppingCart = new HashMap<>();
+	private TreeMap<Product, LocalDate> shoppingCart = new TreeMap<>();
 	// private Collection <Order> ordersHistory = new TreeSet<>();;
 	
 
