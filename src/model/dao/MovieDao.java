@@ -17,15 +17,15 @@ import exceptions.InvalidProductDataException;
 import model.Genre;
 import model.Movie;
 
-public class MovieDao implements IMovieDao {
+public final class MovieDao implements IMovieDao {
 	//Fields
 	private static MovieDao instance;
-	private static Connection con;
+	private Connection con;
 	
 	//Constructors
 	private MovieDao() {
 		//Create the connection object from the DBManager
-		MovieDao.con = DBManager.getInstance().getCon();
+		this.con = DBManager.getInstance().getCon();
 	}
 	
 	//Methods
@@ -39,7 +39,6 @@ public class MovieDao implements IMovieDao {
 	@Override
 	//Save a newly created movie with the basic mandatory fields
 	public void saveMovie(Movie m) throws SQLException, InvalidProductDataException {
-		//TODO --> Transactions
 		synchronized (con) {
 			con.setAutoCommit(false);
 			try {
@@ -66,7 +65,6 @@ public class MovieDao implements IMovieDao {
 
 	@Override
 	public void updateMovie(Movie m) throws SQLException {
-		//TODO -> transactions
 		synchronized (con) {
 			con.setAutoCommit(false);
 			try {

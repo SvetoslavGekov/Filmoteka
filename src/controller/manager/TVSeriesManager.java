@@ -11,7 +11,7 @@ import webSite.WebSite;
 public class TVSeriesManager {
 	//Fields
 	private static TVSeriesManager instance;
-	private static TVSeriesDao dao;
+	private TVSeriesDao dao;
 	
 	//Constructor
 	private TVSeriesManager() {

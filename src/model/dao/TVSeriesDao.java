@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,15 +18,15 @@ import exceptions.InvalidProductDataException;
 import model.Genre;
 import model.TVSeries;
 
-public class TVSeriesDao implements ITVSeriesDao {
+public final class TVSeriesDao implements ITVSeriesDao {
 	// Fields
 	private static TVSeriesDao instance;
-	private static Connection con;
+	private Connection con;
 
 	// Constructors
 	private TVSeriesDao() {
 		// Create the connection object from the DBManager
-		TVSeriesDao.con = DBManager.getInstance().getCon();
+		this.con = DBManager.getInstance().getCon();
 	}
 
 	// Methods

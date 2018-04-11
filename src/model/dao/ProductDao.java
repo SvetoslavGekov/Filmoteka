@@ -17,15 +17,15 @@ import model.Genre;
 import model.Product;
 import webSite.WebSite;
 
-public class ProductDao implements IProductDao {
+public final class ProductDao implements IProductDao {
 	// Fields
 	private static ProductDao instance;
-	private static Connection con;
+	private Connection con;
 
 	// Constructors
 	private ProductDao() {
 		// Create the connection object from the DBManager
-		ProductDao.con = DBManager.getInstance().getCon();
+		this.con = DBManager.getInstance().getCon();
 	}
 
 	// Methods
