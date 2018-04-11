@@ -34,7 +34,7 @@ public class User {
 	private Set<Integer> favourites = new TreeSet<>(); //Set of productId's
 	private Set<Integer> watchList = new TreeSet<>(); //Set of productId's
 	private Map<Product, LocalDate> products = new HashMap<>(); //Key: Product (can be Id) -> Value: Validity date (null for bought products)
-	private TreeMap<Product, LocalDate> shoppingCart = new TreeMap<>();
+	private TreeMap<Product, LocalDate> shoppingCart = new TreeMap<>(); //Same as products
 	// private Collection <Order> ordersHistory = new TreeSet<>();;
 	
 

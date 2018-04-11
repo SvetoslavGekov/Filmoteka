@@ -115,4 +115,13 @@ public class UserManager {
 	public void removeProductFromShoppingCart(User user, Product product) {
 		user.removeProductFromCart(product);
 	}
+	
+	public void buyProductsInCart(User user) {
+		//If there is nothing to be bought
+		if(user.getShoppingCart().isEmpty()) {
+			return;
+		}
+		
+		
+	}
 }

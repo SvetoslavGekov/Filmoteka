@@ -10,7 +10,7 @@ import webSite.WebSite;
 public final class GenreManager {
 	//Fields
 	private static GenreManager instance;
-	private static GenreDao dao;
+	private GenreDao dao;
 	
 	//Constructor
 	private GenreManager() {

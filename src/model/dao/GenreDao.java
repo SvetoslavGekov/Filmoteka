@@ -15,12 +15,12 @@ import model.Genre;
 public final class GenreDao implements IGenreDao {
 	//Fields
 	private static GenreDao instance;
-	private static Connection con;
+	private Connection con;
 
 	//Constructor
 	private GenreDao() {
 		//Create the connection object from the DBManager
-		GenreDao.con = DBManager.getInstance().getCon();
+		this.con = DBManager.getInstance().getCon();
 	}
 	
 	//Methods

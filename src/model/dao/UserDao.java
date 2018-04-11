@@ -171,7 +171,7 @@ public class UserDao implements IUserDao{
 		return resultUsers;
 	}
 	
-	private Map<Product,LocalDate> getUserProductsById(int userId) throws SQLException {
+	public Map<Product,LocalDate> getUserProductsById(int userId) throws SQLException {
 		Map<Product,LocalDate> products = new TreeMap<>();
 		try(PreparedStatement ps = connection.prepareStatement("SELECT product_id, validity FROM user_has_products WHERE user_id = ?;")){
 			ps.setInt(1, userId);
@@ -188,7 +188,7 @@ public class UserDao implements IUserDao{
 		return products;
 	}
 	
-	private Set<Integer> getUserFavoritesById(int userId) throws SQLException {
+	public Set<Integer> getUserFavoritesById(int userId) throws SQLException {
 		Set<Integer> favorites = new HashSet<Integer>();
 		try(PreparedStatement ps = connection.prepareStatement("SELECT product_id FROM user_has_favorite_products WHERE user_id = ?;")){
 			ps.setInt(1, userId);
@@ -201,7 +201,7 @@ public class UserDao implements IUserDao{
 		return favorites;
 	}
 	
-	private Set<Integer> getUserWatchlistById(int userId) throws SQLException {
+	public Set<Integer> getUserWatchlistById(int userId) throws SQLException {
 		Set<Integer> watchlist = new HashSet<Integer>();
 		try(PreparedStatement ps = connection.prepareStatement("SELECT product_id FROM user_has_watchlist_products WHERE user_id = ?;")){
 			ps.setInt(1, userId);

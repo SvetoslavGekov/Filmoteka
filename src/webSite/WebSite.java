@@ -61,6 +61,10 @@ public final class WebSite {
 		}
 	}
 	
+	public static User getUserByID(int userId) {
+		return USERS.get(userId);
+	}
+	
 	public static Product getProductById(int productId) {
 		return PRODUCTS.get(productId);
 	}
@@ -91,6 +95,8 @@ public final class WebSite {
 	public static Collection<Product> getAllProducts() {
 		return Collections.unmodifiableCollection(PRODUCTS.values());
 	}
+
+
 
 
 }
