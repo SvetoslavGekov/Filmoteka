@@ -119,7 +119,7 @@ public class UserManager {
 		user.removeProductFromCart(product);
 	}
 	
-	public void buyProductsInCart(User user) {
+	public void buyProductsInCart(User user) throws SQLException {
 		//If there is nothing to be bought
 		if(user.getShoppingCart().isEmpty()) {
 			return;
@@ -135,6 +135,7 @@ public class UserManager {
 			
 			//Transfer money
 			user.setMoney(userMoney - cartPrice);
+			dao.updateUser(user);
 			System.out.println(cartPrice);
 			//Clear shopping cart
 			user.cleanCart();

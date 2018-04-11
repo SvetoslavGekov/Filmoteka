@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,7 +30,13 @@ public class buyCartItemsServlet extends HttpServlet {
 		User user = (User) session.getAttribute("USER");
 		
 		//Attempt to buy products in cart
-		UserManager.getInstance().buyProductsInCart(user);
+		try {
+			UserManager.getInstance().buyProductsInCart(user);
+		}
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		for (Order order : user.getOrdersHistory()) {
 			System.out.printf("Id:%d	User:%d	Date:%s	Price:%.2f%n",order.getId(), order.getUserId(),

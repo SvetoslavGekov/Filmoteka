@@ -83,7 +83,7 @@ div.cartItem{
 			<li><span class="navigation" id="tvseries">TV Series</span></li>
 			<li><span class="navigation" id="account">My Account</span></li>
 			<li><span class="navigation" id="cart" onclick = "loadCart()">My Cart</span></li>
-			<li><span class="navigation" id="logout">Logout</span></li>
+			<li><span class="navigation" id="logout" onclick ="logout()" >Logout</span></li>
 		</ul>
 	</nav>
 	<hr>
@@ -103,7 +103,7 @@ div.cartItem{
 <script type="text/javascript">
 	function logout() {
 		var xhttp = new XMLHttpRequest();
-		xhttp.open("GET", "LogoutServlet", true);
+		xhttp.open("POST", "LogoutServlet", true);
 		xhttp.send();
 	}
 

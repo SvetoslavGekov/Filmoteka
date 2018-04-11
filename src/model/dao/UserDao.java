@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -110,13 +111,14 @@ public class UserDao implements IUserDao{
 	public void updateUser(User user) throws SQLException {
 		String sqlQuery = "UPDATE users SET username = ?, email = ?, password = ?, first_name = ?, last_name = ?, phone = ?, last_login = ?, profile_picture = ?, money = ? WHERE user_id = ?;";
 		try(PreparedStatement ps = connection.prepareStatement(sqlQuery)){
+			LocalDateTime lastLogin = user.getLastLogin();
 			ps.setString(1, user.getUsername());
 			ps.setString(2, user.getEmail());
 			ps.setString(3, user.getPassword());
 			ps.setString(4, user.getFirstName());
 			ps.setString(5, user.getLastName());
 			ps.setString(6, user.getPhone());
-			ps.setTimestamp(7, Timestamp.valueOf(user.getLastLogin()));
+			ps.setTimestamp(7, lastLogin != null ? java.sql.Timestamp.valueOf(lastLogin) : null);
 			ps.setString(8, user.getProfilePicture());
 			ps.setDouble(9, user.getMoney());
 			ps.setInt(10, user.getUserId());
