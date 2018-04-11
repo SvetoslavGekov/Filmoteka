@@ -47,11 +47,11 @@ public final class OrderDao implements IOrderDao {
 			ps.setInt(1, orderId);
 			try(ResultSet rs = ps.executeQuery()){
 				//Grab the user by his Id
-				User user = WebSite.getUserByID(rs.getInt("user_id"));
+				rs.next();
 				Date date = rs.getDate("date");
-				
+				int userId = rs.getInt("user_id");
 				//Create order object
-				order = new Order(orderId, user, date != null ? date.toLocalDate() : null, products);
+				order = new Order(orderId, userId, date != null ? date.toLocalDate() : null, products);
 			}
 		}
 		return order;
@@ -85,7 +85,7 @@ public final class OrderDao implements IOrderDao {
 			//Add order to the orders table
 			try(PreparedStatement ps = con.prepareStatement("INSERT INTO orders (user_id, date, total_cost) VALUES (?, ?, ?);",
 					PreparedStatement.RETURN_GENERATED_KEYS)) {
-				ps.setInt(1, order.getUser().getUserId());
+				ps.setInt(1, order.getUserId());
 				ps.setDate(2, java.sql.Date.valueOf(order.getDate()));
 				ps.setDouble(3, order.getTotalCost());
 				

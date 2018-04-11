@@ -7,6 +7,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import exceptions.InvalidGenreDataException;
+import exceptions.InvalidOrderDataException;
 import exceptions.InvalidProductDataException;
 import exceptions.InvalidUserDataException;
 import webSite.WebSite;
@@ -33,7 +34,7 @@ public class LoadupContextListener implements ServletContextListener {
 		try {
 			WebSite.main(null);
 		}
-		catch (SQLException | InvalidGenreDataException | InvalidProductDataException | InvalidUserDataException e) {
+		catch (SQLException | InvalidGenreDataException | InvalidProductDataException | InvalidUserDataException | InvalidOrderDataException e) {
 			e.printStackTrace();
 		}
     }
