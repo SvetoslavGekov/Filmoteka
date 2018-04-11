@@ -181,6 +181,9 @@ public class UserDao implements IUserDao{
 					int productId = rs.getInt("product_id");
 					Date validity = rs.getDate("validity");
 					Product pr = WebSite.getProductById(productId);
+					if(pr == null){
+						break;
+					}
 					products.put(pr, validity != null ? validity.toLocalDate() : null);
 				}
 			}
