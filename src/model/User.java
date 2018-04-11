@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -16,7 +17,7 @@ import validation.Supp;
 
 public class User {
 	// Fields
-	private static final int RENT_PERIOD = 8; //days
+	private static final int RENT_PERIOD = 8; // days
 	private int userId;
 	private int userTypeId;
 	private String firstName;
@@ -31,12 +32,12 @@ public class User {
 	private double money;
 
 	// Collections
-	private Set<Integer> favourites = new TreeSet<>(); //Set of productId's
-	private Set<Integer> watchList = new TreeSet<>(); //Set of productId's
-	private Map<Product, LocalDate> products = new HashMap<>(); //Key: Product (can be Id) -> Value: Validity date (null for bought products)
-	private TreeMap<Product, LocalDate> shoppingCart = new TreeMap<>(); //Same as products
-	// private Collection <Order> ordersHistory = new TreeSet<>();;
-	
+	private Set<Integer> favourites = new TreeSet<>(); // Set of productId's
+	private Set<Integer> watchList = new TreeSet<>(); // Set of productId's
+	private Map<Product, LocalDate> products = new HashMap<>(); // Key: Product (can be Id) -> Value: Validity date
+																// (null for bought products)
+	private TreeMap<Product, LocalDate> shoppingCart = new TreeMap<>(); // Same as products
+	private Set <Order> ordersHistory = new TreeSet<>();;
 
 	// Constructors
 	// Constructor for registering a new user
@@ -54,8 +55,8 @@ public class User {
 	// Constructor for reading a user from the DB
 	public User(int userId, int userTypeId, String firstName, String lastName, String username, String password,
 			String email, String phone, LocalDate registrationDate, LocalDateTime lastLogin, String profilePicture,
-			double money, Set<Integer> favourites, Set<Integer> watchList,
-			Map<Product, LocalDate> products) throws InvalidUserDataException {
+			double money, Set<Integer> favourites, Set<Integer> watchList, Map<Product, LocalDate> products)
+			throws InvalidUserDataException {
 		this(firstName, lastName, username, password, email);
 		setUserId(userId);
 		setUserTypeId(userTypeId);
@@ -179,7 +180,7 @@ public class User {
 	}
 
 	private void setRegistrationDate(LocalDate registrationDate) {
-		if(registrationDate != null) {
+		if (registrationDate != null) {
 			this.registrationDate = registrationDate;
 		}
 	}
@@ -189,7 +190,7 @@ public class User {
 	}
 
 	public void setLastLogin(LocalDateTime lastLogin) {
-		if(lastLogin != null) {
+		if (lastLogin != null) {
 			this.lastLogin = lastLogin;
 		}
 	}
@@ -210,7 +211,7 @@ public class User {
 	}
 
 	public void setFavourites(Set<Integer> favourites) {
-		if(favourites != null) {
+		if (favourites != null) {
 			this.favourites = favourites;
 		}
 	}
@@ -220,7 +221,7 @@ public class User {
 	}
 
 	public void setWatchList(Set<Integer> watchList) {
-		if(watchList != null) {
+		if (watchList != null) {
 			this.watchList = watchList;
 		}
 	}
@@ -230,7 +231,7 @@ public class User {
 	}
 
 	public void setProducts(Map<Product, LocalDate> products) {
-		if(products != null) {
+		if (products != null) {
 			this.products = products;
 		}
 	}
@@ -238,7 +239,7 @@ public class User {
 	public Map<Product, LocalDate> getProducts() {
 		return Collections.unmodifiableMap(this.products);
 	}
-	
+
 	public void removeFavoriteProduct(Integer productId) {
 		this.favourites.remove(productId);
 	}
@@ -246,7 +247,7 @@ public class User {
 	public void addFavoriteProduct(Integer productId) {
 		this.favourites.add(productId);
 	}
-	
+
 	public void removeWatchlistProduct(Integer productId) {
 		this.watchList.remove(productId);
 	}
@@ -254,34 +255,65 @@ public class User {
 	public void addWatchlistProduct(Integer productId) {
 		this.watchList.add(productId);
 	}
-	
+
 	public void addProductToCart(Product product, boolean willBuy) {
-		if(product != null) {
-			//Add product as rented if willBuy is false (product validity is current date +  RENT_PERIOD)
+		if (product != null) {
+			// Add product as rented if willBuy is false (product validity is current date +
+			// RENT_PERIOD)
 			this.shoppingCart.put(product, willBuy ? null : LocalDate.now().plusDays(User.RENT_PERIOD));
 		}
 	}
-	
+
 	public void removeProductFromCart(Product product) {
-		if(product != null) {
+		if (product != null) {
 			this.shoppingCart.remove(product);
 		}
 	}
-	
+
 	public void cleanCart() {
 		this.shoppingCart.clear();
 	}
-	
+
 	public Map<Product, LocalDate> getShoppingCart() {
 		return Collections.unmodifiableMap(this.shoppingCart);
 	}
+
+	public double getShoppingCartPrice() {
+		double totalCost = 0d;
+		for (Entry<Product, LocalDate> e : this.shoppingCart.entrySet()) {
+			if (e.getValue() == null) {
+				totalCost += e.getKey().getRentCost();
+			}
+			else {
+				totalCost += e.getKey().getBuyCost();
+			}
+		}
+		return totalCost;
+	}
+
+	public void setOrdersHistory(Set<Order> ordersHistory) {
+		if(ordersHistory != null) {
+			this.ordersHistory = ordersHistory;
+		}
+	}
 	
+	public Set<Order> getOrdersHistory() {
+		return Collections.unmodifiableSet(this.ordersHistory);
+	}
+	
+	public void addOrder(Order order) {
+		if(order != null) {
+			this.ordersHistory.add(order);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return String.format(
 				"ID: %d\tUser: %s\tFirstName: %s\tLastName: %s \t Email: %s\tPhone number: %s\tRegDate: %s\tLastLogin: %s"
-				+ "%n%nProducts: %s %n%nFavorites: %s %n%nWatchlist: %s",
+						+ "%n%nProducts: %s %n%nFavorites: %s %n%nWatchlist: %s",
 				this.userId, this.username, this.firstName, this.lastName, this.email, this.phone,
 				this.registrationDate, this.lastLogin, this.products, this.favourites, this.watchList);
 	}
+
 }

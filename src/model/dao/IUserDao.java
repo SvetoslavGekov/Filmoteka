@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import exceptions.InvalidOrderDataException;
 import exceptions.InvalidUserDataException;
 import model.Product;
 import model.User;
@@ -28,7 +29,7 @@ public interface IUserDao {
 	
 	Set<Integer> getUserWatchlistById(int userId) throws SQLException;
 	
-	User getUserByLoginCredentials(String username, String password) throws SQLException, InvalidUserDataException;
+	User getUserByLoginCredentials(String username, String password) throws SQLException, InvalidUserDataException, InvalidOrderDataException;
 	
 	void addProductToFavorites(User user, Product product) throws SQLException;
 	

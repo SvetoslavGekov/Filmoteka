@@ -83,7 +83,7 @@ div.cartItem{
 			<li><span class="navigation" id="tvseries">TV Series</span></li>
 			<li><span class="navigation" id="account">My Account</span></li>
 			<li><span class="navigation" id="cart" onclick = "loadCart()">My Cart</span></li>
-			<li><span class="navigation" id="logout">Logout</span></li>
+			<li><span class="navigation" id="logout" onclick ="logout()" >Logout</span></li>
 		</ul>
 	</nav>
 	<hr>
@@ -103,16 +103,33 @@ div.cartItem{
 <script type="text/javascript">
 	function logout() {
 		var xhttp = new XMLHttpRequest();
-		xhttp.open("GET", "LogoutServlet", true);
+		xhttp.open("POST", "LogoutServlet", true);
 		xhttp.send();
 	}
 
+	function buyCartItems(){
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				//Notify user for the success
+				result = '<h2> You have successfully bought the items in your cart</h2><br>';
+				result+= '<span class ="navigation" color="blue" onclick = "loadAllProducts() ">Back to products screen.</span>'
+				document.getElementById("products").innerHTML = result;
+				
+			}
+		};
+		
+		xhttp.open("GET", "buyCartItemsServlet", true);
+		xhttp.send();
+	}
+	
 	function removeProductFromCart(id){
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				//Reload cart
 				loadCart();
+				return;
 			}
 		};
 		
@@ -177,8 +194,10 @@ div.cartItem{
 	function loadCartTableFromJson(json){
 		var cart = "<h3>Your cart</h3>";
 		var totalPrice = 0;
-		if(json.length == 0){
-			document.getElementById("products").innerHTML = "Your cart is currently empty";
+		//If resulting JSON is empty
+		if(json[0] == undefined){
+			document.getElementById("products").innerHTML = "<h2>Your cart is currently empty</h2>";
+			return;
 		}
 		
 		for(var i in json){
@@ -213,8 +232,10 @@ div.cartItem{
 			
 			totalPrice+= productPrice;
 		}
-		cart+= '<div><span>Total price: '+totalPrice+'</span></div>'
+		cart+= '<div><span>Total price: '+totalPrice+'</span><br>'
+		cart+= '<button onclick ="buyCartItems()" >Buy items in cart</button></div>'
 		document.getElementById("products").innerHTML = cart;
+		
 	}
 	
 	function loadProductsTableFromJson(json) {

@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import exceptions.InvalidGenreDataException;
+import exceptions.InvalidOrderDataException;
 import exceptions.InvalidProductDataException;
 import exceptions.InvalidUserDataException;
 import model.Genre;
@@ -68,8 +69,12 @@ public final class WebSite {
 	public static Product getProductById(int productId) {
 		return PRODUCTS.get(productId);
 	}
+	
+	public static Collection<Product> getAllProducts() {
+		return Collections.unmodifiableCollection(PRODUCTS.values());
+	}
 
-	public static void main(String[] args) throws SQLException, InvalidGenreDataException, InvalidProductDataException, InvalidUserDataException {
+	public static void main(String[] args) throws SQLException, InvalidGenreDataException, InvalidProductDataException, InvalidUserDataException, InvalidOrderDataException {
 		GENRES.putAll(GenreDao.getInstance().getAllGenres());
 				
 		for (Movie m : MovieDao.getInstance().getAllMovies()) {
@@ -92,9 +97,7 @@ public final class WebSite {
 //		MovieDao.getInstance().updateMovie(m);
 	}
 
-	public static Collection<Product> getAllProducts() {
-		return Collections.unmodifiableCollection(PRODUCTS.values());
-	}
+
 
 
 

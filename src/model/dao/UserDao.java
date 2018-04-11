@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,7 +17,9 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import dbManager.DBManager;
+import exceptions.InvalidOrderDataException;
 import exceptions.InvalidUserDataException;
+import model.Order;
 import model.Product;
 import model.User;
 import webSite.WebSite;
@@ -40,7 +43,7 @@ public class UserDao implements IUserDao{
 	}
 	
 	@Override
-	public User getUserByID(int id) throws SQLException, InvalidUserDataException {
+	public User getUserByID(int id) throws SQLException, InvalidUserDataException, InvalidOrderDataException {
 		User user = null;
 		String sql = "SELECT user_id, user_type_id, first_name, last_name, username, password, email, phone, registration_date,"
 				+ " last_login,profile_picture, money FROM users WHERE user_id = ?;";
@@ -71,6 +74,11 @@ public class UserDao implements IUserDao{
 						favorites, 
 						watchlist,
 						products);
+				
+				//Grab user's orders
+				Set<Order> orders = new HashSet<>(getUserOrdersById(user.getUserId()));
+				//Set user's orders 
+				user.setOrdersHistory(orders);
 			}
 		}
 		return user;
@@ -103,13 +111,14 @@ public class UserDao implements IUserDao{
 	public void updateUser(User user) throws SQLException {
 		String sqlQuery = "UPDATE users SET username = ?, email = ?, password = ?, first_name = ?, last_name = ?, phone = ?, last_login = ?, profile_picture = ?, money = ? WHERE user_id = ?;";
 		try(PreparedStatement ps = connection.prepareStatement(sqlQuery)){
+			LocalDateTime lastLogin = user.getLastLogin();
 			ps.setString(1, user.getUsername());
 			ps.setString(2, user.getEmail());
 			ps.setString(3, user.getPassword());
 			ps.setString(4, user.getFirstName());
 			ps.setString(5, user.getLastName());
 			ps.setString(6, user.getPhone());
-			ps.setTimestamp(7, Timestamp.valueOf(user.getLastLogin()));
+			ps.setTimestamp(7, lastLogin != null ? java.sql.Timestamp.valueOf(lastLogin) : null);
 			ps.setString(8, user.getProfilePicture());
 			ps.setDouble(9, user.getMoney());
 			ps.setInt(10, user.getUserId());
@@ -130,7 +139,7 @@ public class UserDao implements IUserDao{
 	}
 
 	@Override
-	public Collection<User> getAllUsers() throws SQLException, InvalidUserDataException {
+	public Collection<User> getAllUsers() throws SQLException, InvalidUserDataException, InvalidOrderDataException {
 		HashSet<User> resultUsers = new HashSet<>();
 		String sql = "SELECT user_id, user_type_id, username, email, password, first_name, last_name, registration_date, phone,"
 				+ " last_login, profile_picture, money FROM users ORDER BY user_id DESC;";
@@ -160,6 +169,11 @@ public class UserDao implements IUserDao{
 							favorites, 
 							watchlist,
 							products);
+					
+					//Grab user's orders
+					Set<Order> orders = new HashSet<>(getUserOrdersById(user.getUserId()));
+					//Set user's orders 
+					user.setOrdersHistory(orders);
 					
 					resultUsers.add(user);
 				}
@@ -216,8 +230,22 @@ public class UserDao implements IUserDao{
 		}
 		return watchlist;
 	}
+	
+	public Set <Order> getUserOrdersById(int userId) throws SQLException, InvalidOrderDataException{
+		Set<Order> orders = new HashSet<Order>();
+		try(PreparedStatement ps = connection.prepareStatement("SELECT 	order_id FROM orders WHERE user_id = ?")){
+			ps.setInt(1, userId);
+			try(ResultSet rs = ps.executeQuery()){
+				while(rs.next()) {
+					Order order = OrderDao.getInstance().getOrderById(rs.getInt("order_id"));
+					orders.add(order);
+				}
+			}
+		}
+		return orders;
+	}
 
-	public User getUserByLoginCredentials(String username, String password) throws SQLException, InvalidUserDataException {
+	public User getUserByLoginCredentials(String username, String password) throws SQLException, InvalidUserDataException, InvalidOrderDataException {
 		User user = null;
 		try(PreparedStatement ps = connection.prepareStatement("SELECT user_id FROM users WHERE username = ? AND password = ?");){
 			ps.setString(1, username);

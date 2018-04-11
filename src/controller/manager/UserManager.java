@@ -1,11 +1,14 @@
 package controller.manager;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import exceptions.InvalidOrderDataException;
 import exceptions.InvalidUserDataException;
+import model.Order;
 import model.Product;
 import model.User;
 import model.dao.UserDao;
@@ -49,7 +52,7 @@ public class UserManager {
 		try {
 			return this.dao.getUserByLoginCredentials(username, password);
 		}
-		catch (SQLException | InvalidUserDataException e) {
+		catch (SQLException | InvalidUserDataException | InvalidOrderDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -116,12 +119,29 @@ public class UserManager {
 		user.removeProductFromCart(product);
 	}
 	
-	public void buyProductsInCart(User user) {
+	public void buyProductsInCart(User user) throws SQLException {
 		//If there is nothing to be bought
 		if(user.getShoppingCart().isEmpty()) {
 			return;
 		}
 		
-		
+		//Check if user has enough money
+		double cartPrice = user.getShoppingCartPrice();
+		double userMoney = user.getMoney();
+		if(cartPrice <= userMoney) {
+			//Create new order and add it to the DB and user's collection
+			Order order = OrderManager.getInstance().createNewOrder(user, LocalDate.now(), user.getShoppingCart());
+			user.addOrder(order);
+			
+			//Transfer money
+			user.setMoney(userMoney - cartPrice);
+			dao.updateUser(user);
+			System.out.println(cartPrice);
+			//Clear shopping cart
+			user.cleanCart();
+		}
+		else {
+			//TODO --> throw exception or tell user he has no money
+		}
 	}
 }
