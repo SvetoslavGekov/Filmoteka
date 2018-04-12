@@ -7,12 +7,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import exceptions.InvalidFormDataException;
 import exceptions.InvalidOrderDataException;
 import exceptions.InvalidUserDataException;
 import model.Order;
 import model.Product;
 import model.User;
 import model.dao.UserDao;
+import validation.Supp;
 import webSite.WebSite;
 
 public class UserManager {
@@ -32,21 +34,18 @@ public class UserManager {
 		return instance;
 	}
 
-	public boolean register(String firstName, String lastName, String username, String password, String email) {
+	public synchronized boolean register(String firstName, String lastName, String username, String password, String email)
+			throws InvalidUserDataException, SQLException {
 		User u = null;
-		try {
-			//Create new user with the given information
-			u = new User(firstName, lastName, username, password, email);
-			//Save user in the databse
-			this.dao.saveUser(u);
-			//Add user in the users collection
-			WebSite.addUser(u);
-			return true;
-		}
-		catch (SQLException | InvalidUserDataException e) {
-			//TODO handle exception
-			return false;
-		}
+		//Create new user with the given information
+		u = new User(firstName, lastName, username, password, email);
+		//Give them 100 starting cash
+		u.setMoney(100);
+		//Save user in the databse
+		this.dao.saveUser(u);
+		//Add user in the users collection
+		WebSite.addUser(u);
+		return true;
 	}
 
 	public User logIn(String username, String password) {
@@ -151,5 +150,16 @@ public class UserManager {
 		else {
 			//TODO --> throw exception or tell user he has no money
 		}
+	}
+
+	public boolean isValidUserRegistrationData(String username, String password, String email) {
+		if(!(Supp.isValidUsername(username) && Supp.isValidEmail(email) && Supp.isValidPassword(password))) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean hasUserWithSameCredentials(String username, String email) throws SQLException {
+		return dao.databaseHasUserWithCredentials(username, email);
 	}
 }

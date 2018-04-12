@@ -43,4 +43,6 @@ public interface IUserDao {
 	Set <Order> getUserOrdersById(int userId) throws SQLException, InvalidOrderDataException;
 	
 	void saveUserProductsInCartById(int userId, Map<Product, LocalDate> products) throws SQLException;
+	
+	boolean databaseHasUserWithCredentials(String username, String email) throws SQLException;
 }

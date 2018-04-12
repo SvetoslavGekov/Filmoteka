@@ -1,3 +1,4 @@
+<%@page import="validation.Supp"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -8,18 +9,10 @@
 
 body {font-family: Arial, Helvetica, sans-serif;}
 * {box-sizing: border-box}
-/* Full-width input fields */
-input[type=text], input[type=password] {
-    width: 100%;
-    padding: 15px;
-    margin: 5px 0 22px 0;
-    display: inline-block;
-    border: none;
-    background: #f1f1f1;
-}
+
 
 /* Add a background color when the inputs get focus */
-input[type=text]:focus, input[type=password]:focus {
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus {
     background-color: #ddd;
     outline: none;
 }
@@ -120,7 +113,7 @@ span.signup,
 body {font-family: Arial, Helvetica, sans-serif;}
 form {border: 3px solid #f1f1f1;}
 
-input[type=text], input[type=password] {
+input[type=text],input[type=email], input[type=password] {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -204,19 +197,23 @@ img.avatar {
 
 <div id="id01" class="modal">
   <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-  <form class="modal-content" action="/action_page.php">
+  <form method="POST" class="modal-content" action="UserRegisterServlet">
     <div class="container">
       <h1>Sign Up</h1>
       <p>Please fill in this form to create an account.</p>
       <hr>
       <label for="username"><b>Username</b></label>
-      <input type="text" placeholder="Enter Username" name="username" required>
+      <input id ="regUserName" type="text" placeholder="Enter Username" name="username" required
+      pattern="^(?=.*[a-z]).{4,}" title="At least 4 characters long">
       
       <label for="email"><b>Email</b></label>
-      <input type="text" placeholder="Enter Email" name="email" required>
+      <input id ="regEmail" type="email" placeholder="Enter Email" name="email" required>
 
       <label for="psw"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="psw" required>
+      <input id ="regPassword" type="password" placeholder="Enter Password" name="password" required 
+      pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$" 
+      title = "At least 6 characters containing: 1 Uppercase letter, 1 Lowercase letter and 1 number">
+      <img id = "imgPassword" src="" alt="" title="">
       
       <label for="firstname"><b>First Name</b></label>
       <input type="text" placeholder="Enter First Name" name="firstName" required>
@@ -233,4 +230,7 @@ img.avatar {
 </div>
 
 </body>
+<script type="text/javascript">
+
+</script>
 </html>

@@ -319,4 +319,18 @@ public class UserDao implements IUserDao{
 			ps.executeUpdate();
 		}
 	}
+
+	@Override
+	public boolean databaseHasUserWithCredentials(String username, String email) throws SQLException {
+		try(PreparedStatement ps = connection.prepareStatement("SELECT user_id FROM users WHERE username = ? OR email = ?")){
+			ps.setString(1, username);
+			ps.setString(2, email);
+			try(ResultSet rs = ps.executeQuery()){
+				if(rs.next()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
