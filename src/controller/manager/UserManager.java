@@ -2,6 +2,7 @@ package controller.manager;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +44,7 @@ public class UserManager {
 		u.setMoney(100);
 		//Save user in the databse
 		this.dao.saveUser(u);
+		dao.updateUser(u);
 		//Add user in the users collection
 		WebSite.addUser(u);
 		return true;
@@ -50,7 +52,12 @@ public class UserManager {
 
 	public User logIn(String username, String password) {
 		try {
-			return this.dao.getUserByLoginCredentials(username, password);
+			User u = this.dao.getUserByLoginCredentials(username, password);
+			if(u != null){
+				u.setLastLogin(LocalDateTime.now());
+				dao.updateUser(u);
+			}
+			return u;
 		}
 		catch (SQLException | InvalidUserDataException | InvalidOrderDataException e) {
 			// TODO Auto-generated catch block
