@@ -15,10 +15,10 @@ import model.Order;
 import model.User;
 
 /**
- * Servlet implementation class buyCartItemsServlet
+ * Servlet implementation class BuyCartItemsServlet
  */
-@WebServlet("/buyCartItemsServlet")
-public class buyCartItemsServlet extends HttpServlet {
+@WebServlet("/BuyCartItemsServlet")
+public class BuyCartItemsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**

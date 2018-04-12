@@ -255,7 +255,11 @@ public class User {
 	public void addWatchlistProduct(Integer productId) {
 		this.watchList.add(productId);
 	}
-
+	
+	public void addProductsFromShoppingCart() {
+		this.products.putAll(this.shoppingCart);
+	}
+	
 	public void addProductToCart(Product product, boolean willBuy) {
 		if (product != null) {
 			// Add product as rented if willBuy is false (product validity is current date +
@@ -314,6 +318,14 @@ public class User {
 						+ "%n%nProducts: %s %n%nFavorites: %s %n%nWatchlist: %s",
 				this.userId, this.username, this.firstName, this.lastName, this.email, this.phone,
 				this.registrationDate, this.lastLogin, this.products, this.favourites, this.watchList);
+	}
+
+	public boolean ownsProduct(Product product) {
+		//Check if user has bought this product
+		if(this.products.containsKey(product)) {
+			return true;
+		}
+		return false;
 	}
 
 }

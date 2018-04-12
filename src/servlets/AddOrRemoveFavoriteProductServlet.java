@@ -15,10 +15,10 @@ import model.User;
 import webSite.WebSite;
 
 /**
- * Servlet implementation class addOrRemoveFavoriteProductServlet
+ * Servlet implementation class AddOrRemoveFavoriteProductServlet
  */
-@WebServlet("/addOrRemoveFavoriteProductServlet")
-public class addOrRemoveFavoriteProductServlet extends HttpServlet {
+@WebServlet("/AddOrRemoveFavoriteProductServlet")
+public class AddOrRemoveFavoriteProductServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
