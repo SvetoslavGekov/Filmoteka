@@ -34,7 +34,7 @@ public class MainServlet extends HttpServlet {
 			sos.println("</h1></body></html>");
 		}
 		else {
-			response.sendRedirect("LoginForm.html");
+			response.sendRedirect("LoginForm.jsp");
 		}
 	}
 
