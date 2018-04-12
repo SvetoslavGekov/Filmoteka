@@ -17,10 +17,10 @@ import model.User;
 import webSite.WebSite;
 
 /**
- * Servlet implementation class addProductToCartServlet
+ * Servlet implementation class RemoveProductFromCartServlet
  */
-@WebServlet("/addProductToCartServlet")
-public class addProductToCartServlet extends HttpServlet {
+@WebServlet("/RemoveProductFromCartServlet")
+public class RemoveProductFromCartServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -35,16 +35,13 @@ public class addProductToCartServlet extends HttpServlet {
 		Integer productId = Integer.valueOf(request.getParameter("productId"));
 		Product product = WebSite.getProductById(productId);
 		
-		//Get buy/rent parameter
-		Boolean willBuy = Boolean.valueOf(request.getParameter("willBuy"));
-		
 		// Check if the productId is valid
 		if (product != null) {
-			// Add product to shopping cart
-			//TODO --> Improve logic when adding items to shopping cart (don't add if already bought);
-			UserManager.getInstance().addProductToShoppingCart(user, product, willBuy);
+			// Remove product from shopping cart
+			UserManager.getInstance().removeProductFromShoppingCart(user, product);
 		}
-		System.out.println("\nAdded product to cart:");
+		
+		System.out.println("\nRemoved product from cart:");
 		for (Entry<Product,LocalDate> e: user.getShoppingCart().entrySet()) {
 			System.out.println(String.format("%s	%s", e.getKey().getName(), e.getValue()));
 		}

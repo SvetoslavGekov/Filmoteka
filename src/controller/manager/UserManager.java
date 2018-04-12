@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import exceptions.InvalidOrderDataException;
 import exceptions.InvalidUserDataException;
@@ -112,7 +113,10 @@ public class UserManager {
 	}
 	
 	public void addProductToShoppingCart(User user, Product product, boolean willBuy) {
-		user.addProductToCart(product, willBuy);
+		//Check if user does not own  the product
+		if(!user.ownsProduct(product)) {
+			user.addProductToCart(product, willBuy);
+		}
 	}
 
 	public void removeProductFromShoppingCart(User user, Product product) {
@@ -120,8 +124,9 @@ public class UserManager {
 	}
 	
 	public void buyProductsInCart(User user) throws SQLException {
+		Map<Product, LocalDate> shoppingCart = user.getShoppingCart();
 		//If there is nothing to be bought
-		if(user.getShoppingCart().isEmpty()) {
+		if(shoppingCart.isEmpty()) {
 			return;
 		}
 		
@@ -130,7 +135,7 @@ public class UserManager {
 		double userMoney = user.getMoney();
 		if(cartPrice <= userMoney) {
 			//Create new order and add it to the DB and user's collection
-			Order order = OrderManager.getInstance().createNewOrder(user, LocalDate.now(), user.getShoppingCart());
+			Order order = OrderManager.getInstance().createNewOrder(user, LocalDate.now(), shoppingCart);
 			user.addOrder(order);
 			
 			//Transfer money
@@ -139,7 +144,7 @@ public class UserManager {
 			user.addProductsFromShoppingCart();
 			//Update user and his products in db
 			dao.updateUser(user);
-			dao.saveUserProductsById(user.getUserId(), user.getProducts());
+			dao.saveUserProductsInCartById(user.getUserId(), shoppingCart);
 			//Clear shopping cart
 			user.cleanCart();
 		}

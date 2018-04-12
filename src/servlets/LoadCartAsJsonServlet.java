@@ -21,10 +21,10 @@ import model.Product;
 import model.User;
 
 /**
- * Servlet implementation class loadCartAsJsonServlet
+ * Servlet implementation class LoadCartAsJsonServlet
  */
-@WebServlet("/loadCartAsJsonServlet")
-public class loadCartAsJsonServlet extends HttpServlet {
+@WebServlet("/LoadCartAsJsonServlet")
+public class LoadCartAsJsonServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**

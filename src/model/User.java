@@ -320,4 +320,12 @@ public class User {
 				this.registrationDate, this.lastLogin, this.products, this.favourites, this.watchList);
 	}
 
+	public boolean ownsProduct(Product product) {
+		//Check if user has bought this product
+		if(this.products.containsKey(product)) {
+			return true;
+		}
+		return false;
+	}
+
 }

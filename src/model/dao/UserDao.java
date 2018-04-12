@@ -209,7 +209,7 @@ public class UserDao implements IUserDao{
 		return products;
 	}
 	
-	public void saveUserProductsById(int userId, Map<Product, LocalDate> products) throws SQLException {
+	public void saveUserProductsInCartById(int userId, Map<Product, LocalDate> products) throws SQLException {
 		try(PreparedStatement ps = connection.prepareStatement("INSERT INTO user_has_products (user_id, product_id, validity) VALUES (?,?,?)");){
 			//Set statement parameters for each product and add to batch
 			for (Entry<Product,LocalDate> e: products.entrySet()) {

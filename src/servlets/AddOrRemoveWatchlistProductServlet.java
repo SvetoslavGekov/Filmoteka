@@ -14,10 +14,10 @@ import model.User;
 import webSite.WebSite;
 
 /**
- * Servlet implementation class addOrRemoveWatchlistProductServlet
+ * Servlet implementation class AddOrRemoveWatchlistProductServlet
  */
-@WebServlet("/addOrRemoveWatchlistProductServlet")
-public class addOrRemoveWatchlistProductServlet extends HttpServlet {
+@WebServlet("/AddOrRemoveWatchlistProductServlet")
+public class AddOrRemoveWatchlistProductServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**

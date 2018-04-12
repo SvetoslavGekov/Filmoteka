@@ -5,6 +5,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
 <style>
+
 body {font-family: Arial, Helvetica, sans-serif;}
 * {box-sizing: border-box}
 /* Full-width input fields */
@@ -94,6 +95,7 @@ hr {
     color: #f1f1f1;
 }
 
+span.signup,
 .close:hover,
 .close:focus {
     color: #f44336;
@@ -195,7 +197,7 @@ img.avatar {
 
   <div class="container" style="background-color:#f1f1f1">
     <span class="register">Don't have an account?  
-    	<span onclick="document.getElementById('id01').style.display='block'" style="width:auto;" style="color:blue; cursor:pointer;"><b><i>Sign up now.</i></b></span>
+    	<span onclick="document.getElementById('id01').style.display='block'" style="width:auto;" style="color:blue;" class="signup"><b><i>Sign up now.</i></b></span>
     </span>
   </div>
 </form>
@@ -207,14 +209,20 @@ img.avatar {
       <h1>Sign Up</h1>
       <p>Please fill in this form to create an account.</p>
       <hr>
+      <label for="username"><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" name="username" required>
+      
       <label for="email"><b>Email</b></label>
       <input type="text" placeholder="Enter Email" name="email" required>
 
       <label for="psw"><b>Password</b></label>
       <input type="password" placeholder="Enter Password" name="psw" required>
-
-      <label for="psw-repeat"><b>Repeat Password</b></label>
-      <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
+      
+      <label for="firstname"><b>First Name</b></label>
+      <input type="text" placeholder="Enter First Name" name="firstName" required>
+      
+      <label for="lastname"><b>Last Name</b></label>
+      <input type="text" placeholder="Enter Last Name" name="lastName" required>
 
       <div class="clearfix">
         <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>

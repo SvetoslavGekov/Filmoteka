@@ -16,10 +16,10 @@ import model.Product;
 import webSite.WebSite;
 
 /**
- * Servlet implementation class loadAllProductsAsJsonServlet
+ * Servlet implementation class LoadAllProductsAsJsonServlet
  */
-@WebServlet("/loadAllProductsAsJsonServlet")
-public class loadAllProductsAsJsonServlet extends HttpServlet {
+@WebServlet("/LoadAllProductsAsJsonServlet")
+public class LoadAllProductsAsJsonServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
