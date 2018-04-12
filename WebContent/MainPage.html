@@ -81,7 +81,7 @@ div.cartItem{
 			<li><span class="navigation" id="home" onclick = "loadAllProducts()">FILMOTEKA.BG</span></li>
 			<li><span class="navigation" id="movies">Movies</span></li>
 			<li><span class="navigation" id="tvseries">TV Series</span></li>
-			<li><span class="navigation" id="account">My Account</span></li>
+			<li><span class="navigation" id="account" onclick = "myAccountMenus()">My Account</span></li>
 			<li><span class="navigation" id="cart" onclick = "loadCart()">My Cart</span></li>
 			<li><span class="navigation" id="logout" onclick ="logout()" >Logout</span></li>
 		</ul>
@@ -286,6 +286,10 @@ div.cartItem{
 					+ '</span></div></p></td></tr></tbody></table></div>'
 		}
 		document.getElementById("products").innerHTML = products;
+	}
+	
+	function myAccountMenus(){
+		
 	}
 </script>
 

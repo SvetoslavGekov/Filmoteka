@@ -255,7 +255,11 @@ public class User {
 	public void addWatchlistProduct(Integer productId) {
 		this.watchList.add(productId);
 	}
-
+	
+	public void addProductsFromShoppingCart() {
+		this.products.putAll(this.shoppingCart);
+	}
+	
 	public void addProductToCart(Product product, boolean willBuy) {
 		if (product != null) {
 			// Add product as rented if willBuy is false (product validity is current date +

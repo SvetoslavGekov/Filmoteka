@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -111,6 +112,7 @@ public class UserDao implements IUserDao{
 	public void updateUser(User user) throws SQLException {
 		String sqlQuery = "UPDATE users SET username = ?, email = ?, password = ?, first_name = ?, last_name = ?, phone = ?, last_login = ?, profile_picture = ?, money = ? WHERE user_id = ?;";
 		try(PreparedStatement ps = connection.prepareStatement(sqlQuery)){
+			//Update user info
 			LocalDateTime lastLogin = user.getLastLogin();
 			ps.setString(1, user.getUsername());
 			ps.setString(2, user.getEmail());
@@ -123,11 +125,12 @@ public class UserDao implements IUserDao{
 			ps.setDouble(9, user.getMoney());
 			ps.setInt(10, user.getUserId());
 			ps.executeUpdate();
+			
 		}
 		System.out.println("Successfully updated user in database.");
 	}
 	
-
+	
 	@Override
 	public void deleteUser(User user) throws SQLException {
 		String sqlQuery = "DELETE FROM users WHERE username = ?;";
@@ -185,6 +188,7 @@ public class UserDao implements IUserDao{
 		return resultUsers;
 	}
 	
+	@Override
 	public Map<Product,LocalDate> getUserProductsById(int userId) throws SQLException {
 		Map<Product,LocalDate> products = new TreeMap<>();
 		try(PreparedStatement ps = connection.prepareStatement("SELECT product_id, validity FROM user_has_products WHERE user_id = ?;")){
@@ -205,6 +209,23 @@ public class UserDao implements IUserDao{
 		return products;
 	}
 	
+	public void saveUserProductsById(int userId, Map<Product, LocalDate> products) throws SQLException {
+		try(PreparedStatement ps = connection.prepareStatement("INSERT INTO user_has_products (user_id, product_id, validity) VALUES (?,?,?)");){
+			//Set statement parameters for each product and add to batch
+			for (Entry<Product,LocalDate> e: products.entrySet()) {
+				LocalDate date = e.getValue();
+				
+				ps.setInt(1, userId);
+				ps.setInt(2, e.getKey().getId());
+				ps.setDate(3, date != null ? java.sql.Date.valueOf(date) : null);
+				ps.addBatch();
+			}
+			//Execute entire batch
+			ps.executeBatch();
+		}
+	}
+	
+	@Override
 	public Set<Integer> getUserFavoritesById(int userId) throws SQLException {
 		Set<Integer> favorites = new HashSet<Integer>();
 		try(PreparedStatement ps = connection.prepareStatement("SELECT product_id FROM user_has_favorite_products WHERE user_id = ?;")){
@@ -218,6 +239,7 @@ public class UserDao implements IUserDao{
 		return favorites;
 	}
 	
+	@Override
 	public Set<Integer> getUserWatchlistById(int userId) throws SQLException {
 		Set<Integer> watchlist = new HashSet<Integer>();
 		try(PreparedStatement ps = connection.prepareStatement("SELECT product_id FROM user_has_watchlist_products WHERE user_id = ?;")){
@@ -231,6 +253,7 @@ public class UserDao implements IUserDao{
 		return watchlist;
 	}
 	
+	@Override
 	public Set <Order> getUserOrdersById(int userId) throws SQLException, InvalidOrderDataException{
 		Set<Order> orders = new HashSet<Order>();
 		try(PreparedStatement ps = connection.prepareStatement("SELECT 	order_id FROM orders WHERE user_id = ?")){
@@ -245,6 +268,7 @@ public class UserDao implements IUserDao{
 		return orders;
 	}
 
+	@Override
 	public User getUserByLoginCredentials(String username, String password) throws SQLException, InvalidUserDataException, InvalidOrderDataException {
 		User user = null;
 		try(PreparedStatement ps = connection.prepareStatement("SELECT user_id FROM users WHERE username = ? AND password = ?");){
@@ -260,7 +284,7 @@ public class UserDao implements IUserDao{
 		return user;
 	}
 	
-	
+	@Override
 	public void addProductToFavorites(User user, Product product) throws SQLException {
 		try(PreparedStatement ps = connection.prepareStatement("INSERT INTO user_has_favorite_products (user_id, product_id) VALUES (?,?);")){
 			ps.setInt(1, user.getUserId());
@@ -269,6 +293,7 @@ public class UserDao implements IUserDao{
 		}
 	}
 	
+	@Override
 	public void removeProductFromFavorites(User user, Product product) throws SQLException {
 		try(PreparedStatement ps = connection.prepareStatement("DELETE FROM user_has_favorite_products WHERE user_id = ? AND product_id = ?;")){
 			ps.setInt(1, user.getUserId());
@@ -277,6 +302,7 @@ public class UserDao implements IUserDao{
 		}
 	}
 	
+	@Override
 	public void addProductToWatchlist(User user, Product product) throws SQLException {
 		try(PreparedStatement ps = connection.prepareStatement("INSERT INTO user_has_watchlist_products (user_id, product_id) VALUES (?,?);")){
 			ps.setInt(1, user.getUserId());
@@ -285,6 +311,7 @@ public class UserDao implements IUserDao{
 		}
 	}
 	
+	@Override
 	public void removeProductFromWatchlist(User user, Product product) throws SQLException {
 		try(PreparedStatement ps = connection.prepareStatement("DELETE FROM user_has_watchlist_products WHERE user_id = ? AND product_id = ?;")){
 			ps.setInt(1, user.getUserId());

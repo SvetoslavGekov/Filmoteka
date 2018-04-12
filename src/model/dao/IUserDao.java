@@ -8,6 +8,7 @@ import java.util.Set;
 
 import exceptions.InvalidOrderDataException;
 import exceptions.InvalidUserDataException;
+import model.Order;
 import model.Product;
 import model.User;
 
@@ -38,4 +39,8 @@ public interface IUserDao {
 	void addProductToWatchlist(User user, Product product) throws SQLException;
 	
 	void removeProductFromWatchlist(User user, Product product) throws SQLException;
+	
+	Set <Order> getUserOrdersById(int userId) throws SQLException, InvalidOrderDataException;
+	
+	void saveUserProductsById(int userId, Map<Product, LocalDate> products) throws SQLException;
 }

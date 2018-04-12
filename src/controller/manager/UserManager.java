@@ -135,8 +135,11 @@ public class UserManager {
 			
 			//Transfer money
 			user.setMoney(userMoney - cartPrice);
+			//Add products to user's collection
+			user.addProductsFromShoppingCart();
+			//Update user and his products in db
 			dao.updateUser(user);
-			System.out.println(cartPrice);
+			dao.saveUserProductsById(user.getUserId(), user.getProducts());
 			//Clear shopping cart
 			user.cleanCart();
 		}
