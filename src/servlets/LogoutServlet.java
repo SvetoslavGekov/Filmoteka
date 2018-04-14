@@ -12,11 +12,11 @@ import javax.servlet.http.HttpSession;
 /**
  * Servlet implementation class LogoutServlet
  */
-@WebServlet("/LogoutServlet")
+@WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		session.invalidate();
 		request.getRequestDispatcher("LoginForm.jsp").forward(request, response);

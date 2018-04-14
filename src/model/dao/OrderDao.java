@@ -14,7 +14,6 @@ import dbManager.DBManager;
 import exceptions.InvalidOrderDataException;
 import model.Order;
 import model.Product;
-import model.User;
 import webSite.WebSite;
 
 public final class OrderDao implements IOrderDao {
@@ -77,7 +76,6 @@ public final class OrderDao implements IOrderDao {
 	}
 
 	public void saveOrder(Order order) throws SQLException, InvalidOrderDataException {
-		//TODO --> Transactions
 		synchronized (con) {
 			//Set autocommiting to false
 			con.setAutoCommit(false);

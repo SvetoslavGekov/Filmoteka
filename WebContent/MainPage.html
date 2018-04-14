@@ -101,10 +101,8 @@ div.cartItem{
 </body>
 
 <script type="text/javascript">
-	function logout() {
-		var xhttp = new XMLHttpRequest();
-		xhttp.open("POST", "LogoutServlet", true);
-		xhttp.send();
+	function logout(){
+		location.href = "logout";
 	}
 
 	function buyCartItems(){

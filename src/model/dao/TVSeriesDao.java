@@ -39,14 +39,13 @@ public final class TVSeriesDao implements ITVSeriesDao {
 
 	@Override
 	public void saveTVSeries(TVSeries tvs) throws SQLException, InvalidProductDataException {
-		// TODO --> Transactions
 		synchronized (con) {
 			con.setAutoCommit(false);
 			try {
-				// Insert the movie in the products table
+				// Insert the TV Series in the products table
 				ProductDao.getInstance().saveProduct(tvs);
 
-				// Insert the movie in the movies table
+				// Insert the TV Series in the TV Series table
 				try (PreparedStatement ps = con.prepareStatement("INSERT INTO tvseries (product_id) VALUES (?);")) {
 					ps.setInt(1, tvs.getId());
 					ps.executeUpdate();
@@ -66,14 +65,13 @@ public final class TVSeriesDao implements ITVSeriesDao {
 
 	@Override
 	public void updateTVSeries(TVSeries tvs) throws SQLException {
-		// TODO -> transactions
 		synchronized (con) {
 			con.setAutoCommit(false);
 			try {
 				// Update the product basic information
 				ProductDao.getInstance().updateProduct(tvs);
 
-				// Update the movie specific information
+				// Update the TV Series specific information
 				try (PreparedStatement ps = con.prepareStatement(
 						"UPDATE tvseries SET season = ?, finished_airing = ? WHERE product_id = ?;")) {
 					ps.setInt(1, tvs.getSeason());

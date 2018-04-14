@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import exceptions.InvalidUserDataException;
+import validation.BCrypt;
 import validation.Supp;
 
 public class User {
@@ -136,7 +137,7 @@ public class User {
 	}
 
 	public void setPassword(String password) throws InvalidUserDataException {
-		if (Supp.isValidStr(password) && Supp.isValidPassword(password)) {
+		if (Supp.isValidStr(password)) {
 			this.password = password;
 		}
 		else {
@@ -310,6 +311,18 @@ public class User {
 			this.ordersHistory.add(order);
 		}
 	}
+	
+	public boolean ownsProduct(Product product) {
+		//Check if user has bought this product
+		if(this.products.containsKey(product)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public String hashPassword() {
+		return BCrypt.hashpw(this.password, BCrypt.gensalt());
+	}
 
 	@Override
 	public String toString() {
@@ -320,12 +333,6 @@ public class User {
 				this.registrationDate, this.lastLogin, this.products, this.favourites, this.watchList);
 	}
 
-	public boolean ownsProduct(Product product) {
-		//Check if user has bought this product
-		if(this.products.containsKey(product)) {
-			return true;
-		}
-		return false;
-	}
+
 
 }

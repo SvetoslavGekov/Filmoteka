@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import controller.manager.UserManager;
 import exceptions.InvalidFormDataException;
 import exceptions.InvalidUserDataException;
-import validation.Supp;
 
 /**
  * Servlet implementation class UserRegisterServlet
@@ -40,7 +39,7 @@ public class UserRegisterServlet extends HttpServlet {
 			
 			//Check if there are no users with the same username or email
 			if(UserManager.getInstance().hasUserWithSameCredentials(username, email)) {
-				//TODO --> make this into AJAX and check for username and email seperately
+				//TODO --> make this into AJAX and check for username and email separately
 				request.setAttribute("error", "The selected username or email is already taken by another user.");
 				request.getRequestDispatcher("Error.jsp").forward(request, response);
 				return;

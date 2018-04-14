@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import exceptions.InvalidFormDataException;
 import exceptions.InvalidOrderDataException;
 import exceptions.InvalidUserDataException;
 import model.Order;
@@ -40,11 +39,13 @@ public class UserManager {
 		User u = null;
 		//Create new user with the given information
 		u = new User(firstName, lastName, username, password, email);
-		//Give them 100 starting cash
-		u.setMoney(100);
+		
 		//Save user in the databse
 		this.dao.saveUser(u);
-		dao.updateUser(u);
+		
+		//Set the users password to the salt
+		u.setPassword(u.hashPassword());
+		
 		//Add user in the users collection
 		WebSite.addUser(u);
 		return true;
