@@ -92,7 +92,6 @@ CREATE TABLE `order_has_products` (
 
 LOCK TABLES `order_has_products` WRITE;
 /*!40000 ALTER TABLE `order_has_products` DISABLE KEYS */;
-INSERT INTO `order_has_products` VALUES (16,1,NULL),(16,2,'2018-04-20'),(17,1,NULL),(17,2,'2018-04-20');
 /*!40000 ALTER TABLE `order_has_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,7 +121,6 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (16,6,'2018-04-12',20.00),(17,8,'2018-04-12',20.00);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -267,7 +265,7 @@ CREATE TABLE `user_has_favorite_products` (
 
 LOCK TABLES `user_has_favorite_products` WRITE;
 /*!40000 ALTER TABLE `user_has_favorite_products` DISABLE KEYS */;
-INSERT INTO `user_has_favorite_products` VALUES (1,1),(2,2),(3,2),(7,2),(7,3),(1,6);
+INSERT INTO `user_has_favorite_products` VALUES (1,1),(2,2),(3,2),(1,6);
 /*!40000 ALTER TABLE `user_has_favorite_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -295,7 +293,7 @@ CREATE TABLE `user_has_products` (
 
 LOCK TABLES `user_has_products` WRITE;
 /*!40000 ALTER TABLE `user_has_products` DISABLE KEYS */;
-INSERT INTO `user_has_products` VALUES (1,6,NULL),(1,8,NULL),(2,2,NULL),(2,3,NULL),(2,6,'2018-04-20'),(2,8,'2018-04-20'),(3,2,NULL),(3,3,NULL),(4,3,NULL),(5,2,NULL),(5,3,NULL),(6,3,NULL);
+INSERT INTO `user_has_products` VALUES (2,2,NULL),(2,3,NULL),(3,2,NULL),(3,3,NULL),(4,3,NULL),(5,2,NULL),(5,3,NULL),(6,3,NULL);
 /*!40000 ALTER TABLE `user_has_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -322,7 +320,7 @@ CREATE TABLE `user_has_watchlist_products` (
 
 LOCK TABLES `user_has_watchlist_products` WRITE;
 /*!40000 ALTER TABLE `user_has_watchlist_products` DISABLE KEYS */;
-INSERT INTO `user_has_watchlist_products` VALUES (2,1),(3,1),(6,2),(7,2),(1,4),(1,5);
+INSERT INTO `user_has_watchlist_products` VALUES (2,1),(3,1),(1,4),(1,5);
 /*!40000 ALTER TABLE `user_has_watchlist_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -363,14 +361,14 @@ CREATE TABLE `users` (
   `user_type_id` tinyint(4) NOT NULL,
   `username` varchar(45) NOT NULL COMMENT 'User''s username',
   `email` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL COMMENT 'User''s password',
+  `password` varchar(60) NOT NULL COMMENT 'User''s password',
   `first_name` varchar(45) NOT NULL COMMENT 'User''s first name',
   `last_name` varchar(45) NOT NULL,
   `registration_date` date NOT NULL COMMENT 'Date of user''s registration',
   `phone` varchar(45) DEFAULT NULL COMMENT 'User''s phone number',
   `last_login` timestamp NULL DEFAULT NULL COMMENT 'User''s last login time',
   `profile_picture` varchar(200) DEFAULT NULL COMMENT 'Path to user''s profile picture',
-  `money` decimal(7,2) DEFAULT '0.00' COMMENT 'User''s money',
+  `money` decimal(7,2) DEFAULT '150.00' COMMENT 'User''s money',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `USERNAME_UNIQUE` (`username`),
   UNIQUE KEY `EMAIL_UNIQUE` (`email`),
@@ -378,7 +376,7 @@ CREATE TABLE `users` (
   KEY `EMAIL_INDEX` (`email`),
   KEY `fk_User_USER_TYPE1_idx` (`user_type_id`),
   CONSTRAINT `fk_User_USER_TYPE1` FOREIGN KEY (`user_type_id`) REFERENCES `user_types` (`user_type_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -387,7 +385,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,2,'sgekov','svetoslav_gekov@abv.bg','Sgekov123','Svetoslav','Gekov','2018-04-01',NULL,NULL,NULL,9878.00),(2,2,'mdimitrov','mario0.bg@abv.bg','Mdimitrov123','Mario','Dimitrov','2018-04-01',NULL,NULL,NULL,200.00),(3,1,'admin','admin@filmoteka.bg','Admin123','Admin','Adminov','2018-04-01',NULL,NULL,NULL,5000.00),(6,2,'wavecatcher','wavecatcher@abv.bg','Wave123','Wave','Catcher','2018-04-12',NULL,NULL,NULL,230.00),(7,2,'gaco','gaco_bacov@abv.bg','Gaco123','Gaco','Bacov','2018-04-12',NULL,'2018-04-13 06:07:53',NULL,0.00),(8,2,'baco','bacogacov@abv.bg','Baco123','Baco','Gacov','2018-04-12','','2018-04-12 20:11:10',NULL,80.00);
+INSERT INTO `users` VALUES (1,2,'sgekov','svetoslav_gekov@abv.bg','$2a$10$1jk0yGGk90M1Bhi6V.4iJO1fcqI77czYaCj9esf0DEAZM7ocIH7fy','Svetoslav','Gekov','2018-04-01',NULL,'2018-04-14 12:23:50',NULL,9878.00),(2,2,'mdimitrov','mario0.bg@abv.bg','$2a$10$0/PmI5dkHCtW.7T/wQbSr.AogH65p4fSaPpGC8TmhFAoaIbHnf6um','Mario','Dimitrov','2018-04-01',NULL,NULL,NULL,200.00),(3,1,'admin','admin@filmoteka.bg','$2a$10$BhejaMOwKu8AOxnK/M0d3OxF6dtgnTqr2fMdck/2rW/C3o1w7jJwm','Admin','Adminov','2018-04-01',NULL,'2018-04-14 12:22:10',NULL,5000.00),(9,2,'wave','wave@abv.bg','$2a$10$c5zMdMRo2FhSN5KTYScVOOQXPrEuGKu5uD2nbnnWqsxCKalARV6Ri','Wave','Catcher','2018-04-14',NULL,'2018-04-14 12:37:47',NULL,150.00);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -400,4 +398,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-04-13  9:46:17
+-- Dump completed on 2018-04-14 15:43:11
