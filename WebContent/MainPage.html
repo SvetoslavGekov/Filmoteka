@@ -79,8 +79,8 @@ div.cartItem{
 	<nav id="nav_bar">
 		<ul>
 			<li><span class="navigation" id="home" onclick = "loadAllProducts()">FILMOTEKA.BG</span></li>
-			<li><span class="navigation" id="movies">Movies</span></li>
-			<li><span class="navigation" id="tvseries">TV Series</span></li>
+			<li><span class="navigation" id="movies" onclick = "loadAllMovies()">Movies</span></li>
+			<li><span class="navigation" id="tvseries" onclick = "loadAllTVSeries()">TV Series</span></li>
 			<li><span class="navigation" id="account" onclick = "myAccountMenus()">My Account</span></li>
 			<li><span class="navigation" id="cart" onclick = "loadCart()">My Cart</span></li>
 			<li><span class="navigation" id="logout" onclick ="logout()" >Logout</span></li>
@@ -172,6 +172,34 @@ div.cartItem{
 			}
 		};
 		xhttp.open("GET", "LoadAllProductsAsJsonServlet", true);
+		xhttp.send();
+	}
+	
+	function loadAllMovies() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				///Read resulting JSON
+				var jsonResult = JSON.parse(this.responseText);
+				//Create table from JSON
+				loadProductsTableFromJson(jsonResult);
+			}
+		};
+		xhttp.open("GET", "LoadAllMoviesAsJsonServlet", true);
+		xhttp.send();
+	}
+	
+	function loadAllTVSeries() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				///Read resulting JSON
+				var jsonResult = JSON.parse(this.responseText);
+				//Create table from JSON
+				loadProductsTableFromJson(jsonResult);
+			}
+		};
+		xhttp.open("GET", "LoadAllTVSeriesAsJsonServlet", true);
 		xhttp.send();
 	}
 

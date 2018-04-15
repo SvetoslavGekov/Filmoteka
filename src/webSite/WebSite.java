@@ -26,6 +26,8 @@ public final class WebSite {
 	private static WebSite instance;
 	private static final Map<Integer,Genre> GENRES = new TreeMap<>();
 	private static final Map<Integer,Product> PRODUCTS = new ConcurrentHashMap<>(); 
+	private static final Map<Integer,Movie> MOVIES = new ConcurrentHashMap<>(); 
+	private static final Map<Integer,TVSeries> TVSERIES = new ConcurrentHashMap<>(); 
 	private static final Map<Integer,User> USERS = new ConcurrentHashMap<>(); 
 	// Constructors
 	private WebSite() {
@@ -70,8 +72,24 @@ public final class WebSite {
 		return PRODUCTS.get(productId);
 	}
 	
+	public static Product getMovieById(int movieId) {
+		return MOVIES.get(movieId);
+	}
+	
+	public static Product getTVSerieById(int tvSerieId) {
+		return TVSERIES.get(tvSerieId);
+	}
+	
 	public static Collection<Product> getAllProducts() {
 		return Collections.unmodifiableCollection(PRODUCTS.values());
+	}
+	
+	public static Collection<Product> getAllMovies() {
+		return Collections.unmodifiableCollection(MOVIES.values());
+	}
+	
+	public static Collection<Product> getAllTVSeries() {
+		return Collections.unmodifiableCollection(TVSERIES.values());
 	}
 
 	public static void main(String[] args) throws SQLException, InvalidGenreDataException, InvalidProductDataException, InvalidUserDataException, InvalidOrderDataException {
@@ -79,10 +97,12 @@ public final class WebSite {
 				
 		for (Movie m : MovieDao.getInstance().getAllMovies()) {
 			PRODUCTS.put(m.getId(), m);
+			MOVIES.put(m.getId(), m);
 		}
 		
 		for (TVSeries tvs : TVSeriesDao.getInstance().getAllTVSeries()) {
 			PRODUCTS.put(tvs.getId(), tvs);
+			TVSERIES.put(tvs.getId(), tvs);
 		}
 		
 		for (User user : UserDao.getInstance().getAllUsers()) {
