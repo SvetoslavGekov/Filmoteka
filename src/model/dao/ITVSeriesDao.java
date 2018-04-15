@@ -12,4 +12,6 @@ public interface ITVSeriesDao {
 	void updateTVSeries(TVSeries tvs) throws SQLException;
 	
 	Collection<TVSeries> getAllTVSeries() throws SQLException, InvalidProductDataException;
+	
+	Collection<TVSeries> getTVSeriesBySubstring(String substring) throws SQLException, InvalidProductDataException;
 }

@@ -123,5 +123,46 @@ public final class TVSeriesDao implements ITVSeriesDao {
 		}
 		return allTVSeries;
 	}
+	
+	@Override
+	public Collection<TVSeries> getTVSeriesBySubstring(String substring) throws SQLException, InvalidProductDataException {
+		
+		String sql = "SELECT tv.season, tv.finished_airing, p.* "
+					+ "FROM tvseries AS tv "
+					+ "JOIN products AS p "
+					+ "ON tv.product_id = p.product_id "
+					+ "WHERE p.name LIKE '%?%';";
+		
+		Collection<TVSeries> allTVSeriesBySubstring = new ArrayList<TVSeries>();
+		
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setString(1, substring);
+			try (ResultSet rs = ps.executeQuery();) {
+				while (rs.next()) {
+					int tvsID = rs.getInt("product_id");
+					// Collect the movie's genres
+					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(tvsID));
+
+					// Collect the movie's raters
+					Map<Integer, Double> raters = new TreeMap<>(ProductDao.getInstance().getProductRatersById(tvsID));
+
+					// Construct the new movie
+					Date finishedAiring = rs.getDate("finished_airing");
+					TVSeries tvs = new TVSeries(tvsID, rs.getString("name"), rs.getDate("release_year").toLocalDate(),
+							rs.getString("pg_rating"), rs.getInt("duration"), rs.getDouble("rent_cost"),
+							rs.getDouble("buy_cost"), rs.getString("description"), rs.getString("poster"),
+							rs.getString("trailer"), rs.getString("writers"), rs.getString("actors"), genres, raters,
+							rs.getInt("season"), (finishedAiring != null) ? finishedAiring.toLocalDate() : null);
+
+					allTVSeriesBySubstring.add(tvs);
+				}
+
+			}
+		}
+		if (allTVSeriesBySubstring.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return allTVSeriesBySubstring;
+	}
 
 }

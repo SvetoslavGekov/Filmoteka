@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,7 +16,9 @@ import java.util.Set;
 import dbManager.DBManager;
 import exceptions.InvalidProductDataException;
 import model.Genre;
+import model.Movie;
 import model.Product;
+import model.TVSeries;
 import webSite.WebSite;
 
 public final class ProductDao implements IProductDao {
@@ -113,9 +117,19 @@ public final class ProductDao implements IProductDao {
 	}
 	
 	@Override
-	public Collection<Product> getAllProducts() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<Product> getAllProducts() throws SQLException, InvalidProductDataException {
+		
+		Collection<Movie> movies = MovieDao.getInstance().getAllMovies();
+		Collection<TVSeries> tvseries = TVSeriesDao.getInstance().getAllTVSeries();
+		
+		Collection<Product> allProducts = new ArrayList<>();
+		allProducts.addAll(movies);
+		allProducts.addAll(tvseries);
+		
+		if(allProducts.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return allProducts;
 	}
 
 	public Map<Integer,Double> getProductRatersById(int movieId) throws SQLException {

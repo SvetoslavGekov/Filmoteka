@@ -18,5 +18,5 @@ public interface IProductDao {
 	
 	Map<Integer,Double> getProductRatersById(int movieId) throws SQLException;
 	
-	Collection<Product> getAllProducts() throws SQLException;
+	Collection<Product> getAllProducts() throws SQLException, InvalidProductDataException;
 }

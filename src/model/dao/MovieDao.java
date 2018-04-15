@@ -132,4 +132,52 @@ public final class MovieDao implements IMovieDao {
 		}
 		return allMovies;
 	}
+	
+	@Override
+	public Collection<Movie> getMoviesBySubstring(String substring) throws SQLException, InvalidProductDataException {
+		
+		String sql = "SELECT m.director, p.* FROM movies AS m "
+					+ "JOIN products AS p "
+					+ "ON m.product_id = p.product_id "
+					+ "WHERE p.name LIKE '%?%';";
+		
+		Collection<Movie> allMoviesBySubStr = new ArrayList<Movie>();
+		try(PreparedStatement ps = con.prepareStatement(sql)){
+			ps.setString(1, substring);
+			try(ResultSet rs = ps.executeQuery();){
+				while(rs.next()) {
+					int movieId = rs.getInt("product_id");
+					//Collect the movie's genres
+					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(movieId));
+					
+					//Collect the movie's raters
+					Map<Integer, Double> raters = new TreeMap<>(ProductDao.getInstance().getProductRatersById(movieId));
+					
+					//Construct the new movie
+					Movie m = new Movie(movieId,
+							rs.getString("name"),
+							rs.getDate("release_year").toLocalDate(),
+							rs.getString("pg_rating"),
+							rs.getInt("duration"),
+							rs.getDouble("rent_cost"),
+							rs.getDouble("buy_cost"),
+							rs.getString("description"),
+							rs.getString("poster"),
+							rs.getString("trailer"),
+							rs.getString("writers"),
+							rs.getString("actors"),
+							genres,
+							raters,
+							rs.getString("director"));
+					
+					allMoviesBySubStr.add(m);
+				}
+				
+			}
+		}
+		if(allMoviesBySubStr.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return allMoviesBySubStr;
+	}
 }

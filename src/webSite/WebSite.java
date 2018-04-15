@@ -18,6 +18,7 @@ import model.TVSeries;
 import model.User;
 import model.dao.GenreDao;
 import model.dao.MovieDao;
+import model.dao.ProductDao;
 import model.dao.TVSeriesDao;
 import model.dao.UserDao;
 
@@ -94,15 +95,15 @@ public final class WebSite {
 
 	public static void main(String[] args) throws SQLException, InvalidGenreDataException, InvalidProductDataException, InvalidUserDataException, InvalidOrderDataException {
 		GENRES.putAll(GenreDao.getInstance().getAllGenres());
-				
-		for (Movie m : MovieDao.getInstance().getAllMovies()) {
-			PRODUCTS.put(m.getId(), m);
-			MOVIES.put(m.getId(), m);
-		}
 		
-		for (TVSeries tvs : TVSeriesDao.getInstance().getAllTVSeries()) {
-			PRODUCTS.put(tvs.getId(), tvs);
-			TVSERIES.put(tvs.getId(), tvs);
+		for (Product p : ProductDao.getInstance().getAllProducts()) {
+			if(p instanceof Movie){
+				MOVIES.put(p.getId(), (Movie) p);
+			}
+			if(p instanceof TVSeries){
+				TVSERIES.put(p.getId(), (TVSeries) p);
+			}
+			PRODUCTS.put(p.getId(), p);
 		}
 		
 		for (User user : UserDao.getInstance().getAllUsers()) {
