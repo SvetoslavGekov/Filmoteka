@@ -20,7 +20,7 @@ public class User {
 	// Fields
 	private static final int RENT_PERIOD = 8; // days
 	private int userId;
-	private int userTypeId;
+	private boolean isAdmin;
 	private String firstName;
 	private String lastName;
 	private String username;
@@ -44,7 +44,7 @@ public class User {
 	// Constructor for registering a new user
 	public User(String firstName, String lastName, String username, String password, String email)
 			throws InvalidUserDataException {
-		setUserTypeId(2);
+		setAdmin(false);
 		setFirstName(firstName);
 		setLastName(lastName);
 		setUsername(username);
@@ -54,13 +54,13 @@ public class User {
 	}
 
 	// Constructor for reading a user from the DB
-	public User(int userId, int userTypeId, String firstName, String lastName, String username, String password,
+	public User(int userId, String firstName, String lastName, String username, String password,
 			String email, String phone, LocalDate registrationDate, LocalDateTime lastLogin, String profilePicture,
 			double money, Set<Integer> favourites, Set<Integer> watchList, Map<Product, LocalDate> products)
 			throws InvalidUserDataException {
 		this(firstName, lastName, username, password, email);
 		setUserId(userId);
-		setUserTypeId(userTypeId);
+		setAdmin(false);
 		setPhone(phone);
 		setRegistrationDate(registrationDate);
 		setLastLogin(lastLogin);
@@ -82,15 +82,12 @@ public class User {
 		}
 	}
 
-	public int getUserTypeId() {
-		return userTypeId;
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 
-	protected void setUserTypeId(int userTypeId) throws InputMismatchException {
-		if (userTypeId == 1 || userTypeId == 2) {
-			this.userTypeId = userTypeId;
-		}
-
+	public boolean isAdmin() {
+		return this.isAdmin;
 	}
 
 	public String getFirstName() {

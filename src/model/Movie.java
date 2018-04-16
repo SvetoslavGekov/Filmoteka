@@ -21,8 +21,10 @@ public class Movie extends Product {
 	//Constructor for loading a movie from the DB
 	public Movie(int id, String name, LocalDate releaseDate, String pgRating, int duration, double rentCost,
 			double buyCost, String description,String poster, String trailer, String writers, String actors,
-			Set<Genre> genres, Map<Integer,Double> raters, String director) throws InvalidProductDataException {
-		super(id, name, releaseDate, pgRating, duration, rentCost, buyCost, description,poster, trailer, writers, actors, genres,raters);
+			Set<Genre> genres, Map<Integer,Double> raters, double salePercent, LocalDate saleValidity, String director) 
+					throws InvalidProductDataException {
+		super(id, name, releaseDate, pgRating, duration, rentCost, buyCost, description,poster, trailer, writers, actors,
+				genres, raters, salePercent, saleValidity);
 		setDirector(director);
 	}
 
@@ -30,9 +32,11 @@ public class Movie extends Product {
 	@Override
 	public String toString() {
 		return String.format("Type:%s	Id:%d	Name:%s	Year:%s	PG:%s	Duration:%d	Rent: %.2f	Price: %.2f	%nDescr: %s%n	Post: %s	Trailer:%s"
-				+ "	Writers:%s	Actors:%s	%nViewer_rating:%.2f	Director:%s%nRaters: %s%n", this.getClass().getSimpleName(),
-				this.getId(), getName(), getReleaseDate().getYear(), getPgRating(), getDuration(), getRentCost(),getBuyCost(),
-				getDescription(), getPoster(), getTrailer(), getWriters(), getActors(), getViewerRating(), getDirector(), getRaters());
+				+ "	Writers:%s	Actors:%s	%nViewer_rating:%.2f	Director:%s%nRaters: %s%n"
+				+ "Sale Percent: %f	Sale Validity: %s", this.getClass().getSimpleName(),
+				getId(), getName(), getReleaseDate().getYear(), getPgRating(), getDuration(), getRentCost(),getBuyCost(),
+				getDescription(), getPoster(), getTrailer(), getWriters(), getActors(), getViewerRating(), getDirector(), getRaters(),
+				getSalePercent(), getSaleValidity());
 	}
 	
 	//Setters

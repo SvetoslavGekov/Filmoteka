@@ -17,9 +17,7 @@ import model.Product;
 import model.TVSeries;
 import model.User;
 import model.dao.GenreDao;
-import model.dao.MovieDao;
 import model.dao.ProductDao;
-import model.dao.TVSeriesDao;
 import model.dao.UserDao;
 
 public final class WebSite {
@@ -104,6 +102,7 @@ public final class WebSite {
 				TVSERIES.put(p.getId(), (TVSeries) p);
 			}
 			PRODUCTS.put(p.getId(), p);
+			System.out.println(p);
 		}
 		
 		for (User user : UserDao.getInstance().getAllUsers()) {

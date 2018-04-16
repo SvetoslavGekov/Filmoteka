@@ -1,6 +1,7 @@
 package model.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -98,7 +99,9 @@ public final class MovieDao implements IMovieDao {
 				"	INNER JOIN products AS p USING (product_id);")){
 			try(ResultSet rs = ps.executeQuery();){
 				while(rs.next()) {
+					
 					int movieId = rs.getInt("product_id");
+					Date saleValidity = rs.getDate("sale_validity");
 					//Collect the movie's genres
 					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(movieId));
 					
@@ -106,21 +109,23 @@ public final class MovieDao implements IMovieDao {
 					Map<Integer, Double> raters = new TreeMap<>(ProductDao.getInstance().getProductRatersById(movieId));
 					
 					//Construct the new movie
-					Movie m = new Movie(movieId,
-							rs.getString("name"),
-							rs.getDate("release_year").toLocalDate(),
-							rs.getString("pg_rating"),
-							rs.getInt("duration"),
-							rs.getDouble("rent_cost"),
-							rs.getDouble("buy_cost"),
-							rs.getString("description"),
-							rs.getString("poster"),
-							rs.getString("trailer"),
-							rs.getString("writers"),
-							rs.getString("actors"),
-							genres,
-							raters,
-							rs.getString("director"));
+					Movie m = new Movie(movieId, //Movie ID
+							rs.getString("name"), //Name
+							rs.getDate("release_year").toLocalDate(),//Release year
+							rs.getString("pg_rating"),//PG Rating
+							rs.getInt("duration"),//Duration
+							rs.getDouble("rent_cost"),//Rent cost
+							rs.getDouble("buy_cost"),//Buy Cost
+							rs.getString("description"),//Description
+							rs.getString("poster"),//Poster
+							rs.getString("trailer"),//Trailer
+							rs.getString("writers"),//Writers
+							rs.getString("actors"),//Actors
+							genres,//Genres
+							raters,//Raters
+							rs.getDouble("sale_percent"),//Sale percent
+							(saleValidity != null ? saleValidity.toLocalDate() : null),//Sale validity
+							rs.getString("director"));//Director
 					
 					allMovies.add(m);
 				}
@@ -146,7 +151,10 @@ public final class MovieDao implements IMovieDao {
 			ps.setString(1, substring);
 			try(ResultSet rs = ps.executeQuery();){
 				while(rs.next()) {
+					
 					int movieId = rs.getInt("product_id");
+					Date saleValidity = rs.getDate("sale_validity");
+					
 					//Collect the movie's genres
 					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(movieId));
 					
@@ -154,21 +162,24 @@ public final class MovieDao implements IMovieDao {
 					Map<Integer, Double> raters = new TreeMap<>(ProductDao.getInstance().getProductRatersById(movieId));
 					
 					//Construct the new movie
-					Movie m = new Movie(movieId,
-							rs.getString("name"),
-							rs.getDate("release_year").toLocalDate(),
-							rs.getString("pg_rating"),
-							rs.getInt("duration"),
-							rs.getDouble("rent_cost"),
-							rs.getDouble("buy_cost"),
-							rs.getString("description"),
-							rs.getString("poster"),
-							rs.getString("trailer"),
-							rs.getString("writers"),
-							rs.getString("actors"),
-							genres,
-							raters,
-							rs.getString("director"));
+					//Construct the new movie
+					Movie m = new Movie(movieId, //Movie ID
+							rs.getString("name"), //Name
+							rs.getDate("release_year").toLocalDate(),//Release year
+							rs.getString("pg_rating"),//PG Rating
+							rs.getInt("duration"),//Duration
+							rs.getDouble("rent_cost"),//Rent cost
+							rs.getDouble("buy_cost"),//Buy Cost
+							rs.getString("description"),//Description
+							rs.getString("poster"),//Poster
+							rs.getString("trailer"),//Trailer
+							rs.getString("writers"),//Writers
+							rs.getString("actors"),//Actors
+							genres,//Genres
+							raters,//Raters
+							rs.getDouble("sale_percent"),//Sale percent
+							(saleValidity != null ? saleValidity.toLocalDate() : null),//Sale validity
+							rs.getString("director"));//Directors
 					
 					allMoviesBySubStr.add(m);
 				}

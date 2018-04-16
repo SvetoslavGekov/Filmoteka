@@ -1,10 +1,12 @@
 package model.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,12 +47,12 @@ public final class ProductDao implements IProductDao {
 		try (PreparedStatement ps = con
 				.prepareStatement("INSERT INTO products (name, release_year, pg_rating, duration, rent_cost, buy_cost)"
 						+ " VALUES (?,YEAR(?),?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);) {
-			ps.setString(1, p.getName());
-			ps.setDate(2, java.sql.Date.valueOf(p.getReleaseDate()));
-			ps.setString(3, p.getPgRating());
-			ps.setInt(4, p.getDuration());
-			ps.setDouble(5, p.getRentCost());
-			ps.setDouble(6, p.getBuyCost());
+			ps.setString(1, p.getName()); //Name
+			ps.setDate(2, java.sql.Date.valueOf(p.getReleaseDate()));//Release date
+			ps.setString(3, p.getPgRating()); // PG Rating
+			ps.setInt(4, p.getDuration()); //Duration
+			ps.setDouble(5, p.getOriginalRentCost()); //Original Rent cost
+			ps.setDouble(6, p.getOriginalBuyCost()); //Original Buy cost
 
 			// If the statement is successful --> update product ID
 			if (ps.executeUpdate() > 0) {
@@ -68,19 +70,24 @@ public final class ProductDao implements IProductDao {
 		try (PreparedStatement ps = con
 				.prepareStatement("UPDATE products SET name = ?, release_year = ?, pg_rating = ?,"
 						+ " duration = ?, rent_cost = ?, buy_cost = ?, description = ?, poster = ?, trailer = ?, writers = ?,"
-						+ "actors = ? WHERE product_id = ?")) {
-			ps.setString(1, p.getName());
-			ps.setInt(2, p.getReleaseDate().getYear());
-			ps.setString(3, p.getPgRating());
-			ps.setInt(4, p.getDuration());
-			ps.setDouble(5, p.getRentCost());
-			ps.setDouble(6, p.getBuyCost());
-			ps.setString(7, p.getDescription());
-			ps.setString(8, p.getPoster());
-			ps.setString(9, p.getTrailer());
-			ps.setString(10, p.getWriters());
-			ps.setString(11, p.getActors());
-			ps.setInt(12, p.getId());
+						+ "actors = ?, sale_percent = ?, sale_validity = ? WHERE product_id = ?")) {
+			LocalDate saleValidity = p.getSaleValidity();
+			
+			ps.setString(1, p.getName()); //Name
+			ps.setInt(2, p.getReleaseDate().getYear()); //Release year
+			ps.setString(3, p.getPgRating()); //PG Rating
+			ps.setInt(4, p.getDuration()); //Duration
+			ps.setDouble(5, p.getOriginalRentCost()); //Original Rent Cost
+			ps.setDouble(6, p.getOriginalBuyCost()); //Original Biu Cost
+			ps.setString(7, p.getDescription()); //Description
+			ps.setString(8, p.getPoster()); //Poster
+			ps.setString(9, p.getTrailer()); //Trailer
+			ps.setString(10, p.getWriters());//Writers
+			ps.setString(11, p.getActors());//Actors
+			ps.setDouble(12, p.getSalePercent());//Sale percent
+			ps.setDate(13, (saleValidity != null ? Date.valueOf(saleValidity) : null)); //Validity
+			
+			ps.setInt(14, p.getId()); //Id
 			ps.executeUpdate();
 		}
 

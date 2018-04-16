@@ -12,6 +12,7 @@ import exceptions.InvalidOrderDataException;
 import exceptions.InvalidUserDataException;
 import model.Order;
 import model.Product;
+import model.SimpleUserFactory;
 import model.User;
 import model.dao.UserDao;
 import validation.Supp;
@@ -38,7 +39,8 @@ public class UserManager {
 			throws InvalidUserDataException, SQLException {
 		User u = null;
 		//Create new user with the given information
-		u = new User(firstName, lastName, username, password, email);
+		boolean isAdmin = false;
+		u = SimpleUserFactory.createUser(isAdmin, firstName, lastName, username, password, email);
 		
 		//Save user in the databse
 		this.dao.saveUser(u);

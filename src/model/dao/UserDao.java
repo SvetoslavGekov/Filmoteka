@@ -22,6 +22,7 @@ import exceptions.InvalidOrderDataException;
 import exceptions.InvalidUserDataException;
 import model.Order;
 import model.Product;
+import model.SimpleUserFactory;
 import model.User;
 import validation.BCrypt;
 import webSite.WebSite;
@@ -45,22 +46,24 @@ public class UserDao implements IUserDao {
 	@Override
 	public User getUserByID(int id) throws SQLException, InvalidUserDataException, InvalidOrderDataException {
 		User user = null;
-		String sql = "SELECT user_id, user_type_id, first_name, last_name, username, password, email, phone, registration_date,"
+		String sql = "SELECT user_id, is_admin, first_name, last_name, username, password, email, phone, registration_date,"
 				+ " last_login,profile_picture, money FROM users WHERE user_id = ?;";
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setInt(1, id);
 			try (ResultSet rs = ps.executeQuery();) {
 				rs.next();
-
+				
+				boolean isAdmin = rs.getBoolean("is_admin");
 				int userId = rs.getInt("user_id");
 				Timestamp lastLogin = rs.getTimestamp("last_login");
+				
 				// Grab users watchlist, favorites and products
 				Set<Integer> watchlist = new HashSet<>(getUserWatchlistById(userId));
 				Set<Integer> favorites = new HashSet<>(getUserFavoritesById(userId));
 				Map<Product, LocalDate> products = new HashMap<>(getUserProductsById(userId));
 
-				user = new User(userId, // User Id
-						rs.getInt("user_type_id"), // User type
+				user =  SimpleUserFactory.createUser(isAdmin, //Admin flag
+						userId, // User Id
 						rs.getString("first_name"), // First Name
 						rs.getString("last_name"), // Last Name
 						rs.getString("username"), // UserName
@@ -87,12 +90,12 @@ public class UserDao implements IUserDao {
 	@Override
 	public void saveUser(User user) throws SQLException {
 		PreparedStatement s = connection.prepareStatement(
-				"INSERT INTO users (user_type_id, first_name, last_name, username, email, "
+				"INSERT INTO users (is_admin, first_name, last_name, username, email, "
 						+ "password,registration_date) VALUES (?,?,?,?,?,?,?);",
 				PreparedStatement.RETURN_GENERATED_KEYS);
 		
 		String hashedPassword = user.hashPassword();
-		s.setInt(1, user.getUserTypeId()); // User Type
+		s.setBoolean(1, user.isAdmin()); // User Type
 		s.setString(2, user.getFirstName());// First Name
 		s.setString(3, user.getLastName()); // Last Name
 		s.setString(4, user.getUsername());// Username
@@ -144,11 +147,13 @@ public class UserDao implements IUserDao {
 	@Override
 	public Collection<User> getAllUsers() throws SQLException, InvalidUserDataException, InvalidOrderDataException {
 		HashSet<User> resultUsers = new HashSet<>();
-		String sql = "SELECT user_id, user_type_id, username, email, password, first_name, last_name, registration_date, phone,"
+		String sql = "SELECT user_id, is_admin, username, email, password, first_name, last_name, registration_date, phone,"
 				+ " last_login, profile_picture, money FROM users ORDER BY user_id DESC;";
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
+					
+					boolean isAdmin = rs.getBoolean("is_admin");
 					int userId = rs.getInt("user_id");
 					Timestamp lastLogin = rs.getTimestamp("last_login");
 
@@ -157,21 +162,21 @@ public class UserDao implements IUserDao {
 					Set<Integer> favorites = new HashSet<>(getUserFavoritesById(userId));
 					Map<Product, LocalDate> products = new HashMap<>(getUserProductsById(userId));
 
-					User user = new User(userId, //User id
-							rs.getInt("user_type_id"), //User type
-							rs.getString("first_name"), //First name
-							rs.getString("last_name"),//Last name
-							rs.getString("username"),//Username
-							rs.getString("password"),//Already hashed password
-							rs.getString("email"),//Email
-							rs.getString("phone"),//Phone
-							rs.getDate("registration_date").toLocalDate(),//Registration date
-							lastLogin != null ? lastLogin.toLocalDateTime() : null,//Last login
-							rs.getString("profile_picture"),//Profile picture
-							rs.getDouble("money"),//Money
-							favorites,//Favorites
-							watchlist,//Watchlist
-							products);//Products
+					User user =  SimpleUserFactory.createUser(isAdmin, //Admin flag
+							userId, // User Id
+							rs.getString("first_name"), // First Name
+							rs.getString("last_name"), // Last Name
+							rs.getString("username"), // UserName
+							rs.getString("password"), // Already hashed Password
+							rs.getString("email"), // Email
+							rs.getString("phone"), // Phone number
+							rs.getDate("registration_date").toLocalDate(), // Registration date
+							lastLogin != null ? lastLogin.toLocalDateTime() : null, // Last login
+							rs.getString("profile_picture"), // Profile picture
+							rs.getDouble("money"), // User's money
+							favorites, // User's favourite products
+							watchlist, // User's watchlist
+							products); // User's products
 
 					// Grab user's orders
 					Set<Order> orders = new HashSet<>(getUserOrdersById(user.getUserId()));

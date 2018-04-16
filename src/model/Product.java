@@ -14,13 +14,18 @@ import validation.Supp;
 
 public abstract class Product implements Comparable<Product>{
 	//Mandatory fields
+	private static final double BASE_PERCENT = 100d;
 	private int id;
 	private String name;
 	private LocalDate releaseDate;
 	private String pgRating;
 	private int duration; //Product duration in minutes
+	private final double originalRentCost;
+	private final double originalBuyCost;
 	private double rentCost;
 	private double buyCost;
+	private double salePercent;
+	private LocalDate saleValidity;
 	
 	//Optional fields
 	private String description;
@@ -41,6 +46,9 @@ public abstract class Product implements Comparable<Product>{
 		setReleaseDate(releaseDate);
 		setPgRating(pgRating);
 		setDuration(duration);
+		//Setting the costs according to the product being on sale or not (validation is made in the setters);
+		this.originalBuyCost = buyCost;
+		this.originalRentCost = rentCost;
 		setRentCost(rentCost);
 		setBuyCost(buyCost);
 	}
@@ -48,7 +56,7 @@ public abstract class Product implements Comparable<Product>{
 	//Constructor for loading a product from the DB
 	public Product(int id, String name, LocalDate releaseDate, String pgRating, int duration, double rentCost,
 			double buyCost, String description, String poster, String trailer, String writers, String actors,
-			Set<Genre> genres, Map<Integer, Double> raters) throws InvalidProductDataException {
+			Set<Genre> genres, Map<Integer, Double> raters, double salePercent, LocalDate saleValidity) throws InvalidProductDataException {
 		this(name, releaseDate, pgRating, duration, rentCost, buyCost);
 		setId(id);
 		setDescription(description);
@@ -59,6 +67,12 @@ public abstract class Product implements Comparable<Product>{
 		setViewerRating(viewerRating);
 		setGenres(genres);
 		setRaters(raters);
+		
+		//Setting the costs according to the product being on sale or not (validation is made in the setters);
+		setSalePercent(salePercent);
+		setSaleValidity(saleValidity);
+		setRentCost(isOnSale() ? (getOriginalRentCost()*(BASE_PERCENT-getSalePercent())/BASE_PERCENT) : getOriginalRentCost());
+		setBuyCost(isOnSale() ? (getOriginalBuyCost()*(BASE_PERCENT-getSalePercent())/BASE_PERCENT) : getOriginalBuyCost());
 		
 		//Calculate and set the viewerRating
 		setViewerRating(calculateRating());
@@ -180,6 +194,23 @@ public abstract class Product implements Comparable<Product>{
 		}
 	}
 	
+	public void setSalePercent(double salePercent) {
+		if(salePercent >= 0d && salePercent < 100d) {
+			this.salePercent = salePercent;
+		}
+	}
+	
+	public void setSaleValidity(LocalDate saleValidity) {
+		this.saleValidity = saleValidity;
+	}
+	
+	private boolean isOnSale() {
+		if(this.saleValidity != null) {
+			return !LocalDate.now().isAfter(this.saleValidity);
+		}
+		return false;
+	}
+	
 	//Getters
 	public int getId() {
 		return this.id;
@@ -239,6 +270,22 @@ public abstract class Product implements Comparable<Product>{
 	
 	public Map<Integer, Double> getRaters() {
 		return Collections.unmodifiableMap(this.raters);
+	}
+	
+	public double getSalePercent() {
+		return this.salePercent;
+	}
+	
+	public LocalDate getSaleValidity() {
+		return this.saleValidity;
+	}
+	
+	public double getOriginalBuyCost() {
+		return this.originalBuyCost;
+	}
+	
+	public double getOriginalRentCost() {
+		return this.originalRentCost;
 	}
 	
 	@Override

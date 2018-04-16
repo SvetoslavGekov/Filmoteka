@@ -94,11 +94,15 @@ public final class TVSeriesDao implements ITVSeriesDao {
 	@Override
 	public Collection<TVSeries> getAllTVSeries() throws SQLException, InvalidProductDataException {
 		Collection<TVSeries> allTVSeries = new ArrayList<TVSeries>();
-		try (PreparedStatement ps = con.prepareStatement(
-				"SELECT tv.season, tv.finished_airing, p.* FROM tvseries AS tv\r\n" + "	INNER JOIN products AS p USING (product_id);")) {
+		try (PreparedStatement ps = con
+				.prepareStatement("SELECT tv.season, tv.finished_airing, p.* FROM tvseries AS tv\r\n"
+						+ "	INNER JOIN products AS p USING (product_id);")) {
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
+
 					int tvsID = rs.getInt("product_id");
+					Date saleValidity = rs.getDate("sale_validity");
+
 					// Collect the movie's genres
 					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(tvsID));
 
@@ -107,11 +111,24 @@ public final class TVSeriesDao implements ITVSeriesDao {
 
 					// Construct the new movie
 					Date finishedAiring = rs.getDate("finished_airing");
-					TVSeries tvs = new TVSeries(tvsID, rs.getString("name"), rs.getDate("release_year").toLocalDate(),
-							rs.getString("pg_rating"), rs.getInt("duration"), rs.getDouble("rent_cost"),
-							rs.getDouble("buy_cost"), rs.getString("description"), rs.getString("poster"),
-							rs.getString("trailer"), rs.getString("writers"), rs.getString("actors"), genres, raters,
-							rs.getInt("season"), (finishedAiring != null) ? finishedAiring.toLocalDate() : null);
+					TVSeries tvs = new TVSeries(tvsID, // Id
+							rs.getString("name"), // Name
+							rs.getDate("release_year").toLocalDate(), // Release year
+							rs.getString("pg_rating"), // Pg Rating
+							rs.getInt("duration"), // Duration
+							rs.getDouble("rent_cost"),//Original Rent Cost 
+							rs.getDouble("buy_cost"),//Original Buy Cost 
+							rs.getString("description"),//Description
+							rs.getString("poster"),//Poster 
+							rs.getString("trailer"), //Trailer
+							rs.getString("writers"), //Writers
+							rs.getString("actors"), //Actors 
+							genres,//Genres 
+							raters,//Raters
+							rs.getDouble("sale_percent"), // Sale percent
+							(saleValidity != null ? saleValidity.toLocalDate() : null), // Sale validity
+							rs.getInt("season"), //Season
+							(finishedAiring != null) ? finishedAiring.toLocalDate() : null); //Finished Airing
 
 					allTVSeries.add(tvs);
 				}
@@ -123,23 +140,24 @@ public final class TVSeriesDao implements ITVSeriesDao {
 		}
 		return allTVSeries;
 	}
-	
+
 	@Override
-	public Collection<TVSeries> getTVSeriesBySubstring(String substring) throws SQLException, InvalidProductDataException {
-		
-		String sql = "SELECT tv.season, tv.finished_airing, p.* "
-					+ "FROM tvseries AS tv "
-					+ "JOIN products AS p "
-					+ "ON tv.product_id = p.product_id "
-					+ "WHERE p.name LIKE '%?%';";
-		
+	public Collection<TVSeries> getTVSeriesBySubstring(String substring)
+			throws SQLException, InvalidProductDataException {
+
+		String sql = "SELECT tv.season, tv.finished_airing, p.* " + "FROM tvseries AS tv " + "JOIN products AS p "
+				+ "ON tv.product_id = p.product_id " + "WHERE p.name LIKE '%?%';";
+
 		Collection<TVSeries> allTVSeriesBySubstring = new ArrayList<TVSeries>();
-		
+
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setString(1, substring);
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
+					
 					int tvsID = rs.getInt("product_id");
+					Date saleValidity = rs.getDate("sale_validity");
+					
 					// Collect the movie's genres
 					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(tvsID));
 
@@ -148,11 +166,24 @@ public final class TVSeriesDao implements ITVSeriesDao {
 
 					// Construct the new movie
 					Date finishedAiring = rs.getDate("finished_airing");
-					TVSeries tvs = new TVSeries(tvsID, rs.getString("name"), rs.getDate("release_year").toLocalDate(),
-							rs.getString("pg_rating"), rs.getInt("duration"), rs.getDouble("rent_cost"),
-							rs.getDouble("buy_cost"), rs.getString("description"), rs.getString("poster"),
-							rs.getString("trailer"), rs.getString("writers"), rs.getString("actors"), genres, raters,
-							rs.getInt("season"), (finishedAiring != null) ? finishedAiring.toLocalDate() : null);
+					TVSeries tvs = new TVSeries(tvsID, // Id
+							rs.getString("name"), // Name
+							rs.getDate("release_year").toLocalDate(), // Release year
+							rs.getString("pg_rating"), // Pg Rating
+							rs.getInt("duration"), // Duration
+							rs.getDouble("rent_cost"),//Original Rent Cost 
+							rs.getDouble("buy_cost"),//Original Buy Cost 
+							rs.getString("description"),//Description
+							rs.getString("poster"),//Poster 
+							rs.getString("trailer"), //Trailer
+							rs.getString("writers"), //Writers
+							rs.getString("actors"), //Actors 
+							genres,//Genres 
+							raters,//Raters
+							rs.getDouble("sale_percent"), // Sale percent
+							(saleValidity != null ? saleValidity.toLocalDate() : null), // Sale validity
+							rs.getInt("season"), //Season
+							(finishedAiring != null) ? finishedAiring.toLocalDate() : null); //Finished Airing
 
 					allTVSeriesBySubstring.add(tvs);
 				}
