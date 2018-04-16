@@ -17,7 +17,7 @@ import model.User;
 /**
  * Servlet implementation class BuyCartItemsServlet
  */
-@WebServlet("/BuyCartItemsServlet")
+@WebServlet("/auth/buycart")
 public class BuyCartItemsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

@@ -17,7 +17,7 @@ import webSite.WebSite;
 /**
  * Servlet implementation class AddOrRemoveFavoriteProductServlet
  */
-@WebServlet("/AddOrRemoveFavoriteProductServlet")
+@WebServlet("/auth/favproducts")
 public class AddOrRemoveFavoriteProductServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

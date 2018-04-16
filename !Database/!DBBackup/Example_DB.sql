@@ -92,7 +92,7 @@ CREATE TABLE `order_has_products` (
 
 LOCK TABLES `order_has_products` WRITE;
 /*!40000 ALTER TABLE `order_has_products` DISABLE KEYS */;
-INSERT INTO `order_has_products` VALUES (2,1,NULL),(2,4,NULL),(2,5,'2018-04-19'),(2,6,'2018-04-19'),(3,1,NULL),(3,2,'2018-04-19');
+INSERT INTO `order_has_products` VALUES (1,1,NULL),(2,4,'2018-04-24');
 /*!40000 ALTER TABLE `order_has_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -113,7 +113,7 @@ CREATE TABLE `orders` (
   KEY `DATE_INDEX` (`date`),
   KEY `COST_INDEX` (`total_cost`),
   CONSTRAINT `fk_ORDER_User1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (2,1,'2018-04-11',18.00),(3,1,'2018-04-11',20.00);
+INSERT INTO `orders` VALUES (1,1,'2018-04-16',5.00),(2,1,'2018-04-16',5.00);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -201,6 +201,8 @@ CREATE TABLE `products` (
   `trailer` varchar(200) DEFAULT NULL COMMENT 'Path to the product''s trailer',
   `writers` varchar(200) DEFAULT NULL COMMENT 'Writers',
   `actors` varchar(1000) DEFAULT NULL COMMENT 'Actors',
+  `sale_percent` decimal(2,0) DEFAULT '0',
+  `sale_validity` date DEFAULT NULL,
   PRIMARY KEY (`product_id`),
   KEY `NAME_INDEX` (`name`),
   KEY `RELEASE_YEAR` (`release_year`)
@@ -213,7 +215,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (1,'The Terminator',1984,'R',107,5.00,10.00,'A seemingly indestructible humanoid cyborg is sent from 2029 to 1984 to assassinate a waitress, whose unborn son will lead humanity in a war against the machines, while a soldier from that war is sent to protect her at all costs.','images/terminator.jpg',NULL,'James Cameron, Gale Anne Hurd','Arnold Schwarzenegger, Linda Hamilton, Michael Biehn'),(2,'Titanic ',1997,'PG-13',194,10.00,15.00,'84 years later, a 100 year-old woman named Rose DeWitt Bukater tells the story to her granddaughter Lizzy Calvert, Brock Lovett, Lewis Bodine, Bobby Buell and Anatoly Mikailavich on the Keldysh about her life set in April 10th 1912, on a ship called Titanic when young Rose boards the departing ship with the upper-class passengers and her mother, Ruth DeWitt Bukater, and her fiancé, Caledon Hockley. Meanwhile, a drifter and artist named Jack Dawson and his best friend Fabrizio De Rossi win third-class tickets to the ship in a game. And she explains the whole story from departure until the death of Titanic on its first and last voyage April 15th, 1912 at 2:20 in the morning.','images/titanic.jpg',NULL,'James Cameron','Leonardo DiCaprio, Kate Winslet, Billy Zane'),(3,'Jumanji ',1995,'PG',104,5.00,7.50,'After being trapped in a jungle board game for 26 years, a Man-Child wins his release from the game. But, no sooner has he arrived that he is forced to play again, and this time sets the creatures of the jungle loose on the city. Now it is up to him to stop them.','images\\jumanji.jpg',NULL,'Jonathan Hensleigh, Greg Taylor','Robin Williams, Kirsten Dunst, Bonnie Hunt'),(4,'The Simpsons',1989,'-',22,3.00,5.00,'This is an animated sitcom about the antics of a dysfunctional family. Homer is the oafish unhealthy beer loving father, Marge is the hardworking homemaker wife, Bart is the perpetual ten-year-old underachiever (and proud of it), Lisa is the unappreciated eight-year-old genius, and Maggie is the cute, pacifier loving silent infant.','images\\the simpsons.jpg',NULL,'James L. Brooks, Matt Groening, Sam Simon','Dan Castellaneta, Nancy Cartwright, Julie Kavner'),(5,'ER',1994,'-',44,3.00,5.00,'Michael Crichton has created a medical drama that chronicles life and death in a Chicago hospital emergency room. Each episode tells the tale of another day in the ER, from the exciting to the mundane, and the joyous to the heart-rending. Frenetic pacing, interwoven plot lines, and emotional rollercoastering is used to attempt to accurately depict the stressful environment found there. This show even portrays the plight of medical students in their quest to become physicians.','images\\er.jpg',NULL,'Michael Crichton','Anthony Edwards, George Clooney, Julianna Margulies'),(6,'The Mentalist',2008,'-',43,3.00,5.00,'After a serial killer named Red John murdered Patrick Jane\'s wife and daughter, Jane dedicated his life to hunting down and killing Red John. To that end he gave up his lucrative pretense of being a psychic and joined the California Bureau of Investigation (CBI) as a consultant to the team responsible for investigating the Red John case, led by Senior Agent Teresa Lisbon. Using Jane\'s exceptional gift for observation and his mentalist tric able to close an unprecedented number of cases, but Jane\'s unconventional and often outright illegal methods also bring much censure down on Lisbon\'s head, making his assistance both a blessing and a curse. Meanwhile, the hunt for Red John continues...','images\\the mentalist.jpg',NULL,'Bruno Heller','Simon Baker, Robin Tunney, Tim Kang');
+INSERT INTO `products` VALUES (1,'The Terminator',1984,'R',107,5.00,10.00,'A seemingly indestructible humanoid cyborg is sent from 2029 to 1984 to assassinate a waitress, whose unborn son will lead humanity in a war against the machines, while a soldier from that war is sent to protect her at all costs.','images/terminator.jpg',NULL,'James Cameron, Gale Anne Hurd','Arnold Schwarzenegger, Linda Hamilton, Michael Biehn',10,NULL),(2,'Titanic ',1997,'PG-13',194,10.00,15.00,'84 years later, a 100 year-old woman named Rose DeWitt Bukater tells the story to her granddaughter Lizzy Calvert, Brock Lovett, Lewis Bodine, Bobby Buell and Anatoly Mikailavich on the Keldysh about her life set in April 10th 1912, on a ship called Titanic when young Rose boards the departing ship with the upper-class passengers and her mother, Ruth DeWitt Bukater, and her fiancé, Caledon Hockley. Meanwhile, a drifter and artist named Jack Dawson and his best friend Fabrizio De Rossi win third-class tickets to the ship in a game. And she explains the whole story from departure until the death of Titanic on its first and last voyage April 15th, 1912 at 2:20 in the morning.','images/titanic.jpg',NULL,'James Cameron','Leonardo DiCaprio, Kate Winslet, Billy Zane',5,'2018-03-04'),(3,'Jumanji ',1995,'PG',104,5.00,7.50,'After being trapped in a jungle board game for 26 years, a Man-Child wins his release from the game. But, no sooner has he arrived that he is forced to play again, and this time sets the creatures of the jungle loose on the city. Now it is up to him to stop them.','images\\jumanji.jpg',NULL,'Jonathan Hensleigh, Greg Taylor','Robin Williams, Kirsten Dunst, Bonnie Hunt',3,'2018-05-15'),(4,'The Simpsons',1989,'-',22,3.00,5.00,'This is an animated sitcom about the antics of a dysfunctional family. Homer is the oafish unhealthy beer loving father, Marge is the hardworking homemaker wife, Bart is the perpetual ten-year-old underachiever (and proud of it), Lisa is the unappreciated eight-year-old genius, and Maggie is the cute, pacifier loving silent infant.','images\\the simpsons.jpg',NULL,'James L. Brooks, Matt Groening, Sam Simon','Dan Castellaneta, Nancy Cartwright, Julie Kavner',1,NULL),(5,'ER',1994,'-',44,3.00,5.00,'Michael Crichton has created a medical drama that chronicles life and death in a Chicago hospital emergency room. Each episode tells the tale of another day in the ER, from the exciting to the mundane, and the joyous to the heart-rending. Frenetic pacing, interwoven plot lines, and emotional rollercoastering is used to attempt to accurately depict the stressful environment found there. This show even portrays the plight of medical students in their quest to become physicians.','images\\er.jpg',NULL,'Michael Crichton','Anthony Edwards, George Clooney, Julianna Margulies',22,NULL),(6,'The Mentalist',2008,'-',43,3.00,5.00,'After a serial killer named Red John murdered Patrick Jane\'s wife and daughter, Jane dedicated his life to hunting down and killing Red John. To that end he gave up his lucrative pretense of being a psychic and joined the California Bureau of Investigation (CBI) as a consultant to the team responsible for investigating the Red John case, led by Senior Agent Teresa Lisbon. Using Jane\'s exceptional gift for observation and his mentalist tric able to close an unprecedented number of cases, but Jane\'s unconventional and often outright illegal methods also bring much censure down on Lisbon\'s head, making his assistance both a blessing and a curse. Meanwhile, the hunt for Red John continues...','images\\the mentalist.jpg',NULL,'Bruno Heller','Simon Baker, Robin Tunney, Tim Kang',NULL,NULL);
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -267,7 +269,7 @@ CREATE TABLE `user_has_favorite_products` (
 
 LOCK TABLES `user_has_favorite_products` WRITE;
 /*!40000 ALTER TABLE `user_has_favorite_products` DISABLE KEYS */;
-INSERT INTO `user_has_favorite_products` VALUES (2,2),(3,2),(1,6);
+INSERT INTO `user_has_favorite_products` VALUES (1,2),(2,2),(3,2),(1,6);
 /*!40000 ALTER TABLE `user_has_favorite_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -295,7 +297,7 @@ CREATE TABLE `user_has_products` (
 
 LOCK TABLES `user_has_products` WRITE;
 /*!40000 ALTER TABLE `user_has_products` DISABLE KEYS */;
-INSERT INTO `user_has_products` VALUES (1,1,NULL),(1,3,NULL),(2,2,NULL),(2,3,NULL),(3,2,NULL),(3,3,NULL),(4,1,'2018-10-03'),(4,3,NULL),(5,1,NULL),(5,2,NULL),(5,3,NULL),(6,3,NULL);
+INSERT INTO `user_has_products` VALUES (1,1,NULL),(2,2,NULL),(2,3,NULL),(3,2,NULL),(3,3,NULL),(4,1,'2018-04-24'),(4,3,NULL),(5,2,NULL),(5,3,NULL),(6,3,NULL);
 /*!40000 ALTER TABLE `user_has_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -322,7 +324,7 @@ CREATE TABLE `user_has_watchlist_products` (
 
 LOCK TABLES `user_has_watchlist_products` WRITE;
 /*!40000 ALTER TABLE `user_has_watchlist_products` DISABLE KEYS */;
-INSERT INTO `user_has_watchlist_products` VALUES (2,1),(3,1),(1,4),(1,5);
+INSERT INTO `user_has_watchlist_products` VALUES (1,1),(2,1),(3,1),(1,4),(1,5);
 /*!40000 ALTER TABLE `user_has_watchlist_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -360,25 +362,23 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Primary key - arbitraty user ID',
-  `user_type_id` tinyint(4) NOT NULL,
+  `is_admin` tinyint(1) NOT NULL,
   `username` varchar(45) NOT NULL COMMENT 'User''s username',
   `email` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL COMMENT 'User''s password',
+  `password` varchar(60) NOT NULL COMMENT 'User''s password',
   `first_name` varchar(45) NOT NULL COMMENT 'User''s first name',
   `last_name` varchar(45) NOT NULL,
   `registration_date` date NOT NULL COMMENT 'Date of user''s registration',
   `phone` varchar(45) DEFAULT NULL COMMENT 'User''s phone number',
   `last_login` timestamp NULL DEFAULT NULL COMMENT 'User''s last login time',
   `profile_picture` varchar(200) DEFAULT NULL COMMENT 'Path to user''s profile picture',
-  `money` decimal(7,2) DEFAULT '0.00' COMMENT 'User''s money',
+  `money` decimal(7,2) DEFAULT '150.00' COMMENT 'User''s money',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `USERNAME_UNIQUE` (`username`),
   UNIQUE KEY `EMAIL_UNIQUE` (`email`),
   KEY `USERNAME_INDEX` (`username`),
-  KEY `EMAIL_INDEX` (`email`),
-  KEY `fk_User_USER_TYPE1_idx` (`user_type_id`),
-  CONSTRAINT `fk_User_USER_TYPE1` FOREIGN KEY (`user_type_id`) REFERENCES `user_types` (`user_type_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+  KEY `EMAIL_INDEX` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -387,7 +387,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,2,'sgekov','svetoslav_gekov@abv.bg','Sgekov123','Svetoslav','Gekov','2018-04-01',NULL,NULL,NULL,150.00),(2,2,'mdimitrov','mario0.bg@abv.bg','Mdimitrov123','Mario','Dimitrov','2018-04-01',NULL,NULL,NULL,200.00),(3,1,'admin','admin@filmoteka.bg','Admin123','Admin','Adminov','2018-04-01',NULL,NULL,NULL,5000.00);
+INSERT INTO `users` VALUES (1,0,'sgekov','svetoslav_gekov@abv.bg','$2a$10$1jk0yGGk90M1Bhi6V.4iJO1fcqI77czYaCj9esf0DEAZM7ocIH7fy','Svetoslav','Gekov','2018-04-01',NULL,'2018-04-16 18:03:16',NULL,9868.00),(2,0,'mdimitrov','mario0.bg@abv.bg','$2a$10$0/PmI5dkHCtW.7T/wQbSr.AogH65p4fSaPpGC8TmhFAoaIbHnf6um','Mario','Dimitrov','2018-04-01',NULL,NULL,NULL,200.00),(3,1,'admin','admin@filmoteka.bg','$2a$10$BhejaMOwKu8AOxnK/M0d3OxF6dtgnTqr2fMdck/2rW/C3o1w7jJwm','Admin','Adminov','2018-04-01',NULL,'2018-04-14 12:22:10',NULL,5000.00),(9,0,'wave','wave@abv.bg','$2a$10$c5zMdMRo2FhSN5KTYScVOOQXPrEuGKu5uD2nbnnWqsxCKalARV6Ri','Wave','Catcher','2018-04-14',NULL,'2018-04-14 12:37:47',NULL,150.00);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -400,4 +400,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-04-11 22:16:14
+-- Dump completed on 2018-04-16 21:20:32

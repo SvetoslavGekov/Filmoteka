@@ -19,7 +19,7 @@ import webSite.WebSite;
 /**
  * Servlet implementation class RemoveProductFromCartServlet
  */
-@WebServlet("/RemoveProductFromCartServlet")
+@WebServlet("/auth/remcartproducts")
 public class RemoveProductFromCartServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

@@ -16,7 +16,7 @@ import webSite.WebSite;
 /**
  * Servlet implementation class AddOrRemoveWatchlistProductServlet
  */
-@WebServlet("/AddOrRemoveWatchlistProductServlet")
+@WebServlet("/auth/watchlistproducts")
 public class AddOrRemoveWatchlistProductServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

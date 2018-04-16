@@ -30,8 +30,13 @@ public class LoginServlet extends HttpServlet {
 		if(user != null) {
 			//Get a new session
 			HttpSession session = request.getSession();
+			
 			//Set the user in the session
 			session.setAttribute("USER", user);
+			
+			//Set the IP of the request which called the server
+			session.setAttribute("ip", request.getRemoteAddr());
+			
 			//Redirect to the main_servlet
 			response.sendRedirect("MainPage.html");
 		}

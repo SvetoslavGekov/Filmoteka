@@ -102,7 +102,6 @@ public final class WebSite {
 				TVSERIES.put(p.getId(), (TVSeries) p);
 			}
 			PRODUCTS.put(p.getId(), p);
-			System.out.println(p);
 		}
 		
 		for (User user : UserDao.getInstance().getAllUsers()) {
