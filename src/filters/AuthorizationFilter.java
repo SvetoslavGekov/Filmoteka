@@ -19,17 +19,9 @@ import javax.servlet.http.HttpSession;
 public class AuthorizationFilter implements Filter {
 
 	/**
-	 * Default constructor.
-	 */
-	public AuthorizationFilter() {
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -82,7 +74,6 @@ public class AuthorizationFilter implements Filter {
 	 * @see Filter#init(FilterConfig)
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
 	}
 
 }

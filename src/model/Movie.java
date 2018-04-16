@@ -17,6 +17,15 @@ public class Movie extends Product {
 		super(name, releaseDate, pgRating, duration, rentCost, buyCost);
 	}
 	
+	//Constructor for creating a new move with all available information
+	public Movie(String name, LocalDate releaseDate, String pgRating, int duration, double rentCost,
+			double buyCost, String description,String poster, String trailer, String writers, String actors,
+			Set<Genre> genres, double salePercent, LocalDate saleValidity, String director) 
+					throws InvalidProductDataException {
+		super(name, releaseDate, pgRating, duration, rentCost, buyCost, description,poster, trailer, writers, actors,
+				genres, salePercent, saleValidity);
+		setDirector(director);
+	}
 	
 	//Constructor for loading a movie from the DB
 	public Movie(int id, String name, LocalDate releaseDate, String pgRating, int duration, double rentCost,

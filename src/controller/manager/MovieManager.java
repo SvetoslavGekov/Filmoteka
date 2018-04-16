@@ -2,46 +2,47 @@ package controller.manager;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Set;
 
 import exceptions.InvalidProductDataException;
+import model.Genre;
 import model.Movie;
 import model.dao.MovieDao;
 import webSite.WebSite;
 
 public class MovieManager {
-	//Fields
+	// Fields
 	private static MovieManager instance;
 	private MovieDao dao;
-	
-	//Constructor
+
+	// Constructor
 	private MovieManager() {
-		//Instantiate the dao object
+		// Instantiate the dao object
 		dao = MovieDao.getInstance();
 	}
-	
-	//Methods
+
+	// Methods
 	public synchronized static MovieManager getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new MovieManager();
 		}
 		return instance;
 	}
-	
-	public void createNewMovie(String name, LocalDate releaseDate, String pgRating, int duration, double rentCost, double buyCost) {
+
+	public synchronized void createNewMovie(String name, LocalDate releaseDate, String pgRating, int duration,
+			double rentCost, double buyCost, String description, String poster, String trailer, String writers,
+			String actors, Set<Genre> genres, double salePercent, LocalDate saleValidity, String director)
+					throws InvalidProductDataException, SQLException {
 		Movie m;
-		try {
-			//Create new movie with the given data
-			m = new Movie(name, releaseDate, pgRating, duration, rentCost, buyCost);
-			//Add movie to DB
-			dao.saveMovie(m);
-			//Add movie to the products collection
-			WebSite.addProduct(m);
-		}
-		catch (InvalidProductDataException | SQLException e) {
-			// TODO Handle movie exception
-			e.printStackTrace();
-		}
+		// Create new movie with the given data
+		m = new Movie(name, releaseDate, pgRating, duration, rentCost, buyCost, description, poster, trailer,
+				writers, actors, genres, salePercent, saleValidity, director);
+		
+		// Add movie to DB
+		dao.saveMovie(m);
+		
+		// Add movie to the products collection
+		WebSite.addProduct(m);
 	}
-	
-	
+
 }

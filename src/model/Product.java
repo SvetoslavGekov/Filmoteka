@@ -39,41 +39,49 @@ public abstract class Product implements Comparable<Product>{
 
 
 	//Constructors
-	//Constructor for creating a new product
+	//Constructor for creating a new product with the basic information
 	public Product(String name, LocalDate releaseDate, String pgRating, int duration, double rentCost, double buyCost) 
 			throws InvalidProductDataException {
 		setName(name);
 		setReleaseDate(releaseDate);
 		setPgRating(pgRating);
 		setDuration(duration);
+		
 		//Setting the costs according to the product being on sale or not (validation is made in the setters);
 		this.originalBuyCost = buyCost;
 		this.originalRentCost = rentCost;
 		setRentCost(rentCost);
 		setBuyCost(buyCost);
 	}
-
-	//Constructor for loading a product from the DB
-	public Product(int id, String name, LocalDate releaseDate, String pgRating, int duration, double rentCost,
+	
+	//Constructor for creating a new product with all available information
+	public Product(String name, LocalDate releaseDate, String pgRating, int duration, double rentCost,
 			double buyCost, String description, String poster, String trailer, String writers, String actors,
-			Set<Genre> genres, Map<Integer, Double> raters, double salePercent, LocalDate saleValidity) throws InvalidProductDataException {
+			Set<Genre> genres,double salePercent, LocalDate saleValidity) throws InvalidProductDataException {
 		this(name, releaseDate, pgRating, duration, rentCost, buyCost);
-		setId(id);
+		//Skipping id + raters + calculation of rating
 		setDescription(description);
 		setPoster(poster);
 		setTrailer(trailer);
 		setWriters(writers);
 		setActors(actors);
-		setViewerRating(viewerRating);
 		setGenres(genres);
-		setRaters(raters);
 		
 		//Setting the costs according to the product being on sale or not (validation is made in the setters);
 		setSalePercent(salePercent);
 		setSaleValidity(saleValidity);
 		setRentCost(isOnSale() ? (getOriginalRentCost()*(BASE_PERCENT-getSalePercent())/BASE_PERCENT) : getOriginalRentCost());
 		setBuyCost(isOnSale() ? (getOriginalBuyCost()*(BASE_PERCENT-getSalePercent())/BASE_PERCENT) : getOriginalBuyCost());
-		
+	}
+
+	//Constructor for loading a product from the DB
+	public Product(int id, String name, LocalDate releaseDate, String pgRating, int duration, double rentCost,
+			double buyCost, String description, String poster, String trailer, String writers, String actors,
+			Set<Genre> genres, Map<Integer, Double> raters, double salePercent, LocalDate saleValidity) throws InvalidProductDataException {
+		this(name, releaseDate, pgRating, duration, rentCost, buyCost, description, poster, trailer, writers, actors,
+				genres, salePercent, saleValidity);
+		setId(id);
+
 		//Calculate and set the viewerRating
 		setViewerRating(calculateRating());
 	}

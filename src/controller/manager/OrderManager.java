@@ -11,12 +11,12 @@ import model.User;
 import model.dao.OrderDao;
 
 public final class OrderManager {
-	//Fields
+	// Fields
 	private static OrderManager instance;
 	private OrderDao dao;
-	
+
 	private OrderManager() {
-		//Instantiate the dao object
+		// Instantiate the dao object
 		this.dao = OrderDao.getInstance();
 	}
 
@@ -26,22 +26,16 @@ public final class OrderManager {
 		}
 		return instance;
 	}
-	
-	//Methods
-	public Order createNewOrder(User user, LocalDate date, Map<Product, LocalDate> shoppingCart ) {
+
+	// Methods
+	public Order createNewOrder(User user, LocalDate date, Map<Product, LocalDate> shoppingCart) throws InvalidOrderDataException, SQLException {
 		Order order = null;
-		
-		try {
-			//Create new order
-			order = new Order(user.getUserId(), date, shoppingCart);
-			//Save order in DB
-			dao.saveOrder(order);
-		}
-		catch (InvalidOrderDataException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
+		// Create new order
+		order = new Order(user.getUserId(), date, shoppingCart);
+		// Save order in DB
+		dao.saveOrder(order);
+
 		return order;
 	}
 }

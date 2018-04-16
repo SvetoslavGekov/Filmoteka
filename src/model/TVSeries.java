@@ -12,14 +12,24 @@ public class TVSeries extends Product {
 	private LocalDate finishedAiring;
 	
 	//Constructors
-	//Constructor for creating a new movie
+	//Constructor for creating a new TV Series
 	public TVSeries(String name, LocalDate releaseDate, String pgRating, int duration, double rentCost, double buyCost)
 			throws InvalidProductDataException {
 		super(name, releaseDate, pgRating, duration, rentCost, buyCost);
 	}
 	
+	//Constructor for creating a new TV Series with all available information
+	public TVSeries( String name, LocalDate releaseDate, String pgRating, int duration, double rentCost,
+			double buyCost, String description,String poster, String trailer, String writers, String actors,
+			Set<Genre> genres, double salePercent, LocalDate saleValidity, int season, LocalDate finishedAiring) 
+					throws InvalidProductDataException {
+		super(name, releaseDate, pgRating, duration, rentCost, buyCost, description,poster, trailer, writers, actors,
+				genres, salePercent, saleValidity);
+		setSeason(season);
+		setFinishedAiring(finishedAiring);
+	}
 	
-	//Constructor for loading a movie from the DB
+	//Constructor for loading a TV Series from the DB
 	public TVSeries(int id, String name, LocalDate releaseDate, String pgRating, int duration, double rentCost,
 			double buyCost, String description,String poster, String trailer, String writers, String actors,
 			Set<Genre> genres, Map<Integer,Double> raters, double salePercent, LocalDate saleValidity, int season, LocalDate finishedAiring)

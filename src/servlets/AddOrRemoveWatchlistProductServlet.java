@@ -1,6 +1,8 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,7 +39,13 @@ public class AddOrRemoveWatchlistProductServlet extends HttpServlet {
 		// Check if productId is valid
 		if (product != null) {
 			// Add or remove product from favorites
-			UserManager.getInstance().addOrRemoveProductFromWatchlist(user, product);
+			try {
+				UserManager.getInstance().addOrRemoveProductFromWatchlist(user, product);
+			}
+			catch (SQLException e) {
+				// TODO Handle SQL exception
+				e.printStackTrace();
+			}
 		}
 	}
 

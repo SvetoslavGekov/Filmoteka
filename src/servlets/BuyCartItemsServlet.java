@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controller.manager.UserManager;
+import exceptions.InvalidOrderDataException;
 import model.Order;
 import model.User;
 
@@ -34,6 +35,10 @@ public class BuyCartItemsServlet extends HttpServlet {
 			UserManager.getInstance().buyProductsInCart(user);
 		}
 		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (InvalidOrderDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -44,16 +44,28 @@ public final class ProductDao implements IProductDao {
 
 	@Override
 	public void saveProduct(Product p) throws SQLException, InvalidProductDataException {
+		//Methods is never called for a "product" (synchronization is made for concrete classes)
 		try (PreparedStatement ps = con
-				.prepareStatement("INSERT INTO products (name, release_year, pg_rating, duration, rent_cost, buy_cost)"
-						+ " VALUES (?,YEAR(?),?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);) {
+				.prepareStatement("INSERT INTO products (name, release_year, pg_rating, duration, rent_cost, buy_cost, description,"
+						+ "poster, trailer, writers, actors, sale_percent, sale_validity)"
+						+ " VALUES (?,YEAR(?),?,?,?,?,?,?,?,?,?,?,?)", PreparedStatement.RETURN_GENERATED_KEYS);) {
+			//Non Mandatory Dates
+			LocalDate  saleValidity = p.getSaleValidity();
+			
 			ps.setString(1, p.getName()); //Name
-			ps.setDate(2, java.sql.Date.valueOf(p.getReleaseDate()));//Release date
+			ps.setDate(2, Date.valueOf(p.getReleaseDate()));//Release date
 			ps.setString(3, p.getPgRating()); // PG Rating
 			ps.setInt(4, p.getDuration()); //Duration
 			ps.setDouble(5, p.getOriginalRentCost()); //Original Rent cost
 			ps.setDouble(6, p.getOriginalBuyCost()); //Original Buy cost
-
+			ps.setString(7, p.getDescription()); // Description
+			ps.setString(8, p.getPoster()); //Poster
+			ps.setString(9, p.getTrailer()); //Trailer
+			ps.setString(10, p.getWriters()); //Writers
+			ps.setString(11, p.getActors()); //Actors
+			ps.setDouble(12, p.getSalePercent()); //Sale discount percent
+			ps.setDate(13, saleValidity != null ? Date.valueOf(saleValidity) : null); //Sale validity
+			
 			// If the statement is successful --> update product ID
 			if (ps.executeUpdate() > 0) {
 				try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -61,16 +73,21 @@ public final class ProductDao implements IProductDao {
 					p.setId(rs.getInt("GENERATED_KEY"));
 				}
 			}
+			
+			//Update the product genres
+			saveProductGenresById(p.getId(), p.getGenres());
 		}
 	}
 
 	@Override
 	public void updateProduct(Product p) throws SQLException {
+		//Methods is never called for a "product" (synchronization is made for concrete classes)
 		// Update the basic information
 		try (PreparedStatement ps = con
 				.prepareStatement("UPDATE products SET name = ?, release_year = ?, pg_rating = ?,"
 						+ " duration = ?, rent_cost = ?, buy_cost = ?, description = ?, poster = ?, trailer = ?, writers = ?,"
 						+ "actors = ?, sale_percent = ?, sale_validity = ? WHERE product_id = ?")) {
+			//Non Mandatory Dates
 			LocalDate saleValidity = p.getSaleValidity();
 			
 			ps.setString(1, p.getName()); //Name
@@ -89,25 +106,32 @@ public final class ProductDao implements IProductDao {
 			
 			ps.setInt(14, p.getId()); //Id
 			ps.executeUpdate();
+			
+			//Update the product genres
+			saveProductGenresById(p.getId(), p.getGenres());
 		}
 
+
+	}
+
+	private void saveProductGenresById(int productId, Set<Genre> genres) throws SQLException {
 		// Delete all the product's genres
 		try (PreparedStatement ps = con.prepareStatement("DELETE FROM product_has_genres WHERE product_id = ?;")) {
-			ps.setInt(1, p.getId());
+			ps.setInt(1, productId);
 			ps.executeUpdate();
 		}
 
 		// Update all the genres if any
-		Set<Genre> pGenres = p.getGenres();
+		Set<Genre> pGenres = genres;
 		if (!pGenres.isEmpty()) {
 			Statement st = con.createStatement();
 			for (Genre genre : pGenres) {
-				st.addBatch(String.format("INSERT INTO product_has_genres VALUES(%d,%d);", p.getId(), genre.getId()));
+				st.addBatch(String.format("INSERT INTO product_has_genres VALUES(%d,%d);", productId, genre.getId()));
 			}
 			st.executeBatch();
 		}
 	}
-
+	
 	@Override
 	public Collection<Genre> getProductGenresById(int id) throws SQLException {
 		Collection<Genre> productGenres = new HashSet<>();
