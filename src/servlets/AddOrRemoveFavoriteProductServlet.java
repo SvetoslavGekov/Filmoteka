@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import controller.manager.UserManager;
 import model.Product;
 import model.User;
-import webSite.WebSite;
+import util.WebSite;
 
 /**
  * Servlet implementation class AddOrRemoveFavoriteProductServlet

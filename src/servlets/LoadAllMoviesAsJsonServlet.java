@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import model.Product;
-import webSite.WebSite;
+import util.WebSite;
 
 /**
  * Servlet implementation class LoadAllMoviesAsJsonServlet

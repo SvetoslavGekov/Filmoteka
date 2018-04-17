@@ -15,8 +15,8 @@ import model.Product;
 import model.SimpleUserFactory;
 import model.User;
 import model.dao.UserDao;
+import util.WebSite;
 import validation.Supp;
-import webSite.WebSite;
 
 public class UserManager {
 

@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import exceptions.InvalidGenreDataException;
 import model.Genre;
 import model.dao.GenreDao;
-import webSite.WebSite;
+import util.WebSite;
 
 public final class GenreManager {
 	//Fields

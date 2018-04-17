@@ -5,13 +5,16 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -24,8 +27,8 @@ import model.Order;
 import model.Product;
 import model.SimpleUserFactory;
 import model.User;
+import util.WebSite;
 import validation.BCrypt;
-import webSite.WebSite;
 
 public class UserDao implements IUserDao {
 
@@ -340,8 +343,7 @@ public class UserDao implements IUserDao {
 
 	@Override
 	public boolean databaseHasUserWithCredentials(String username, String email) throws SQLException {
-		try (PreparedStatement ps = connection
-				.prepareStatement("SELECT user_id FROM users WHERE username = ? OR email = ?")) {
+		try (PreparedStatement ps = connection.prepareStatement("SELECT user_id FROM users WHERE username = ? OR email = ?")) {
 			ps.setString(1, username);
 			ps.setString(2, email);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -351,5 +353,40 @@ public class UserDao implements IUserDao {
 			}
 		}
 		return false;
+	}
+	
+	public Map<User, List<Product>> getExpiringProducts() throws SQLException, InvalidUserDataException{
+		Map<User,List<Product>> expiringProducts = new TreeMap<>();
+		
+		String query = "SELECT up.user_id, up.product_id, up.validity, u.first_name, u.last_name, u.username, u.password, u.email" + 
+				"	FROM user_has_products AS up" + 
+				"	JOIN users AS u USING (user_id)" + 
+				"	WHERE validity = DATE_ADD(curdate(), INTERVAL 1 DAY);";
+		try(Statement s = connection.createStatement()){
+			try(ResultSet rs = s.executeQuery(query)){
+				while(rs.next()) {
+					//Create user and product
+					//Create user with his credentials (no need to make the DB select one)
+					User user = new User(rs.getString("first_name"), //First name
+							rs.getString("last_name"), //Last name 
+							rs.getString("username"), //Username 
+							rs.getString("password"), //Hashed password
+							rs.getString("email")); //Email
+					
+					//Select product from the collection of all products
+					Product product = WebSite.getProductById(rs.getInt("product_id"));
+					
+					//Put instances in resulting map
+					if(!expiringProducts.containsKey(user)) {
+						//If no such user is in the map -> create new entry with new array list
+						expiringProducts.put(user, new ArrayList<Product>());
+					}
+					//Add product to array list
+					expiringProducts.get(user).add(product);
+				}
+			}
+		}
+		
+		return expiringProducts;
 	}
 }

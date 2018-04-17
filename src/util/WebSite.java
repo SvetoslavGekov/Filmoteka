@@ -1,8 +1,10 @@
-package webSite;
+package util;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,7 +20,8 @@ import model.TVSeries;
 import model.User;
 import model.dao.GenreDao;
 import model.dao.ProductDao;
-import model.dao.UserDao;
+import util.taskExecutors.ExpiringProductsNotifier;
+import util.taskExecutors.TaskExecutor;
 
 public final class WebSite {
 	// Fields
@@ -27,8 +30,10 @@ public final class WebSite {
 	private static final Map<Integer,Product> PRODUCTS = new ConcurrentHashMap<>(); 
 	private static final Map<Integer,Movie> MOVIES = new ConcurrentHashMap<>(); 
 	private static final Map<Integer,TVSeries> TVSERIES = new ConcurrentHashMap<>(); 
-	private static final Map<Integer,User> USERS = new ConcurrentHashMap<>(); 
-	// Constructors
+	private static final Map<Integer,User> USERS = new ConcurrentHashMap<>();
+	private static final List<TaskExecutor> TASKS = new ArrayList<>();
+	
+	// Constructors --> never instantiated
 	private WebSite() {
 
 	}
@@ -90,10 +95,16 @@ public final class WebSite {
 	public static Collection<Product> getAllTVSeries() {
 		return Collections.unmodifiableCollection(TVSERIES.values());
 	}
+	
+	public static Collection<TaskExecutor> getAllTasks(){
+		return Collections.unmodifiableCollection(TASKS);
+	}
 
 	public static void main(String[] args) throws SQLException, InvalidGenreDataException, InvalidProductDataException, InvalidUserDataException, InvalidOrderDataException {
+		//Load all genres
 		GENRES.putAll(GenreDao.getInstance().getAllGenres());
 		
+		//Load all products
 		for (Product p : ProductDao.getInstance().getAllProducts()) {
 			if(p instanceof Movie){
 				MOVIES.put(p.getId(), (Movie) p);
@@ -104,16 +115,12 @@ public final class WebSite {
 			PRODUCTS.put(p.getId(), p);
 		}
 		
-		for (User user : UserDao.getInstance().getAllUsers()) {
-			USERS.put(user.getUserId(), user);
+		//Start all utility tasks
+		TASKS.add(new TaskExecutor(ExpiringProductsNotifier.getInstance()));
+		
+		for (TaskExecutor taskExecutor : TASKS) {
+			taskExecutor.startExecutionAt(18, 48, 0);
 		}
-
-//		Movie m = new Movie("Jikus", LocalDate.now(), "asd", 123, 123, 322);
-//		MovieDao.getInstance().saveMovie(m);
-//		m.setActors("Bace pepi");
-//		m.setTrailer("wwwwwwwwww");
-//		m.setDirector("Cameron John");
-//		MovieDao.getInstance().updateMovie(m);
 	}
 
 

@@ -15,7 +15,7 @@ import com.google.gson.GsonBuilder;
 
 import model.Product;
 import model.User;
-import webSite.WebSite;
+import util.WebSite;
 
 /**
  * Servlet implementation class LoadAllTVSeriesAsJsonServlet

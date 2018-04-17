@@ -21,7 +21,7 @@ import model.Genre;
 import model.Movie;
 import model.Product;
 import model.TVSeries;
-import webSite.WebSite;
+import util.WebSite;
 
 public final class ProductDao implements IProductDao {
 	// Fields

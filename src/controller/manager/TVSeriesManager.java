@@ -8,7 +8,7 @@ import exceptions.InvalidProductDataException;
 import model.Genre;
 import model.TVSeries;
 import model.dao.TVSeriesDao;
-import webSite.WebSite;
+import util.WebSite;
 
 public class TVSeriesManager {
 	// Fields

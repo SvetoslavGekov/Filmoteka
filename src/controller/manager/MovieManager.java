@@ -8,7 +8,7 @@ import exceptions.InvalidProductDataException;
 import model.Genre;
 import model.Movie;
 import model.dao.MovieDao;
-import webSite.WebSite;
+import util.WebSite;
 
 public class MovieManager {
 	// Fields

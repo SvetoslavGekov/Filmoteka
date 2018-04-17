@@ -95,7 +95,9 @@ public final class TVSeriesDao implements ITVSeriesDao {
 	public Collection<TVSeries> getAllTVSeries() throws SQLException, InvalidProductDataException {
 		Collection<TVSeries> allTVSeries = new ArrayList<TVSeries>();
 		try (PreparedStatement ps = con
-				.prepareStatement("SELECT tv.season, tv.finished_airing, p.* FROM tvseries AS tv\r\n"
+				.prepareStatement("SELECT tv.season, tv.finished_airing, p.product_id, p.name, p.release_year, p.pg_rating,"
+						+ "p.duration, p.rent_cost, p.buy_cost, p.description, p.poster, p.trailer, p.writers, p.actors,"
+						+ "p.sale_percent, p.sale_validity FROM tvseries AS tv"
 						+ "	INNER JOIN products AS p USING (product_id);")) {
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {

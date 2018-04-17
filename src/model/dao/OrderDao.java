@@ -14,7 +14,7 @@ import dbManager.DBManager;
 import exceptions.InvalidOrderDataException;
 import model.Order;
 import model.Product;
-import webSite.WebSite;
+import util.WebSite;
 
 public final class OrderDao implements IOrderDao {
 	//Fields

@@ -95,7 +95,9 @@ public final class MovieDao implements IMovieDao {
 	@Override
 	public Collection<Movie> getAllMovies() throws SQLException, InvalidProductDataException {
 		Collection<Movie> allMovies = new ArrayList<Movie>();
-		try(PreparedStatement ps = con.prepareStatement("SELECT m.director, p.* FROM movies AS m\r\n" + 
+		try(PreparedStatement ps = con.prepareStatement("SELECT m.director, p.product_id, p.name, p.release_year, p.pg_rating,"
+				+ " p.duration, p.rent_cost, p.buy_cost, p.description, p.poster, p.trailer, p.writers, p.actors,"
+				+ " p.sale_percent, p.sale_validity FROM movies AS m" + 
 				"	INNER JOIN products AS p USING (product_id);")){
 			try(ResultSet rs = ps.executeQuery();){
 				while(rs.next()) {

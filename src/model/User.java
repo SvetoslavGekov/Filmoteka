@@ -16,7 +16,7 @@ import exceptions.InvalidUserDataException;
 import validation.BCrypt;
 import validation.Supp;
 
-public class User {
+public class User implements Comparable<User> {
 	// Fields
 	private static final int RENT_PERIOD = 8; // days
 	private int userId;
@@ -321,6 +321,11 @@ public class User {
 		return BCrypt.hashpw(this.password, BCrypt.gensalt());
 	}
 
+	@Override
+	public int compareTo(User o) {
+		return this.username.compareTo(o.getUsername());
+	}
+	
 	@Override
 	public String toString() {
 		return String.format(
