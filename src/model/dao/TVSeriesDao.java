@@ -95,8 +95,13 @@ public final class TVSeriesDao implements ITVSeriesDao {
 	public Collection<TVSeries> getAllTVSeries() throws SQLException, InvalidProductDataException {
 		Collection<TVSeries> allTVSeries = new ArrayList<TVSeries>();
 		try (PreparedStatement ps = con
-				.prepareStatement("SELECT tv.season, tv.finished_airing, p.* FROM tvseries AS tv\r\n"
-						+ "	INNER JOIN products AS p USING (product_id);")) {
+				.prepareStatement("SELECT tv.season, tv.finished_airing, p.product_id, p.name, "
+										+ "p.release_year, p.pg_rating, p.duration, "
+										+ "p.rent_cost, p.buy_cost, p.description, "
+										+ "p.poster, p.trailer, p.writers, p.actors, "
+										+ "p.sale_percent, p.sale_validity "
+								+ "FROM tvseries AS tv\r\n"
+								+ "	INNER JOIN products AS p USING (product_id);")) {
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
 
@@ -145,13 +150,19 @@ public final class TVSeriesDao implements ITVSeriesDao {
 	public Collection<TVSeries> getTVSeriesBySubstring(String substring)
 			throws SQLException, InvalidProductDataException {
 
-		String sql = "SELECT tv.season, tv.finished_airing, p.* " + "FROM tvseries AS tv " + "JOIN products AS p "
-				+ "ON tv.product_id = p.product_id " + "WHERE p.name LIKE '%?%';";
+		String sql = "SELECT tv.season, tv.finished_airing, "
+							+ "p.product_id, p.name, p.release_year, "
+							+ "p.pg_rating, p.duration, p.rent_cost, "
+							+ "p.buy_cost, p.description, p.poster, "
+							+ "p.trailer, p.writers, p.actors, "
+							+ "p.sale_percent, p.sale_validity "
+					+ "FROM tvseries AS tv " + "JOIN products AS p "
+					+ "ON tv.product_id = p.product_id " + "WHERE p.name LIKE ?;";
 
 		Collection<TVSeries> allTVSeriesBySubstring = new ArrayList<TVSeries>();
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ps.setString(1, substring);
+			ps.setString(1,'%'+substring+'%');
 			try (ResultSet rs = ps.executeQuery();) {
 				while (rs.next()) {
 					

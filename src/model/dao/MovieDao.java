@@ -95,8 +95,14 @@ public final class MovieDao implements IMovieDao {
 	@Override
 	public Collection<Movie> getAllMovies() throws SQLException, InvalidProductDataException {
 		Collection<Movie> allMovies = new ArrayList<Movie>();
-		try(PreparedStatement ps = con.prepareStatement("SELECT m.director, p.* FROM movies AS m\r\n" + 
-				"	INNER JOIN products AS p USING (product_id);")){
+		try(PreparedStatement ps = con.prepareStatement("SELECT m.director, p.product_id, p.name, p.release_year, "
+																+ "p.pg_rating, p.duration, p.rent_cost, "
+																+ "p.buy_cost, p.description, p.poster, "
+																+ "p.trailer, p.writers, p.actors, "
+																+ "p.sale_percent, p.sale_validity"
+													+ " FROM movies AS m\r\n"
+													+ " INNER JOIN products AS p "
+													+ "USING (product_id);")){
 			try(ResultSet rs = ps.executeQuery();){
 				while(rs.next()) {
 					
@@ -141,14 +147,19 @@ public final class MovieDao implements IMovieDao {
 	@Override
 	public Collection<Movie> getMoviesBySubstring(String substring) throws SQLException, InvalidProductDataException {
 		
-		String sql = "SELECT m.director, p.* FROM movies AS m "
+		String sql = "SELECT m.director, p.product_id, p.name, p.release_year, "
+							+ "p.pg_rating, p.duration, p.rent_cost, "
+							+ "p.buy_cost, p.description, p.poster, "
+							+ "p.trailer, p.writers, p.actors, "
+							+ "p.sale_percent, p.sale_validity"
+					+ " FROM movies AS m "
 					+ "JOIN products AS p "
 					+ "ON m.product_id = p.product_id "
-					+ "WHERE p.name LIKE '%?%';";
+					+ "WHERE p.name LIKE ?;";
 		
 		Collection<Movie> allMoviesBySubStr = new ArrayList<Movie>();
 		try(PreparedStatement ps = con.prepareStatement(sql)){
-			ps.setString(1, substring);
+			ps.setString(1, '%'+substring+'%');
 			try(ResultSet rs = ps.executeQuery();){
 				while(rs.next()) {
 					
