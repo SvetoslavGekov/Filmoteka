@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import exceptions.InvalidGenreDataException;
 import exceptions.InvalidOrderDataException;
 import exceptions.InvalidProductDataException;
@@ -21,13 +24,13 @@ import model.TVSeries;
 import model.User;
 import model.dao.GenreDao;
 import model.dao.ProductDao;
+import util.productFilters.ProductQueryInfo;
+import util.productFilters.ProductQueryInfoDeserializer;
 import util.taskExecutors.CustomTaskExecutor;
-import util.taskExecutors.ExpiredProductsDeleter;
-import util.taskExecutors.ExpiringProductsNotifier;
 
 public final class WebSite {
 	// Fields
-	private static final LocalTime TASKS_STARTING_TIME = LocalTime.now().withHour(19).withMinute(22).withSecond(10);
+	private static final LocalTime TASKS_STARTING_TIME = LocalTime.now().withHour(20).withMinute(45).withSecond(00);
 	private static final Map<Integer,Genre> GENRES = new TreeMap<>();
 	private static final Map<Integer,Product> PRODUCTS = new ConcurrentHashMap<>(); 
 	private static final Map<Integer,Movie> MOVIES = new ConcurrentHashMap<>(); 
@@ -114,16 +117,40 @@ public final class WebSite {
 		//Create all utility tasks
 //		TASKS.add(new CustomTaskExecutor(ExpiringProductsNotifier.getInstance())); //Expiring products notifier
 //		TASKS.add(new CustomTaskExecutor(ExpiredProductsDeleter.getInstance()));// Expired products deleter
-//		
-//		//Start all task at the same time
-//		for (CustomTaskExecutor taskExecutor : TASKS) {
-//			taskExecutor.startExecutionAt(TASKS_STARTING_TIME.getHour(), TASKS_STARTING_TIME.getMinute(), TASKS_STARTING_TIME.getSecond());
-//		}
+		
+		//Start all task at the same time
+		for (CustomTaskExecutor taskExecutor : TASKS) {
+			taskExecutor.startExecutionAt(TASKS_STARTING_TIME.getHour(), TASKS_STARTING_TIME.getMinute(), TASKS_STARTING_TIME.getSecond());
+		}
+		
+		//Example for a productQueryInfo deserialization
+		String json = "{\r\n" + 
+				"  \"name\": null,\r\n" + 
+				"  \"minReleaseYear\": 1990,\r\n" + 
+				"  \"maxReleaseYear\": 2005,\r\n" + 
+				"  \"minDuration\": 15,\r\n" + 
+				"  \"maxDuration\": 300,\r\n" + 
+				"  \"minBuyCost\": 3,\r\n" + 
+				"  \"maxBuyCost\": 20,\r\n" + 
+				"  \"minRentCost\": 3,\r\n" + 
+				"  \"maxRentCost\": 20,\r\n" + 
+				"  \"genres\":[\r\n" + 
+				"    1,2,3,8,10,16\r\n" + 
+				"    ],\r\n" + 
+				"  \"orderedBy\": \"product_id\",\r\n" + 
+				"  \"isAscending\": true\r\n" + 
+				"}";
+		
+		//Create GSON builder
+		GsonBuilder gBuilder = new GsonBuilder().setPrettyPrinting();
+		gBuilder.registerTypeAdapter(ProductQueryInfo.class, new ProductQueryInfoDeserializer());
+		Gson gson = gBuilder.create();
+		
+		ProductQueryInfo pqi = gson.fromJson(json, ProductQueryInfo.class);
+		System.out.println(pqi);
+		
+		for (Integer inti : ProductDao.getInstance().getFilteredProducts(pqi)) {
+			System.out.println(inti);
+		}
 	}
-
-
-
-
-
-
 }

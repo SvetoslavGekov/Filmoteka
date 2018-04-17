@@ -12,7 +12,6 @@ import exceptions.InvalidOrderDataException;
 import exceptions.InvalidProductDataException;
 import exceptions.InvalidUserDataException;
 import util.WebSite;
-import util.taskExecutors.ExpiringProductsNotifier;
 import util.taskExecutors.CustomTaskExecutor;
 
 /**

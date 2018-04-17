@@ -1,0 +1,16 @@
+{
+  "name": null,
+  "minReleaseYear": 1990,
+  "maxReleaseYear": 2005,
+  "minDuration": 15,
+  "maxDuration": 300,
+  "minBuyCost": 3,
+  "maxBuyCost": 20,
+  "minRentCost": 3,
+  "maxRentCost": 20,
+  "genres":[
+    1,2
+    ],
+  "orderedBy": "product_id",
+  "isAscending": true
+}

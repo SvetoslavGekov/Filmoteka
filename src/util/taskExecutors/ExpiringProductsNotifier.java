@@ -1,16 +1,19 @@
 package util.taskExecutors;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 
+import exceptions.InvalidUserDataException;
 import model.Product;
 import model.User;
 import model.dao.UserDao;
 import util.mailManager.MailManager;
 
-public final class ExpiringProductsNotifier implements Runnable {
+public final class ExpiringProductsNotifier implements Callable<Boolean> {
 	//Fields
 	private static final String MESSAGE_SUBJECT = "FilmotekaBG - rented products are expiring soon";
 	private static ExpiringProductsNotifier instance;
@@ -29,8 +32,7 @@ public final class ExpiringProductsNotifier implements Runnable {
 	}
 	
 	@Override
-	public void run() {
-		try {
+	public Boolean call() throws SQLException, InvalidUserDataException {
 			//Collect all users that need to be notified in a map
 			Map<User, List<Product>> expiringProducts = UserDao.getInstance().getExpiringProducts();
 			
@@ -45,11 +47,7 @@ public final class ExpiringProductsNotifier implements Runnable {
 				MailManager.sendEmail(user.getEmail(), MESSAGE_SUBJECT, message, null);
 			}
 			
-		}
-		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return true;
 		
 	}
 	

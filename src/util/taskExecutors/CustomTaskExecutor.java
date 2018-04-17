@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -14,23 +15,23 @@ public class CustomTaskExecutor {
 	// Fields
 	private static final int TIMEOUT = 2; // Minutes
 	private final ScheduledExecutorService executor;
-	private Runnable task;
+	private Callable<Boolean> task;
 	
 	//Constructors
-	public CustomTaskExecutor(Runnable task) {
+	public CustomTaskExecutor(Callable<Boolean> task) {
 		this.executor = Executors.newSingleThreadScheduledExecutor();
 		setTask(task);
 	}
 	
 	//Methods
-	public void startExecutionAt(int targetHour, int targetMin, int targetSec) {
+	public boolean startExecutionAt(int targetHour, int targetMin, int targetSec) {
 		//Create a new runnable which executes the set one's run method and schedules itself for another run
-		Runnable runner = new Runnable() {
+		Callable<Boolean> runner = new Callable<Boolean>() {
 			
 			@Override
-			public void run() {
-				task.run();
-				startExecutionAt(targetHour, targetMin, targetSec);
+			public Boolean call() throws Exception {
+				task.call();
+				return startExecutionAt(targetHour, targetMin, targetSec);
 			}
 		};
 		
@@ -39,12 +40,12 @@ public class CustomTaskExecutor {
 		
 		//In case the task is executed super fast (many times in 1 second) -> call the method again
 		if(delaySeconds == 0) {
-			startExecutionAt(targetHour, targetMin, targetSec);
-			return;
+			return startExecutionAt(targetHour, targetMin, targetSec);
 		}
 		
 		//Schedule the executor to execute the task
 		executor.schedule(runner, delaySeconds, TimeUnit.SECONDS);
+		return true;
 	};
 	
 
@@ -72,7 +73,7 @@ public class CustomTaskExecutor {
 	}
 	
 	//Setters
-	public void setTask(Runnable task) {
+	public void setTask(Callable<Boolean> task) {
 		if(task != null) {
 			this.task = task;
 		}

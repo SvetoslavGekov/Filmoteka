@@ -2,11 +2,13 @@ package model.dao;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import exceptions.InvalidProductDataException;
 import model.Genre;
 import model.Product;
+import util.productFilters.ProductQueryInfo;
 
 
 public interface IProductDao {
@@ -21,4 +23,6 @@ public interface IProductDao {
 	Collection<Product> getAllProducts() throws SQLException, InvalidProductDataException;
 
 	void deleteExpiredProducts() throws SQLException;
+
+	List<Integer> getFilteredProducts(ProductQueryInfo filter) throws SQLException;
 }
