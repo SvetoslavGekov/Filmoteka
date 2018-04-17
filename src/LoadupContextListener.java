@@ -13,7 +13,7 @@ import exceptions.InvalidProductDataException;
 import exceptions.InvalidUserDataException;
 import util.WebSite;
 import util.taskExecutors.ExpiringProductsNotifier;
-import util.taskExecutors.TaskExecutor;
+import util.taskExecutors.CustomTaskExecutor;
 
 /**
  * Application Lifecycle Listener implementation class LoadupContextListener
@@ -31,7 +31,7 @@ public class LoadupContextListener implements ServletContextListener {
     		 //Destroy the DB manager connection
 			DBManager.getInstance().getCon().close();
 			//Shutdown all scheduled tasks
-			for (TaskExecutor taskExecutor : WebSite.getAllTasks()) {
+			for (CustomTaskExecutor taskExecutor : WebSite.getAllTasks()) {
 				taskExecutor.stopTask();
 			}
 			

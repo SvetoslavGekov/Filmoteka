@@ -163,6 +163,7 @@ public final class ProductDao implements IProductDao {
 		return allProducts;
 	}
 
+	@Override
 	public Map<Integer,Double> getProductRatersById(int movieId) throws SQLException {
 		Map<Integer,Double> productRaters = new HashMap<>();
 		
@@ -176,5 +177,13 @@ public final class ProductDao implements IProductDao {
 			}
 		}
 		return productRaters;
+	}
+	
+	@Override
+	public void deleteExpiredProducts() throws SQLException {
+		String sql = "DELETE FROM user_has_products WHERE validity < CURDATE();";
+		try(Statement st = con.createStatement()){
+			st.executeUpdate(sql);
+		}
 	}
 }

@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class TaskExecutor {
+public class CustomTaskExecutor {
 	// References -->
 	// https://stackoverflow.com/questions/20387881/how-to-run-certain-task-every-day-at-a-particular-time-using-scheduledexecutorse
 	// Fields
@@ -17,7 +17,7 @@ public class TaskExecutor {
 	private Runnable task;
 	
 	//Constructors
-	public TaskExecutor(Runnable task) {
+	public CustomTaskExecutor(Runnable task) {
 		this.executor = Executors.newSingleThreadScheduledExecutor();
 		setTask(task);
 	}
@@ -36,6 +36,12 @@ public class TaskExecutor {
 		
 		//Calculate the delay until the next execution in seconds
 		long delaySeconds = computeNextDelayInSeconds(targetHour, targetMin, targetSec);
+		
+		//In case the task is executed super fast (many times in 1 second) -> call the method again
+		if(delaySeconds == 0) {
+			startExecutionAt(targetHour, targetMin, targetSec);
+			return;
+		}
 		
 		//Schedule the executor to execute the task
 		executor.schedule(runner, delaySeconds, TimeUnit.SECONDS);
