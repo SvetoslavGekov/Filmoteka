@@ -258,10 +258,35 @@ public final class ProductDao implements IProductDao {
 		return filteredProducts;
 	}
 
-	public void rateProduct(User user, Product product, Integer rating) {
-		// TODO Chack if this user already reted the product
-		// If 'Yes' --> change the rating of the product
-		// If 'No' --> insert into table product_has_raters new entry (product_id, user_id, rating)
+	public void rateProduct(User user, Product product, int rating) throws SQLException{
 		
+		// Useless checking but recommended
+		if(product != null && user != null){
+			// Add the rater so can get the calculated rating
+			product.addRater(user, rating);
+		}
+		
+		double newRating = product.calculateRating();
+		
+		String updateRatingOfProduct = "UPDATE product_has_raters SET rating = ? WHERE product_id = ? AND user_id = ?;";
+		String insertRatingOfProduct = "INSERT INTO product_has_raters(product_id, user_id, rating) VALUES(?,?,?);";
+		// Check if this user already has rated the product
+		try(PreparedStatement ps1 = con.prepareStatement(updateRatingOfProduct)){
+			ps1.setDouble(1, newRating);
+			ps1.setInt(2, product.getId());
+			ps1.setInt(3, user.getUserId());
+			// Get affected rows
+			int rowsAffected = ps1.executeUpdate();
+			
+			// If User has not been rate this product (affected rows are 0)
+			if(rowsAffected < 1){
+				// Insert the new rater into the database
+				try(PreparedStatement ps2 = con.prepareStatement(insertRatingOfProduct);){
+					ps2.setInt(1, product.getId());
+					ps2.setInt(2, user.getUserId());
+					ps2.setDouble(3, newRating);
+				}	
+			}	
+		}
 	}
 }

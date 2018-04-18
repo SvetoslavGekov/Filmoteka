@@ -89,7 +89,7 @@ public abstract class Product implements Comparable<Product>{
 
 
 	//Setters
-	private double calculateRating() {
+	public double calculateRating() {
 		double totalVotes = (double) this.raters.size();
 		
 		if(totalVotes < 1) {
@@ -200,6 +200,17 @@ public abstract class Product implements Comparable<Product>{
 		if(raters != null) {
 			this.raters = raters;
 		}
+	}
+	
+	public void addRater(User user, double rate) {
+		//If the user retes the product for first time
+		if(!this.raters.containsKey(user)){
+			// Add new rater with his rating
+			this.raters.put(user.getUserId(), rate);
+			return;
+		}
+		// Update his rating
+		this.raters.replace(user.getUserId(), rate);
 	}
 	
 	public void setSalePercent(double salePercent) {

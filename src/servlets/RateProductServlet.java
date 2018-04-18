@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Map.Entry;
 
@@ -40,7 +41,12 @@ public class RateProductServlet extends HttpServlet {
 		// Check if the productId is valid
 		if (product != null) {
 			// Rate product and save in DB
-			ProductDao.getInstance().rateProduct(user, product, rating);
+			try {
+				ProductDao.getInstance().rateProduct(user, product, rating);
+			} catch (SQLException e) {
+				request.setAttribute("error", e.getMessage());
+				request.getRequestDispatcher("Error.jsp").forward(request, response);
+			}
 		}
 		System.out.println("\nRated product from "+user.getFirstName()+" with rate =" + rating);    }
 
