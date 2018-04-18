@@ -159,6 +159,14 @@ div.cartItem{
 				"application/x-www-form-urlencoded");
 		xhttp.send("productId=" + id);
 	}
+	
+	function rateProduct(id, rating){
+		var xhttp = new XMLHttpRequest();
+		xhttp.open("POST", "auth/rateproduct", true);
+		xhttp.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		xhttp.send("productId=" + id +"&rating=" + rating);
+	}
 
 	function loadAllProducts() {
 		var xhttp = new XMLHttpRequest();

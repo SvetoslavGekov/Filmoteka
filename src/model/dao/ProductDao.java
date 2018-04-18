@@ -22,6 +22,7 @@ import model.Genre;
 import model.Movie;
 import model.Product;
 import model.TVSeries;
+import model.User;
 import util.WebSite;
 import util.productFilters.ProductQueryInfo;
 
@@ -255,5 +256,12 @@ public final class ProductDao implements IProductDao {
 			}
 		}
 		return filteredProducts;
+	}
+
+	public void rateProduct(User user, Product product, Integer rating) {
+		// TODO Chack if this user already reted the product
+		// If 'Yes' --> change the rating of the product
+		// If 'No' --> insert into table product_has_raters new entry (product_id, user_id, rating)
+		
 	}
 }
