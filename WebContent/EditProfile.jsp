@@ -13,7 +13,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
 
 
 /* Add a background color when the inputs get focus */
-input[type=text]:focus, input[type=number]:focus, input[type=email]:focus {
+input[type=text]:focus, input[type=number]:focus, input[type=email]:focus , div > input:focus{
     background-color: #ddd;
     outline: none;
 }
@@ -43,7 +43,7 @@ button:hover {
 body {font-family: Arial, Helvetica, sans-serif;}
 form {border: 8px solid #f1f1f1;}
 
-input[type=text],input[type=email], input[type=number] {
+input[type=text],input[type=email], input[type=number], div > input {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -80,10 +80,23 @@ button {
 	 First name: <input type="text" placeholder="<%= user.getFirstName() %>" name="firstname" maxlength="15"><br>
 	 Last name: <input type="text" placeholder="<%= user.getLastName() %>" name="lastname" maxlength="15"><br>
 	 Email: <input type="email" placeholder="<%= user.getEmail() %>" name="email" maxlength="15"><br>
-	 Phone number: <input type="number" placeholder="<%= user.getPhone() %>" name="phone" maxlenght="10" minlenght="10"><br>
+	 Phone number: <input type="number" placeholder="<%= user.getPhone() %>" name="phone" maxlenght="10"><br>
+	
+	 <div style="display:none" id="passwordfield">
+	 	 Current password: <input type="password" placeholder="Enter your password" name="currentPass" ><br>
+	 	 New Password: <input type="password" placeholder="Enter new passsword" name="newPass1"><br>
+	 	 <input type="password" placeholder="Repeat the new password" name="newPass2"><br>
+	 </div>
 	 
+	 <input type="button" onclick="openPassFields()" value="Change Password">
 	 <button type="submit" class="savebtn">Save Changes</button>
 	 <button type="reset"  class="resetbtn">Reset</button>
 	</form>
+	
+	<script type="text/javascript">
+		function openPassFields(){
+			document.getElementById("passwordfield").style.display = "block";
+		}
+	</script>
 </body>
 </html>

@@ -159,8 +159,12 @@ public class User implements Comparable<User> {
 		return phone;
 	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
+	public void setPhone(String phone) throws InvalidUserDataException {
+		if(Supp.isValidPhoneNumber(phone)){
+			this.phone = phone;
+			return;
+		}
+		throw new InvalidUserDataException("Invalid user's phone number!");
 	}
 
 	public double getMoney() {

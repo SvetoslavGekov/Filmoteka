@@ -32,8 +32,14 @@ public class UserUpdateServlet extends HttpServlet {
 		String lastName = request.getParameter("lastname").isEmpty() ? user.getLastName() : request.getParameter("lastname");
 		String email = request.getParameter("email").isEmpty() ? user.getEmail() : request.getParameter("email");
 		String phone = request.getParameter("phone").isEmpty() ? user.getPhone(): request.getParameter("phone");
+		String currentPass = request.getParameter("currentPass").isEmpty() ? user.getPassword(): request.getParameter("currentPass");
+		String newPass1 = request.getParameter("newPass1").isEmpty() ? user.getPassword(): request.getParameter("newPass1");
+		String newPass2 = request.getParameter("newPass2").isEmpty() ? user.getPassword(): request.getParameter("newPass2");
 		
 		try {
+			//TODO check the currnetPassword is quals to user.getPassword() (hash)
+			//check if newPass1 equals newPass2 nd only then change the password
+			
 			//Test if can create user with these data (Will throw an exception if cannot)
 			User test = new User(firstName, lastName, user.getUsername(), user.getPassword() , email);
 			test.setPhone(phone);
