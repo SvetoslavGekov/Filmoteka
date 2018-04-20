@@ -251,7 +251,7 @@ div.cartItem{
 			cart+= '<tr><th>Item Number</th><th colspan = "2">Item</th><th>Validity</th><th>Price</th></tr>';
 			cart+= '<tr><td halign="center" valign="middle"><span>'+itemNumber+'</span></td>';
 			cart+= '<td ><img class="cartPoster" height="150" width="150" alt="'+ productName +' Poster"';
-			cart+= 'title = "'+productName+'" src = "'+poster+'"></td>';
+			cart+= 'title = "'+productName+'" src = "getPic?pic='+poster+'"></td>';
 			cart+= '<td valign="middle"><span class="cartItem">'+productName+'('+productYear+')</span></td>';
 			
 			if(!(date == null)){
@@ -286,7 +286,7 @@ div.cartItem{
 
 			products += '<div class = "product" itemprop = "id"><table cellspacing="0" cellpading="0" border="1">'
 			products += '<tbody><tr><td class ="image" rowspawn="2" valign="top"><div>'
-			products += '<img class = "poster" height = "340" width="240" alt = "'+name+' Poster" title = "'+name+'" src = "'+poster+'"'
+			products += '<img class = "poster" height = "340" width="240" alt = "'+name+' Poster" title = "'+name+'" src = "getPic?pic='+poster+'"'
 			products+= 'itemprop = "poster">';
 			products += '<div><button float="left" class="toCollection" onClick="addProductToFavorites('
 					+ product.id + ')">Like</button>'
