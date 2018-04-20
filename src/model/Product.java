@@ -9,14 +9,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import exceptions.InvalidProductCategoryDataException;
 import exceptions.InvalidProductDataException;
 import model.nomenclatures.Genre;
+import model.nomenclatures.ProductCategory;
 import validation.Supp;
 
 public abstract class Product implements Comparable<Product>{
 	//Mandatory fields
 	private static final double BASE_PERCENT = 100d;
 	private int id;
+	private ProductCategory productCategory;
 	private String name;
 	private LocalDate releaseDate;
 	private String pgRating;
@@ -41,9 +44,11 @@ public abstract class Product implements Comparable<Product>{
 
 	//Constructors
 	//Constructor for creating a new product with the basic information
-	public Product(String name, LocalDate releaseDate, String pgRating, int duration, double rentCost, double buyCost) 
+	public Product(String name, ProductCategory productCategory, LocalDate releaseDate, String pgRating, int duration,
+			double rentCost, double buyCost) 
 			throws InvalidProductDataException {
 		setName(name);
+		setProductCategory(productCategory);
 		setReleaseDate(releaseDate);
 		setPgRating(pgRating);
 		setDuration(duration);
@@ -56,10 +61,10 @@ public abstract class Product implements Comparable<Product>{
 	}
 	
 	//Constructor for creating a new product with all available information
-	public Product(String name, LocalDate releaseDate, String pgRating, int duration, double rentCost,
+	public Product(String name, ProductCategory productCategory, LocalDate releaseDate, String pgRating, int duration, double rentCost,
 			double buyCost, String description, String poster, String trailer, String writers, String actors,
 			Set<Genre> genres,double salePercent, LocalDate saleValidity) throws InvalidProductDataException {
-		this(name, releaseDate, pgRating, duration, rentCost, buyCost);
+		this(name, productCategory, releaseDate, pgRating, duration, rentCost, buyCost);
 		//Skipping id + raters + calculation of rating
 		setDescription(description);
 		setPoster(poster);
@@ -76,10 +81,10 @@ public abstract class Product implements Comparable<Product>{
 	}
 
 	//Constructor for loading a product from the DB
-	public Product(int id, String name, LocalDate releaseDate, String pgRating, int duration, double rentCost,
+	public Product(int id, String name, ProductCategory productCategory, LocalDate releaseDate, String pgRating, int duration, double rentCost,
 			double buyCost, String description, String poster, String trailer, String writers, String actors,
 			Set<Genre> genres, Map<Integer, Double> raters, double salePercent, LocalDate saleValidity) throws InvalidProductDataException {
-		this(name, releaseDate, pgRating, duration, rentCost, buyCost, description, poster, trailer, writers, actors,
+		this(name, productCategory, releaseDate, pgRating, duration, rentCost, buyCost, description, poster, trailer, writers, actors,
 				genres, salePercent, saleValidity);
 		setId(id);
 
@@ -110,6 +115,15 @@ public abstract class Product implements Comparable<Product>{
 		}
 		else {
 			throw new InvalidProductDataException("Invalid product id.");
+		}
+	}
+	
+	public void setProductCategory(ProductCategory productCategory) throws InvalidProductDataException {
+		if (productCategory != null){
+			this.productCategory = productCategory;
+		}
+		else {
+			throw new InvalidProductDataException("Invalid product category.");
 		}
 	}
 
@@ -204,7 +218,7 @@ public abstract class Product implements Comparable<Product>{
 	}
 	
 	public void addRater(User user, double rate) {
-		//If the user retes the product for first time
+		//If the user rates the product for first time
 		if(!this.raters.containsKey(user)){
 			// Add new rater with his rating
 			this.raters.put(user.getUserId(), rate);
@@ -236,6 +250,10 @@ public abstract class Product implements Comparable<Product>{
 		return this.id;
 	}
 
+	public ProductCategory getProductCategory() {
+		return this.productCategory;
+	}
+	
 	public String getName() {
 		return this.name;
 	}

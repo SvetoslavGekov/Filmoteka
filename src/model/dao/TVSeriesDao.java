@@ -17,6 +17,8 @@ import dbManager.DBManager;
 import exceptions.InvalidProductDataException;
 import model.TVSeries;
 import model.nomenclatures.Genre;
+import model.nomenclatures.ProductCategory;
+import util.WebSite;
 
 public final class TVSeriesDao implements ITVSeriesDao {
 	// Fields
@@ -94,9 +96,9 @@ public final class TVSeriesDao implements ITVSeriesDao {
 	@Override
 	public Collection<TVSeries> getAllTVSeries() throws SQLException, InvalidProductDataException {
 		Collection<TVSeries> allTVSeries = new ArrayList<TVSeries>();
-		try (PreparedStatement ps = con.prepareStatement("SELECT tv.season, tv.finished_airing, p.product_id, p.name, p.release_year, p.pg_rating,"
-						+ "p.duration, p.rent_cost, p.buy_cost, p.description, p.poster, p.trailer, p.writers, p.actors,"
-						+ "p.sale_percent, p.sale_validity FROM tvseries AS tv"
+		try (PreparedStatement ps = con.prepareStatement("SELECT tv.season, tv.finished_airing, p.product_id, p.name, p.category_id, p.release_year,"
+						+ " p.pg_rating, p.duration, p.rent_cost, p.buy_cost, p.description, p.poster, p.trailer, p.writers, p.actors,"
+						+ " p.sale_percent, p.sale_validity FROM tvseries AS tv"
 						+ "	INNER JOIN products AS p USING (product_id);")) {
 
 			try (ResultSet rs = ps.executeQuery();) {
@@ -104,7 +106,8 @@ public final class TVSeriesDao implements ITVSeriesDao {
 
 					int tvsID = rs.getInt("product_id");
 					Date saleValidity = rs.getDate("sale_validity");
-
+					ProductCategory productCategory = WebSite.getProductCategoryById(rs.getInt("category_id"));
+					
 					// Collect the tv series's genres
 					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(tvsID));
 
@@ -115,6 +118,7 @@ public final class TVSeriesDao implements ITVSeriesDao {
 					Date finishedAiring = rs.getDate("finished_airing");
 					TVSeries tvs = new TVSeries(tvsID, // Id
 							rs.getString("name"), // Name
+							productCategory, //Product category
 							rs.getDate("release_year").toLocalDate(), // Release year
 							rs.getString("pg_rating"), // Pg Rating
 							rs.getInt("duration"), // Duration
@@ -148,7 +152,7 @@ public final class TVSeriesDao implements ITVSeriesDao {
 			throws SQLException, InvalidProductDataException {
 
 		String sql = "SELECT tv.season, tv.finished_airing, "
-							+ "p.product_id, p.name, p.release_year, "
+							+ "p.product_id, p.name, p.category_id, p.release_year, "
 							+ "p.pg_rating, p.duration, p.rent_cost, "
 							+ "p.buy_cost, p.description, p.poster, "
 							+ "p.trailer, p.writers, p.actors, "
@@ -165,6 +169,7 @@ public final class TVSeriesDao implements ITVSeriesDao {
 					
 					int tvsID = rs.getInt("product_id");
 					Date saleValidity = rs.getDate("sale_validity");
+					ProductCategory productCategory = WebSite.getProductCategoryById(rs.getInt("category_id"));
 					
 					// Collect the tv series's genres
 					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(tvsID));
@@ -176,6 +181,7 @@ public final class TVSeriesDao implements ITVSeriesDao {
 					Date finishedAiring = rs.getDate("finished_airing");
 					TVSeries tvs = new TVSeries(tvsID, // Id
 							rs.getString("name"), // Name
+							productCategory, //Product category
 							rs.getDate("release_year").toLocalDate(), // Release year
 							rs.getString("pg_rating"), // Pg Rating
 							rs.getInt("duration"), // Duration

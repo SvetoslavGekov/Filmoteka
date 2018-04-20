@@ -29,6 +29,7 @@ public class CreateMovieServlet extends HttpServlet {
 		//Get the parameters from the login form
 		//Mandatory fields
 		//TODO -> grab entire form as JSON (remove parsing issues)
+		Integer categoryId = Integer.parseInt(request.getParameter("categoryId"));
 		String name = request.getParameter("name");
 		LocalDate releaseDate = LocalDate.parse(request.getParameter("releaseYear"));
 		String pgRating = request.getParameter("pgRating");
@@ -51,7 +52,7 @@ public class CreateMovieServlet extends HttpServlet {
 		try {
 			//Create new movie
 			
-			MovieManager.getInstance().createNewMovie(name, releaseDate, pgRating, duration, rentCost,
+			MovieManager.getInstance().createNewMovie(name, categoryId, releaseDate, pgRating, duration, rentCost,
 					buyCost, description, poster, trailer, writers, actors, genres, salePercent, saleValidity, director);
 			//Set response
 			//TODO -> Set proper response

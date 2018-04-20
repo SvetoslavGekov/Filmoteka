@@ -17,6 +17,8 @@ import dbManager.DBManager;
 import exceptions.InvalidProductDataException;
 import model.Movie;
 import model.nomenclatures.Genre;
+import model.nomenclatures.ProductCategory;
+import util.WebSite;
 
 public final class MovieDao implements IMovieDao {
 	//Fields
@@ -95,7 +97,7 @@ public final class MovieDao implements IMovieDao {
 	@Override
 	public Collection<Movie> getAllMovies() throws SQLException, InvalidProductDataException {
 		Collection<Movie> allMovies = new ArrayList<Movie>();
-		try(PreparedStatement ps = con.prepareStatement("SELECT m.director, p.product_id, p.name, p.release_year, p.pg_rating,"
+		try(PreparedStatement ps = con.prepareStatement("SELECT m.director, p.product_id, p.name, p.category_id, p.release_year, p.pg_rating,"
 				+ " p.duration, p.rent_cost, p.buy_cost, p.description, p.poster, p.trailer, p.writers, p.actors,"
 				+ " p.sale_percent, p.sale_validity FROM movies AS m" + 
 				"	INNER JOIN products AS p USING (product_id);")){
@@ -105,6 +107,8 @@ public final class MovieDao implements IMovieDao {
 					
 					int movieId = rs.getInt("product_id");
 					Date saleValidity = rs.getDate("sale_validity");
+					ProductCategory productCategory = WebSite.getProductCategoryById(rs.getInt("category_id"));
+					
 					//Collect the movie's genres
 					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(movieId));
 					
@@ -114,6 +118,7 @@ public final class MovieDao implements IMovieDao {
 					//Construct the new movie
 					Movie m = new Movie(movieId, //Movie ID
 							rs.getString("name"), //Name
+							productCategory, //Product category
 							rs.getDate("release_year").toLocalDate(),//Release year
 							rs.getString("pg_rating"),//PG Rating
 							rs.getInt("duration"),//Duration
@@ -144,7 +149,7 @@ public final class MovieDao implements IMovieDao {
 	@Override
 	public Collection<Movie> getMoviesBySubstring(String substring) throws SQLException, InvalidProductDataException {
 		
-		String sql = "SELECT m.director, p.product_id, p.name, p.release_year, "
+		String sql = "SELECT m.director, p.product_id, p.name, p.category_id, p.release_year, "
 							+ "p.pg_rating, p.duration, p.rent_cost, "
 							+ "p.buy_cost, p.description, p.poster, "
 							+ "p.trailer, p.writers, p.actors, "
@@ -162,6 +167,7 @@ public final class MovieDao implements IMovieDao {
 					
 					int movieId = rs.getInt("product_id");
 					Date saleValidity = rs.getDate("sale_validity");
+					ProductCategory productCategory = WebSite.getProductCategoryById(rs.getInt("category_id"));
 					
 					//Collect the movie's genres
 					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(movieId));
@@ -173,6 +179,7 @@ public final class MovieDao implements IMovieDao {
 					//Construct the new movie
 					Movie m = new Movie(movieId, //Movie ID
 							rs.getString("name"), //Name
+							productCategory, //Product category
 							rs.getDate("release_year").toLocalDate(),//Release year
 							rs.getString("pg_rating"),//PG Rating
 							rs.getInt("duration"),//Duration
@@ -193,9 +200,6 @@ public final class MovieDao implements IMovieDao {
 				}
 				
 			}
-		}
-		if(allMoviesBySubStr.isEmpty()) {
-			return Collections.emptyList();
 		}
 		return allMoviesBySubStr;
 	}

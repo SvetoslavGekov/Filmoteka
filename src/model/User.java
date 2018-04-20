@@ -160,7 +160,7 @@ public class User implements Comparable<User> {
 	}
 
 	public void setPhone(String phone) throws InvalidUserDataException {
-		if(Supp.isValidPhoneNumber(phone)){
+		if(phone == null || Supp.isValidPhoneNumber(phone)){
 			this.phone = phone;
 			return;
 		}

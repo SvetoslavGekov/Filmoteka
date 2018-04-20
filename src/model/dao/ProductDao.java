@@ -50,26 +50,28 @@ public final class ProductDao implements IProductDao {
 		// Methods is never called for a "product" (synchronization is made for concrete
 		// classes)
 		try (PreparedStatement ps = con.prepareStatement(
-				"INSERT INTO products (name, release_year, pg_rating, duration, rent_cost, buy_cost, description,"
+				"INSERT INTO products (name, category_id, release_year, pg_rating, duration, rent_cost, buy_cost, description,"
 						+ "poster, trailer, writers, actors, sale_percent, sale_validity)"
-						+ " VALUES (?,YEAR(?),?,?,?,?,?,?,?,?,?,?,?)",
+						+ " VALUES (?,?,YEAR(?),?,?,?,?,?,?,?,?,?,?,?)",
 				PreparedStatement.RETURN_GENERATED_KEYS);) {
 			// Non Mandatory Dates
 			LocalDate saleValidity = p.getSaleValidity();
-
-			ps.setString(1, p.getName()); // Name
-			ps.setDate(2, Date.valueOf(p.getReleaseDate()));// Release date
-			ps.setString(3, p.getPgRating()); // PG Rating
-			ps.setInt(4, p.getDuration()); // Duration
-			ps.setDouble(5, p.getOriginalRentCost()); // Original Rent cost
-			ps.setDouble(6, p.getOriginalBuyCost()); // Original Buy cost
-			ps.setString(7, p.getDescription()); // Description
-			ps.setString(8, p.getPoster()); // Poster
-			ps.setString(9, p.getTrailer()); // Trailer
-			ps.setString(10, p.getWriters()); // Writers
-			ps.setString(11, p.getActors()); // Actors
-			ps.setDouble(12, p.getSalePercent()); // Sale discount percent
-			ps.setDate(13, saleValidity != null ? Date.valueOf(saleValidity) : null); // Sale validity
+			int paramCounter = 1;
+			
+			ps.setString(paramCounter++, p.getName()); // Name
+			ps.setInt(paramCounter++, p.getProductCategory().getId()); // Product category
+			ps.setDate(paramCounter++, Date.valueOf(p.getReleaseDate()));// Release date
+			ps.setString(paramCounter++, p.getPgRating()); // PG Rating
+			ps.setInt(paramCounter++, p.getDuration()); // Duration
+			ps.setDouble(paramCounter++, p.getOriginalRentCost()); // Original Rent cost
+			ps.setDouble(paramCounter++, p.getOriginalBuyCost()); // Original Buy cost
+			ps.setString(paramCounter++, p.getDescription()); // Description
+			ps.setString(paramCounter++, p.getPoster()); // Poster
+			ps.setString(paramCounter++, p.getTrailer()); // Trailer
+			ps.setString(paramCounter++, p.getWriters()); // Writers
+			ps.setString(paramCounter++, p.getActors()); // Actors
+			ps.setDouble(paramCounter++, p.getSalePercent()); // Sale discount percent
+			ps.setDate(paramCounter++, saleValidity != null ? Date.valueOf(saleValidity) : null); // Sale validity
 
 			// If the statement is successful --> update product ID
 			if (ps.executeUpdate() > 0) {
@@ -90,27 +92,29 @@ public final class ProductDao implements IProductDao {
 		// classes)
 		// Update the basic information
 		try (PreparedStatement ps = con
-				.prepareStatement("UPDATE products SET name = ?, release_year = ?, pg_rating = ?,"
+				.prepareStatement("UPDATE products SET name = ?, category_id = ?, release_year = ?, pg_rating = ?,"
 						+ " duration = ?, rent_cost = ?, buy_cost = ?, description = ?, poster = ?, trailer = ?, writers = ?,"
 						+ "actors = ?, sale_percent = ?, sale_validity = ? WHERE product_id = ?")) {
 			// Non Mandatory Dates
 			LocalDate saleValidity = p.getSaleValidity();
+			int paramCounter = 1;
+			
+			ps.setString(paramCounter++, p.getName()); // Name
+			ps.setInt(paramCounter++, p.getProductCategory().getId()); //Product category id
+			ps.setInt(paramCounter++, p.getReleaseDate().getYear()); // Release year
+			ps.setString(paramCounter++, p.getPgRating()); // PG Rating
+			ps.setInt(paramCounter++, p.getDuration()); // Duration
+			ps.setDouble(paramCounter++, p.getOriginalRentCost()); // Original Rent Cost
+			ps.setDouble(paramCounter++, p.getOriginalBuyCost()); // Original Buy Cost
+			ps.setString(paramCounter++, p.getDescription()); // Description
+			ps.setString(paramCounter++, p.getPoster()); // Poster
+			ps.setString(paramCounter++, p.getTrailer()); // Trailer
+			ps.setString(paramCounter++, p.getWriters());// Writers
+			ps.setString(paramCounter++, p.getActors());// Actors
+			ps.setDouble(paramCounter++, p.getSalePercent());// Sale percent
+			ps.setDate(paramCounter++, (saleValidity != null ? Date.valueOf(saleValidity) : null)); // Validity
 
-			ps.setString(1, p.getName()); // Name
-			ps.setInt(2, p.getReleaseDate().getYear()); // Release year
-			ps.setString(3, p.getPgRating()); // PG Rating
-			ps.setInt(4, p.getDuration()); // Duration
-			ps.setDouble(5, p.getOriginalRentCost()); // Original Rent Cost
-			ps.setDouble(6, p.getOriginalBuyCost()); // Original Biu Cost
-			ps.setString(7, p.getDescription()); // Description
-			ps.setString(8, p.getPoster()); // Poster
-			ps.setString(9, p.getTrailer()); // Trailer
-			ps.setString(10, p.getWriters());// Writers
-			ps.setString(11, p.getActors());// Actors
-			ps.setDouble(12, p.getSalePercent());// Sale percent
-			ps.setDate(13, (saleValidity != null ? Date.valueOf(saleValidity) : null)); // Validity
-
-			ps.setInt(14, p.getId()); // Id
+			ps.setInt(paramCounter++, p.getId()); // Id
 			ps.executeUpdate();
 
 			// Update the product genres
