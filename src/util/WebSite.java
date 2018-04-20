@@ -37,9 +37,6 @@ public final class WebSite {
 	private static final LocalTime TASKS_STARTING_TIME = LocalTime.now().withHour(17).withMinute(53).withSecond(00);
 	private static final Map<Integer,Genre> GENRES = new TreeMap<>();
 	private static final Map<Integer, ProductCategory> PRODUCT_CATEGORIES = new TreeMap<>();
-	private static final Map<Integer,Product> PRODUCTS = new ConcurrentHashMap<>(); 
-	private static final Map<Integer,Movie> MOVIES = new ConcurrentHashMap<>(); 
-	private static final Map<Integer,TVSeries> TVSERIES = new ConcurrentHashMap<>(); 
 	private static final List<CustomTaskExecutor> TASKS = new ArrayList<>();
 	
 	// Constructors --> never instantiated
@@ -67,12 +64,7 @@ public final class WebSite {
 			PRODUCT_CATEGORIES.put(pc.getId(),pc);
 		}
 	}
-	
-	public static Product getProductById(int productId) {
-		return PRODUCTS.get(productId);
-	}
-	
-	
+
 	public static Collection<CustomTaskExecutor> getAllTasks(){
 		return Collections.unmodifiableCollection(TASKS);
 	}
@@ -84,18 +76,6 @@ public final class WebSite {
 		
 		//Load all product categories
 		PRODUCT_CATEGORIES.putAll(ProductCategoryDao.getInstance().getAllProductCategories());
-
-		
-		//Load all products
-		for (Product p : ProductDao.getInstance().getProducts(null)) {
-			if(p instanceof Movie){
-				MOVIES.put(p.getId(), (Movie) p);
-			}
-			if(p instanceof TVSeries){
-				TVSERIES.put(p.getId(), (TVSeries) p);
-			}
-			PRODUCTS.put(p.getId(), p);
-		}
 		
 		//Create all utility tasks
 		TASKS.add(new CustomTaskExecutor(ExpiringProductsNotifier.getInstance())); //Expiring products notifier
