@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import exceptions.InvalidOrderDataException;
+import exceptions.InvalidProductDataException;
 import exceptions.InvalidUserDataException;
 import model.Order;
 import model.Product;
@@ -42,18 +43,16 @@ public class UserManager {
 		boolean isAdmin = false;
 		u = SimpleUserFactory.createUser(isAdmin, firstName, lastName, username, password, email);
 
-		// Save user in the databse
+		// Save user in the database
 		this.dao.saveUser(u);
 
 		// Set the users password to the salt
 		u.setPassword(u.hashPassword());
 
-		// Add user in the users collection
-		WebSite.addUser(u);
 		return true;
 	}
 
-	public User logIn(String username, String password) {
+	public User logIn(String username, String password) throws InvalidProductDataException {
 		try {
 			User u = this.dao.getUserByLoginCredentials(username, password);
 			if (u != null) {

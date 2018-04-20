@@ -72,4 +72,5 @@ public class TVSeries extends Product {
 	public LocalDate getFinishedAiring() {
 		return this.finishedAiring;
 	}
+	
 }

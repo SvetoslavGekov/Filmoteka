@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import exceptions.InvalidProductCategoryDataException;
 import exceptions.InvalidProductDataException;
 import model.nomenclatures.Genre;
 import model.nomenclatures.ProductCategory;
@@ -89,6 +88,7 @@ public abstract class Product implements Comparable<Product>{
 		setId(id);
 
 		//Calculate and set the viewerRating
+		setRaters(raters);
 		setViewerRating(calculateRating());
 	}
 
@@ -208,7 +208,9 @@ public abstract class Product implements Comparable<Product>{
 	}
 
 	public void setGenres(Set<Genre> genres) {
-		this.genres = genres;
+		if(genres != null) {
+			this.genres = genres;
+		}
 	}
 
 	public void setRaters(Map<Integer, Double> raters) {
@@ -219,7 +221,7 @@ public abstract class Product implements Comparable<Product>{
 	
 	public void addRater(User user, double rate) {
 		//If the user rates the product for first time
-		if(!this.raters.containsKey(user)){
+		if(!this.raters.containsKey(user.getUserId())){
 			// Add new rater with his rating
 			this.raters.put(user.getUserId(), rate);
 			return;

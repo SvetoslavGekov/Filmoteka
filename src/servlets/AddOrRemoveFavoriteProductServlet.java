@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,8 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controller.manager.UserManager;
+import exceptions.InvalidProductDataException;
 import model.Product;
 import model.User;
+import model.dao.ProductDao;
 import util.WebSite;
 
 /**
@@ -27,19 +30,28 @@ public class AddOrRemoveFavoriteProductServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// Get user from session
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("USER");
 
-		// Get product from website
-		Integer productId = Integer.valueOf(request.getParameter("productId"));
-		Product product = WebSite.getProductById(productId);
+		try {
+			// Get user from session
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("USER");
 
-		// Check if the productId is valid
-		if (product != null) {
-			// Add or remove product from favorites
-			UserManager.getInstance().addOrRemoveProductFromFavorites(user, product);
+			// Get product from website
+			Integer productId = Integer.valueOf(request.getParameter("productId"));
+			Product product = ProductDao.getInstance().getProductById(productId);
+			
+			// Check if the productId is valid
+			if (product != null) {
+				// Add or remove product from favorites
+				UserManager.getInstance().addOrRemoveProductFromFavorites(user, product);
+			}
 		}
+		catch (SQLException | InvalidProductDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
 	}
 
 }

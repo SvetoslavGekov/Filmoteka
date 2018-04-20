@@ -6,15 +6,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import dbManager.DBManager;
 import exceptions.InvalidOrderDataException;
+import exceptions.InvalidProductDataException;
 import model.Order;
 import model.Product;
-import util.WebSite;
 
 public final class OrderDao implements IOrderDao {
 	//Fields
@@ -35,7 +37,7 @@ public final class OrderDao implements IOrderDao {
 		return instance;
 	}
 	
-	public Order getOrderById(int orderId) throws SQLException, InvalidOrderDataException {
+	public Order getOrderById(int orderId) throws SQLException, InvalidOrderDataException, InvalidProductDataException {
 		Order order = null;
 		
 		//Get the collection of products
@@ -56,23 +58,35 @@ public final class OrderDao implements IOrderDao {
 		return order;
 	}
 	
-	private Map<Product, LocalDate> getOrderProductsById(int orderId) throws SQLException {
-		Map<Product, LocalDate> products = new TreeMap<>();
+	private Map<Product, LocalDate> getOrderProductsById(int orderId) throws SQLException, InvalidProductDataException {
+		Map<Product, LocalDate> orderProducts = new TreeMap<>();
 		
 		try(PreparedStatement ps = con.prepareStatement("SELECT order_id, product_id, validity FROM order_has_products WHERE order_id = ?;")){
 			ps.setInt(1, orderId);
 			try(ResultSet rs = ps.executeQuery()){
+				//Create a list of product IDs
+				List<Integer> productIDs = new ArrayList<>();
+				List<Date> validities = new ArrayList<>();
+				
 				//Populate products collection
 				while(rs.next()) {
-					Product pr = WebSite.getProductById(rs.getInt("product_id"));
-					Date validity = rs.getDate("validity");
+					productIDs.add(rs.getInt("product_id"));
+					validities.add(rs.getDate("validity"));
 					
-					products.put(pr, validity != null ? validity.toLocalDate() : null);
+//					products.put(pr, validity != null ? validity.toLocalDate() : null);
+				}
+				//Grab a list of products
+				List<Product> products = new ArrayList<>(ProductDao.getInstance().getProducts(productIDs));
+				
+				//Fill the final collection
+				for(int i = 0; i < products.size(); i++){
+					Date validity = validities.get(i);
+					orderProducts.put(products.get(i), validity != null ? validity.toLocalDate() : null);
 				}
 			}
 		}
 		
-		return products;
+		return orderProducts;
 	}
 
 	public void saveOrder(Order order) throws SQLException, InvalidOrderDataException {

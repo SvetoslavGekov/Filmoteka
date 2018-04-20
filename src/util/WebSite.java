@@ -21,7 +21,6 @@ import exceptions.InvalidUserDataException;
 import model.Movie;
 import model.Product;
 import model.TVSeries;
-import model.User;
 import model.dao.ProductDao;
 import model.dao.nomenclatures.GenreDao;
 import model.dao.nomenclatures.ProductCategoryDao;
@@ -35,13 +34,12 @@ import util.taskExecutors.ExpiringProductsNotifier;
 
 public final class WebSite {
 	// Fields
-	private static final LocalTime TASKS_STARTING_TIME = LocalTime.now().withHour(11).withMinute(20).withSecond(00);
+	private static final LocalTime TASKS_STARTING_TIME = LocalTime.now().withHour(17).withMinute(53).withSecond(00);
 	private static final Map<Integer,Genre> GENRES = new TreeMap<>();
 	private static final Map<Integer, ProductCategory> PRODUCT_CATEGORIES = new TreeMap<>();
 	private static final Map<Integer,Product> PRODUCTS = new ConcurrentHashMap<>(); 
 	private static final Map<Integer,Movie> MOVIES = new ConcurrentHashMap<>(); 
 	private static final Map<Integer,TVSeries> TVSERIES = new ConcurrentHashMap<>(); 
-	private static final Map<Integer,User> USERS = new ConcurrentHashMap<>();
 	private static final List<CustomTaskExecutor> TASKS = new ArrayList<>();
 	
 	// Constructors --> never instantiated
@@ -50,7 +48,6 @@ public final class WebSite {
 	}
 
 	// Methods
-	
 	public static Genre getGenreById(int id) {
 		return GENRES.get(id);
 	}
@@ -71,45 +68,10 @@ public final class WebSite {
 		}
 	}
 	
-	public static void addProduct(Product p) {
-		if(p != null) {
-			PRODUCTS.put(p.getId(), p);
-		}
-	}
-	
-	public static void addUser(User u) {
-		if(u != null) {
-			USERS.put(u.getUserId(), u);
-		}
-	}
-	
-	public static User getUserByID(int userId) {
-		return USERS.get(userId);
-	}
-	
 	public static Product getProductById(int productId) {
 		return PRODUCTS.get(productId);
 	}
 	
-	public static Product getMovieById(int movieId) {
-		return MOVIES.get(movieId);
-	}
-	
-	public static Product getTVSerieById(int tvSerieId) {
-		return TVSERIES.get(tvSerieId);
-	}
-	
-	public static Collection<Product> getAllProducts() {
-		return Collections.unmodifiableCollection(PRODUCTS.values());
-	}
-	
-	public static Collection<Product> getAllMovies() {
-		return Collections.unmodifiableCollection(MOVIES.values());
-	}
-	
-	public static Collection<Product> getAllTVSeries() {
-		return Collections.unmodifiableCollection(TVSERIES.values());
-	}
 	
 	public static Collection<CustomTaskExecutor> getAllTasks(){
 		return Collections.unmodifiableCollection(TASKS);
@@ -125,7 +87,7 @@ public final class WebSite {
 
 		
 		//Load all products
-		for (Product p : ProductDao.getInstance().getAllProducts()) {
+		for (Product p : ProductDao.getInstance().getProducts(null)) {
 			if(p instanceof Movie){
 				MOVIES.put(p.getId(), (Movie) p);
 			}
@@ -133,7 +95,6 @@ public final class WebSite {
 				TVSERIES.put(p.getId(), (TVSeries) p);
 			}
 			PRODUCTS.put(p.getId(), p);
-			System.out.println(p);
 		}
 		
 		//Create all utility tasks
@@ -174,5 +135,8 @@ public final class WebSite {
 		for (Integer inti : ProductDao.getInstance().getFilteredProducts(pqi)) {
 			System.out.println(inti);
 		}
+		
+		
+		//TODO --> 1) Implement a simple product factory / get product by id which calls the factory and the factory calls the first two methods.
 	}
 }

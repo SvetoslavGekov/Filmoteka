@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Map.Entry;
 
@@ -12,8 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controller.manager.UserManager;
+import exceptions.InvalidProductDataException;
 import model.Product;
 import model.User;
+import model.dao.ProductDao;
 import util.WebSite;
 
 /**
@@ -33,7 +36,18 @@ public class RemoveProductFromCartServlet extends HttpServlet {
 
 		// Get product from website
 		Integer productId = Integer.valueOf(request.getParameter("productId"));
-		Product product = WebSite.getProductById(productId);
+		Product product = null;
+		try {
+			product = ProductDao.getInstance().getProductById(productId);
+		}
+		catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		catch (InvalidProductDataException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		// Check if the productId is valid
 		if (product != null) {

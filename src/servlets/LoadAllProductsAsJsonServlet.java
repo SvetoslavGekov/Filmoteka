@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -12,8 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import exceptions.InvalidProductDataException;
 import model.Product;
-import util.WebSite;
+import model.dao.ProductDao;
 
 /**
  * Servlet implementation class LoadAllProductsAsJsonServlet
@@ -28,14 +30,23 @@ public class LoadAllProductsAsJsonServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		GsonBuilder gBuilder = new GsonBuilder();
-		gBuilder.setPrettyPrinting();
-		Gson result = gBuilder.create();
 
-//		response.setContentType("aplication/json");
-		ArrayList<Product> products = new ArrayList<>(WebSite.getAllProducts());
-		String jsonString = result.toJson(products);
-		response.getWriter().write(jsonString);
+		ArrayList<Product> products;
+		try {
+			GsonBuilder gBuilder = new GsonBuilder();
+			gBuilder.setPrettyPrinting();
+			Gson result = gBuilder.create();
+
+			products = new ArrayList<>(ProductDao.getInstance().getProducts(null));
+
+			String jsonString = result.toJson(products);
+			response.getWriter().write(jsonString);
+		}
+		catch (SQLException | InvalidProductDataException e) {
+			// TODO Handle exception with AJAX
+			e.printStackTrace();
+		}
+
 	}
 
 }

@@ -2,8 +2,6 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import controller.manager.UserManager;
+import exceptions.InvalidProductDataException;
 import model.Product;
 import model.User;
 import model.dao.ProductDao;
@@ -33,7 +31,14 @@ public class RateProductServlet extends HttpServlet {
 
 		// Get product from website
 		Integer productId = Integer.valueOf(request.getParameter("productId"));
-		Product product = WebSite.getProductById(productId);
+		Product product = null;
+		try {
+			product = ProductDao.getInstance().getProductById(productId);
+		}
+		catch (SQLException | InvalidProductDataException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		//Get rating parameter
 		Integer rating = Integer.valueOf(request.getParameter("rating"));

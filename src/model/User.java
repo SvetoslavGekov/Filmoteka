@@ -35,10 +35,10 @@ public class User implements Comparable<User> {
 	// Collections
 	private Set<Integer> favourites = new TreeSet<>(); // Set of productId's
 	private Set<Integer> watchList = new TreeSet<>(); // Set of productId's
-	private Map<Product, LocalDate> products = new HashMap<>(); // Key: Product (can be Id) -> Value: Validity date
+	private Map<Product, LocalDate> products = new TreeMap<>(); // Key: Product (can be Id) -> Value: Validity date
 																// (null for bought products)
 	private TreeMap<Product, LocalDate> shoppingCart = new TreeMap<>(); // Same as products
-	private Set <Order> ordersHistory = new TreeSet<>();;
+	private Set <Order> ordersHistory = new TreeSet<>();
 
 	// Constructors
 	// Constructor for registering a new user
@@ -162,9 +162,10 @@ public class User implements Comparable<User> {
 	public void setPhone(String phone) throws InvalidUserDataException {
 		if(phone == null || Supp.isValidPhoneNumber(phone)){
 			this.phone = phone;
-			return;
 		}
-		throw new InvalidUserDataException("Invalid user's phone number!");
+		else {
+			throw new InvalidUserDataException("Invalid user's phone number!");
+		}
 	}
 
 	public double getMoney() {

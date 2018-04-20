@@ -11,9 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controller.manager.UserManager;
+import exceptions.InvalidProductDataException;
 import model.Product;
 import model.User;
-import util.WebSite;
+import model.dao.ProductDao;
 
 /**
  * Servlet implementation class AddOrRemoveWatchlistProductServlet
@@ -28,24 +29,32 @@ public class AddOrRemoveWatchlistProductServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// Get user from session
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("USER");
 
-		// Get product from website
-		Integer productId = Integer.valueOf(request.getParameter("productId"));
-		Product product = WebSite.getProductById(productId);
+		try {
+			// Get user from session
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("USER");
 
-		// Check if productId is valid
-		if (product != null) {
-			// Add or remove product from favorites
-			try {
-				UserManager.getInstance().addOrRemoveProductFromWatchlist(user, product);
+			// Get product from database
+			Integer productId = Integer.valueOf(request.getParameter("productId"));
+			
+			Product	product = ProductDao.getInstance().getProductById(productId);
+			
+			// Check if productId is valid
+			if (product != null) {
+				// Add or remove product from favorites
+				try {
+					UserManager.getInstance().addOrRemoveProductFromWatchlist(user, product);
+				}
+				catch (SQLException e) {
+					// TODO Handle SQL exception
+					e.printStackTrace();
+				}
 			}
-			catch (SQLException e) {
-				// TODO Handle SQL exception
-				e.printStackTrace();
-			}
+		}
+		catch (SQLException | InvalidProductDataException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 

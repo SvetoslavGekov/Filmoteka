@@ -2,6 +2,7 @@ package validation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
@@ -75,6 +76,20 @@ public final class Supp {
 		return false;
 	}
 	
+	public static final void inClauseAppender(StringBuilder sql, List<Integer> appendables) {
+		//Check if there is any need to append in the first place
+		if(appendables != null && !appendables.isEmpty()) {
+			for (int i = 0; i < appendables.size(); i++) {
+				if(i != appendables.size() - 1) {
+					sql.append("?,");
+				}
+				else {
+					//For the last one (finish the query)
+					sql.append("?) ");
+				}
+			}
+		}
+	}
 	
 	//TODO PGRating validation
 }

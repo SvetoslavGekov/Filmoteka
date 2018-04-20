@@ -20,9 +20,16 @@ public interface IProductDao {
 	
 	Map<Integer,Double> getProductRatersById(int movieId) throws SQLException;
 	
+	Collection<Product> getProducts(List<Integer> identifiers) throws SQLException, InvalidProductDataException;
+	
+	Product getProductById(int productId) throws SQLException, InvalidProductDataException;
+	
 	Collection<Product> getAllProducts() throws SQLException, InvalidProductDataException;
 
 	void deleteExpiredProducts() throws SQLException;
 
 	List<Integer> getFilteredProducts(ProductQueryInfo filter) throws SQLException;
+
+
+	
 }

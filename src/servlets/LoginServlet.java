@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controller.manager.UserManager;
+import exceptions.InvalidProductDataException;
 import model.User;
 
 /**
@@ -26,7 +27,14 @@ public class LoginServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		
 		//Check if the credentials are valid
-		User user = UserManager.getInstance().logIn(username, password); 
+		User user = null;
+		try {
+			user = UserManager.getInstance().logIn(username, password);
+		}
+		catch (InvalidProductDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		if(user != null) {
 			//Get a new session
 			HttpSession session = request.getSession();

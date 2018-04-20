@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
+import exceptions.InvalidProductDataException;
 import exceptions.InvalidUserDataException;
 import model.Product;
 import model.User;
@@ -32,7 +33,7 @@ public final class ExpiringProductsNotifier implements Callable<Boolean> {
 	}
 	
 	@Override
-	public Boolean call() throws SQLException, InvalidUserDataException {
+	public Boolean call() throws SQLException, InvalidUserDataException, InvalidProductDataException {
 			//Collect all users that need to be notified in a map
 			Map<User, List<Product>> expiringProducts = UserDao.getInstance().getExpiringProducts();
 			

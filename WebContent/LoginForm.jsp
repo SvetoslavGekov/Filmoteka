@@ -169,10 +169,10 @@ img.avatar {
 
   <div class="container">
     <label for="username"><b>Username</b></label>
-    <input type="text" placeholder="Enter Username" name="username" required>
+    <input type="text" placeholder="Enter Username" name="username" value = "sgekov" required>
 
     <label for="password"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="password" required>
+    <input type="password" placeholder="Enter Password" name="password" value = "Sgekov123" required>
         
     <button type="submit">Login</button>
     <label>

@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -139,9 +138,6 @@ public final class MovieDao implements IMovieDao {
 				}
 				
 			}
-		}
-		if(allMovies.isEmpty()) {
-			return Collections.emptyList();
 		}
 		return allMovies;
 	}

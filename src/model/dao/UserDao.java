@@ -22,12 +22,12 @@ import java.util.TreeMap;
 
 import dbManager.DBManager;
 import exceptions.InvalidOrderDataException;
+import exceptions.InvalidProductDataException;
 import exceptions.InvalidUserDataException;
 import model.Order;
 import model.Product;
 import model.SimpleUserFactory;
 import model.User;
-import util.WebSite;
 import validation.BCrypt;
 
 public class UserDao implements IUserDao {
@@ -47,7 +47,7 @@ public class UserDao implements IUserDao {
 	}
 
 	@Override
-	public User getUserByID(int id) throws SQLException, InvalidUserDataException, InvalidOrderDataException {
+	public User getUserByID(int id) throws SQLException, InvalidUserDataException, InvalidOrderDataException, InvalidProductDataException {
 		User user = null;
 		String sql = "SELECT user_id, is_admin, first_name, last_name, username, password, email, phone, registration_date,"
 				+ " last_login,profile_picture, money FROM users WHERE user_id = ?;";
@@ -63,7 +63,7 @@ public class UserDao implements IUserDao {
 				// Grab users watchlist, favorites and products
 				Set<Integer> watchlist = new HashSet<>(getUserWatchlistById(userId));
 				Set<Integer> favorites = new HashSet<>(getUserFavoritesById(userId));
-				Map<Product, LocalDate> products = new HashMap<>(getUserProductsById(userId));
+				Map<Product, LocalDate> products = new TreeMap<>(getUserProductsById(userId));
 
 				user =  SimpleUserFactory.createUser(isAdmin, //Admin flag
 						userId, // User Id
@@ -148,7 +148,7 @@ public class UserDao implements IUserDao {
 	}
 
 	@Override
-	public Collection<User> getAllUsers() throws SQLException, InvalidUserDataException, InvalidOrderDataException {
+	public Collection<User> getAllUsers() throws SQLException, InvalidUserDataException, InvalidOrderDataException, InvalidProductDataException {
 		HashSet<User> resultUsers = new HashSet<>();
 		String sql = "SELECT user_id, is_admin, username, email, password, first_name, last_name, registration_date, phone,"
 				+ " last_login, profile_picture, money FROM users ORDER BY user_id DESC;";
@@ -197,25 +197,37 @@ public class UserDao implements IUserDao {
 	}
 
 	@Override
-	public Map<Product, LocalDate> getUserProductsById(int userId) throws SQLException {
-		Map<Product, LocalDate> products = new TreeMap<>();
+	public Map<Product, LocalDate> getUserProductsById(int userId) throws SQLException, InvalidProductDataException {
+		Map<Product, LocalDate> userProducts = new TreeMap<>();
 		try (PreparedStatement ps = connection
 				.prepareStatement("SELECT product_id, validity FROM user_has_products WHERE user_id = ?;")) {
 			ps.setInt(1, userId);
 			try (ResultSet rs = ps.executeQuery()) {
+				//Create a list of the user's  products and their validities
+				List<Integer> productIDs = new ArrayList<>();
+				List<Date> validities = new ArrayList<>();
+				
 				while (rs.next()) {
 					// Get products from the website collection
 					int productId = rs.getInt("product_id");
 					Date validity = rs.getDate("validity");
-					Product pr = WebSite.getProductById(productId);
-					if (pr == null) {
-						break;
+					
+					productIDs.add(productId);
+					validities.add(validity);
+				}
+				
+				//Check if user has any products at all
+				if(!productIDs.isEmpty()) {
+					//Get all products as 1 query and put them in the map
+					List<Product> products = new ArrayList<>(ProductDao.getInstance().getProducts(productIDs));
+					for(int i = 0; i < products.size(); i++) {
+						Date validity = validities.get(i);
+						userProducts.put(products.get(i), validity != null ? validity.toLocalDate() : null);
 					}
-					products.put(pr, validity != null ? validity.toLocalDate() : null);
 				}
 			}
 		}
-		return products;
+		return userProducts;
 	}
 
 	public void saveUserProductsInCartById(int userId, Map<Product, LocalDate> products) throws SQLException {
@@ -266,7 +278,7 @@ public class UserDao implements IUserDao {
 	}
 
 	@Override
-	public Set<Order> getUserOrdersById(int userId) throws SQLException, InvalidOrderDataException {
+	public Set<Order> getUserOrdersById(int userId) throws SQLException, InvalidOrderDataException, InvalidProductDataException {
 		Set<Order> orders = new HashSet<Order>();
 		try (PreparedStatement ps = connection.prepareStatement("SELECT 	order_id FROM orders WHERE user_id = ?")) {
 			ps.setInt(1, userId);
@@ -282,7 +294,7 @@ public class UserDao implements IUserDao {
 
 	@Override
 	public User getUserByLoginCredentials(String username, String password)
-			throws SQLException, InvalidUserDataException, InvalidOrderDataException {
+			throws SQLException, InvalidUserDataException, InvalidOrderDataException, InvalidProductDataException {
 		User user = null;
 		try (PreparedStatement ps = connection.prepareStatement("SELECT user_id, password FROM users WHERE username = ?");) {
 			ps.setString(1, username);
@@ -355,7 +367,7 @@ public class UserDao implements IUserDao {
 		return false;
 	}
 	
-	public Map<User, List<Product>> getExpiringProducts() throws SQLException, InvalidUserDataException{
+	public Map<User, List<Product>> getExpiringProducts() throws SQLException, InvalidUserDataException, InvalidProductDataException{
 		Map<User,List<Product>> expiringProducts = new TreeMap<>();
 		
 		String query = "SELECT up.user_id, up.product_id, up.validity, u.first_name, u.last_name, u.username, u.password, u.email" + 
@@ -364,8 +376,12 @@ public class UserDao implements IUserDao {
 				"	WHERE validity = DATE_ADD(curdate(), INTERVAL 1 DAY);";
 		try(Statement s = connection.createStatement()){
 			try(ResultSet rs = s.executeQuery(query)){
+				//Create a map of the user and all his products(Identifiers)
+				Map<User, List<Integer>> userProducts = new TreeMap<>(); 
+				
 				while(rs.next()) {
-					//Create user and product
+					//Create user and product identifiers
+					
 					//Create user with his credentials (no need to make the DB select one)
 					User user = new User(rs.getString("first_name"), //First name
 							rs.getString("last_name"), //Last name 
@@ -373,16 +389,24 @@ public class UserDao implements IUserDao {
 							rs.getString("password"), //Hashed password
 							rs.getString("email")); //Email
 					
-					//Select product from the collection of all products
-					Product product = WebSite.getProductById(rs.getInt("product_id"));
-					
 					//Put instances in resulting map
-					if(!expiringProducts.containsKey(user)) {
+					if(!userProducts.containsKey(user)) {
 						//If no such user is in the map -> create new entry with new array list
-						expiringProducts.put(user, new ArrayList<Product>());
+						userProducts.put(user, new ArrayList<Integer>());
 					}
 					//Add product to array list
-					expiringProducts.get(user).add(product);
+					userProducts.get(user).add(rs.getInt("product_id"));
+				}
+				
+				//Create all products per user (faster than single queries to the database).
+				for (Entry<User, List<Integer>> e: userProducts.entrySet()) {
+					User user = e.getKey();
+					List<Integer> products = e.getValue();
+					if(!expiringProducts.containsKey(user)) {
+						expiringProducts.put(user, new ArrayList<Product>());
+					}
+					//Put the user and his list of products
+					expiringProducts.get(user).addAll(ProductDao.getInstance().getProducts(products));
 				}
 			}
 		}
