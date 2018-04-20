@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import exceptions.InvalidProductDataException;
-import model.Genre;
 import model.Product;
+import model.nomenclatures.Genre;
 import util.productFilters.ProductQueryInfo;
 
 

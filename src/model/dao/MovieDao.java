@@ -15,8 +15,8 @@ import java.util.TreeMap;
 
 import dbManager.DBManager;
 import exceptions.InvalidProductDataException;
-import model.Genre;
 import model.Movie;
+import model.nomenclatures.Genre;
 
 public final class MovieDao implements IMovieDao {
 	//Fields

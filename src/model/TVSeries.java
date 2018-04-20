@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import exceptions.InvalidProductDataException;
+import model.nomenclatures.Genre;
 
 public class TVSeries extends Product {
 	//Optional fields

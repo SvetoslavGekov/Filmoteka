@@ -3,8 +3,8 @@ package controller.manager;
 import java.sql.SQLException;
 
 import exceptions.InvalidGenreDataException;
-import model.Genre;
-import model.dao.GenreDao;
+import model.dao.nomenclatures.GenreDao;
+import model.nomenclatures.Genre;
 import util.WebSite;
 
 public final class GenreManager {

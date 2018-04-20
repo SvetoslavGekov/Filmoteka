@@ -18,11 +18,11 @@ import java.util.Set;
 
 import dbManager.DBManager;
 import exceptions.InvalidProductDataException;
-import model.Genre;
 import model.Movie;
 import model.Product;
 import model.TVSeries;
 import model.User;
+import model.nomenclatures.Genre;
 import util.WebSite;
 import util.productFilters.ProductQueryInfo;
 

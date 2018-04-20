@@ -15,8 +15,8 @@ import java.util.TreeMap;
 
 import dbManager.DBManager;
 import exceptions.InvalidProductDataException;
-import model.Genre;
 import model.TVSeries;
+import model.nomenclatures.Genre;
 
 public final class TVSeriesDao implements ITVSeriesDao {
 	// Fields
@@ -105,13 +105,13 @@ public final class TVSeriesDao implements ITVSeriesDao {
 					int tvsID = rs.getInt("product_id");
 					Date saleValidity = rs.getDate("sale_validity");
 
-					// Collect the movie's genres
+					// Collect the tv series's genres
 					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(tvsID));
 
-					// Collect the movie's raters
+					// Collect the tv series's raters
 					Map<Integer, Double> raters = new TreeMap<>(ProductDao.getInstance().getProductRatersById(tvsID));
 
-					// Construct the new movie
+					// Construct the new tv series
 					Date finishedAiring = rs.getDate("finished_airing");
 					TVSeries tvs = new TVSeries(tvsID, // Id
 							rs.getString("name"), // Name
@@ -166,13 +166,13 @@ public final class TVSeriesDao implements ITVSeriesDao {
 					int tvsID = rs.getInt("product_id");
 					Date saleValidity = rs.getDate("sale_validity");
 					
-					// Collect the movie's genres
+					// Collect the tv series's genres
 					Set<Genre> genres = new HashSet<>(ProductDao.getInstance().getProductGenresById(tvsID));
 
-					// Collect the movie's raters
+					// Collect the tv series's raters
 					Map<Integer, Double> raters = new TreeMap<>(ProductDao.getInstance().getProductRatersById(tvsID));
 
-					// Construct the new movie
+					// Construct the tv series
 					Date finishedAiring = rs.getDate("finished_airing");
 					TVSeries tvs = new TVSeries(tvsID, // Id
 							rs.getString("name"), // Name

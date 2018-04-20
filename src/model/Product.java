@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import exceptions.InvalidProductDataException;
+import model.nomenclatures.Genre;
 import validation.Supp;
 
 public abstract class Product implements Comparable<Product>{

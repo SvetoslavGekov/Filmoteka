@@ -5,9 +5,9 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import exceptions.InvalidProductDataException;
-import model.Genre;
 import model.TVSeries;
 import model.dao.TVSeriesDao;
+import model.nomenclatures.Genre;
 import util.WebSite;
 
 public class TVSeriesManager {
@@ -39,8 +39,6 @@ public class TVSeriesManager {
 				writers, actors, genres, salePercent, saleValidity, season, finishedAiring);
 		// Add movie to DB
 		dao.saveTVSeries(tvs);
-		// Add movie to the products collection
-		WebSite.addProduct(tvs);
 
 	}
 

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import controller.manager.MovieManager;
 import exceptions.InvalidProductDataException;
-import model.Genre;
+import model.nomenclatures.Genre;
 
 /**
  * Servlet implementation class CreateMovieServlet

@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebListener;
 import dbManager.DBManager;
 import exceptions.InvalidGenreDataException;
 import exceptions.InvalidOrderDataException;
+import exceptions.InvalidProductCategoryDataException;
 import exceptions.InvalidProductDataException;
 import exceptions.InvalidUserDataException;
 import util.WebSite;
@@ -50,7 +51,8 @@ public class LoadupContextListener implements ServletContextListener {
 			WebSite.main(null);
 			
 		}
-		catch (SQLException | InvalidGenreDataException | InvalidProductDataException | InvalidUserDataException | InvalidOrderDataException e) {
+		catch (SQLException | InvalidGenreDataException | InvalidProductDataException | InvalidUserDataException
+				| InvalidOrderDataException | InvalidProductCategoryDataException e) {
 			//If the system crashes when loading initial resours --> nothing will be loaded anyway
 			e.printStackTrace();
 		}

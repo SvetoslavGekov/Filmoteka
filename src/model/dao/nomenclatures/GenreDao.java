@@ -1,16 +1,15 @@
-package model.dao;
+package model.dao.nomenclatures;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
 import dbManager.DBManager;
 import exceptions.InvalidGenreDataException;
-import model.Genre;
+import model.nomenclatures.Genre;
 
 public final class GenreDao implements IGenreDao {
 	//Fields
@@ -67,9 +66,6 @@ public final class GenreDao implements IGenreDao {
 					allGenres.put(g.getId(),g);
 				}
 			}
-		}
-		if(allGenres.isEmpty()) {
-			return Collections.emptyMap();
 		}
 		return allGenres;
 	}

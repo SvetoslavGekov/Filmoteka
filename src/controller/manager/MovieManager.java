@@ -5,9 +5,9 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import exceptions.InvalidProductDataException;
-import model.Genre;
 import model.Movie;
 import model.dao.MovieDao;
+import model.nomenclatures.Genre;
 import util.WebSite;
 
 public class MovieManager {
@@ -41,8 +41,6 @@ public class MovieManager {
 		// Add movie to DB
 		dao.saveMovie(m);
 		
-		// Add movie to the products collection
-		WebSite.addProduct(m);
 	}
 
 }

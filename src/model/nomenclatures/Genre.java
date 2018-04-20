@@ -1,4 +1,4 @@
-package model;
+package model.nomenclatures;
 
 import exceptions.InvalidGenreDataException;
 import validation.Supp;

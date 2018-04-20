@@ -1,10 +1,10 @@
-package model.dao;
+package model.dao.nomenclatures;
 
 import java.sql.SQLException;
 import java.util.Map;
 
 import exceptions.InvalidGenreDataException;
-import model.Genre;
+import model.nomenclatures.Genre;
 
 public interface IGenreDao {
 	

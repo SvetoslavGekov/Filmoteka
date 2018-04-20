@@ -15,23 +15,29 @@ import com.google.gson.GsonBuilder;
 
 import exceptions.InvalidGenreDataException;
 import exceptions.InvalidOrderDataException;
+import exceptions.InvalidProductCategoryDataException;
 import exceptions.InvalidProductDataException;
 import exceptions.InvalidUserDataException;
-import model.Genre;
 import model.Movie;
 import model.Product;
 import model.TVSeries;
 import model.User;
-import model.dao.GenreDao;
 import model.dao.ProductDao;
+import model.dao.nomenclatures.GenreDao;
+import model.dao.nomenclatures.ProductCategoryDao;
+import model.nomenclatures.Genre;
+import model.nomenclatures.ProductCategory;
 import util.productFilters.ProductQueryInfo;
 import util.productFilters.ProductQueryInfoDeserializer;
 import util.taskExecutors.CustomTaskExecutor;
+import util.taskExecutors.ExpiredProductsDeleter;
+import util.taskExecutors.ExpiringProductsNotifier;
 
 public final class WebSite {
 	// Fields
-	private static final LocalTime TASKS_STARTING_TIME = LocalTime.now().withHour(20).withMinute(45).withSecond(00);
+	private static final LocalTime TASKS_STARTING_TIME = LocalTime.now().withHour(11).withMinute(20).withSecond(00);
 	private static final Map<Integer,Genre> GENRES = new TreeMap<>();
+	private static final Map<Integer, ProductCategory> PRODUCT_CATEGORIES = new TreeMap<>();
 	private static final Map<Integer,Product> PRODUCTS = new ConcurrentHashMap<>(); 
 	private static final Map<Integer,Movie> MOVIES = new ConcurrentHashMap<>(); 
 	private static final Map<Integer,TVSeries> TVSERIES = new ConcurrentHashMap<>(); 
@@ -52,6 +58,16 @@ public final class WebSite {
 	public static void addGenre(Genre g) {
 		if (g != null) {
 			GENRES.put(g.getId(),g);
+		}
+	}
+	
+	public static ProductCategory getProductCategoryById(int id) {
+		return PRODUCT_CATEGORIES.get(id);
+	}
+	
+	public static void addProductCategory(ProductCategory pc) {
+		if (pc != null) {
+			PRODUCT_CATEGORIES.put(pc.getId(),pc);
 		}
 	}
 	
@@ -99,9 +115,14 @@ public final class WebSite {
 		return Collections.unmodifiableCollection(TASKS);
 	}
 
-	public static void main(String[] args) throws SQLException, InvalidGenreDataException, InvalidProductDataException, InvalidUserDataException, InvalidOrderDataException {
+	public static void main(String[] args) throws SQLException, InvalidGenreDataException, InvalidProductDataException,
+	InvalidUserDataException, InvalidOrderDataException, InvalidProductCategoryDataException {
 		//Load all genres
 		GENRES.putAll(GenreDao.getInstance().getAllGenres());
+		
+		//Load all product categories
+		PRODUCT_CATEGORIES.putAll(ProductCategoryDao.getInstance().getAllProductCategories());
+
 		
 		//Load all products
 		for (Product p : ProductDao.getInstance().getAllProducts()) {
@@ -115,8 +136,8 @@ public final class WebSite {
 		}
 		
 		//Create all utility tasks
-//		TASKS.add(new CustomTaskExecutor(ExpiringProductsNotifier.getInstance())); //Expiring products notifier
-//		TASKS.add(new CustomTaskExecutor(ExpiredProductsDeleter.getInstance()));// Expired products deleter
+		TASKS.add(new CustomTaskExecutor(ExpiringProductsNotifier.getInstance())); //Expiring products notifier
+		TASKS.add(new CustomTaskExecutor(ExpiredProductsDeleter.getInstance()));// Expired products deleter
 		
 		//Start all task at the same time
 		for (CustomTaskExecutor taskExecutor : TASKS) {
