@@ -3,76 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<style>
-button.toCollection:hover {
-	background-color: #333333;
-}
-
-img.toCart {
-	halign: center;
-	width: 50px;
-	height: 50px;
-}
-
-img.toCart:hover {
-	cursor: pointer;
-}
-
-div.product {
-	max-width: 70%;
-}
-
-.image {
-	float: left;
-}
-
-section#products {
-	margin-left: 250px;
-	border: 1px solid gray;
-}
-
-aside#filters {
-	float: left;
-	border: 1px solid black;
-}
-
-ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	background-color: #333333;
-}
-
-li {
-	float: left;
-}
-
-span.cartItem{
-	font-size: 20px;
-	color: blue;
-}
-
-span.navigation {
-	display: block;
-	color: white;
-	valign: top;
-	padding: 16px;
-	text-decoration: none;
-}
-
-span.navigation:hover {
-	background-color: #111111;
-	cursor: pointer;
-}
-
-div.cartItem{
-	width:75%;
-   	max-width:75%;
-   	display: block;
-}
-
-</style>
+ 	<link rel="stylesheet" href="mainPageStyle.css">
 </head>
 <body onload="loadAllProducts()">
 	<!-- Navigation bar -->
@@ -93,11 +24,74 @@ div.cartItem{
 		<aside id="filters"></aside>
 
 		<section id="products"></section>
+		
 	</div>
 	<hr>
 
 	<!-- Footer section -->
 	<div id="footer"></div>
+	
+	<div id="editAccount" style="display:none" class="modal">
+	   <!-- <style>  -->
+       <!-- @import "forms.css";  -->
+   	   <!-- </style>  -->
+   		 	<span onclick="document.getElementById('editAccount').style.display='none'" class="close" title="Close Modal">&times;</span>
+			<form method= "POST" action="updateProfile" class="modal-content">
+			<div class="container">
+				 <label for="firstname"><b>First Name</b></label>
+				 <input type="text" placeholder="First name" name="firstname" 
+					 pattern="[A-Za-z]{1,32}" title="Not including numbers or special characters" style="text-transform: capitalize;"><br>
+					 
+				 <label for="lastname"><b>Last Name</b></label>
+				 <input type="text" placeholder="Last name" name="lastname" 
+					 pattern="[A-Za-z]{1,32}" title="Not including numbers or special characters" style="text-transform: capitalize;"><br>
+				 
+				 <label for="email"><b>Email</b></label>
+				 <input type="email" placeholder="Email" name="email" 
+				 	 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"><br>
+				 
+				 <label for="phone"><b>Phone number</b></label>
+				 <input type="text" placeholder="Phone" name="phone" 
+				 	 pattern="08\d{8}" title="Starting with 08 and 10 symbols long"><br>
+				
+				 <div style="display:none" id="passwordfield">
+				 	 <label for="cpass"><b>Current password</b></label>
+				 	 <input type="password" id="cpass" placeholder="Enter your password" name="currentPass" ><br>
+				 	 
+				 	 <label for="npass"><b>New password</b></label>
+				 	 <input type="password" id="npass"  placeholder="Enter the new passsword" name="newPass1"><br>
+				 	 <input type="password" id="npass2"  placeholder="Repeat the new password" name="newPass2"><br>
+				 </div>
+				 
+				 <input type="button" id="change_pass_btn" onclick="openPassFields()" value="Change Password">
+				 <button type="submit" class="savebtn">Save Changes</button>
+				 <button type="reset"  class="resetbtn">Reset</button>
+			 </div>
+			</form>
+	
+			<script type="text/javascript">
+				function openPassFields(){
+					document.getElementById("cpass").setAttribute("required", "");
+					document.getElementById("cpass").setAttribute("pattern","^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$");
+					document.getElementById("cpass").setAttribute("title", "At least 6 characters containing: 1 Uppercase letter, 1 Lowercase letter and 1 number");
+					
+					document.getElementById("npass").setAttribute("required", "");
+					document.getElementById("npass").setAttribute("pattern","^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$");
+					document.getElementById("npass").setAttribute("title", "At least 6 characters containing: 1 Uppercase letter, 1 Lowercase letter and 1 number");
+					
+					document.getElementById("npass2").setAttribute("required", "");
+					document.getElementById("npass2").setAttribute("pattern","^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$");
+					document.getElementById("npass2").setAttribute("title", "At least 6 characters containing: 1 Uppercase letter, 1 Lowercase letter and 1 number");
+					
+				    if(document.getElementById("passwordfield").style.display == 'none'){
+				        document.getElementById("passwordfield").style.display = 'block';
+				    }else{
+				        document.getElementById("passwordfield").style.display = 'none';
+				    }
+				}
+				
+			</script>
+	</div>
 </body>
 
 <script type="text/javascript">
@@ -322,8 +316,49 @@ div.cartItem{
 		document.getElementById("products").innerHTML = products;
 	}
 	
+	function loadUserTableFromJson(json){
+		
+		
+		var user = json;
+		var regDate = user.registrationDate;
+		var lastLogin = user.lastLogin;
+		var favourites = user.favourites;
+		var watchlist = user.watchList;
+		
+		var userInfo = "";
+		
+		userInfo += '<div id="myAccount">'
+		userInfo += '<h3>My Account</h3><br><br>'
+		userInfo += 'First name: '+user.firstName+'<br>'
+		userInfo += 'Last name: '+user.lastName+'<br>'
+		userInfo += 'Username: '+user.username+'<br>'
+		userInfo += 'Email: '+user.email+'<br>'
+		userInfo += 'Phone: '+user.phone+'<br>'
+		userInfo += 'Date of registration: '+regDate.day+'/'+regDate.month+'/'+regDate.year+'<br>'
+		userInfo += 'Last login: '+lastLogin.date.day+'/'+lastLogin.date.month+'/'+lastLogin.date.year+' at '+lastLogin.time.hour+':'+lastLogin.time.minute+':'+lastLogin.time.second+'<br>'
+		userInfo += 'Money: '+user.money+'<br>'
+		userInfo += '<input type="button" value="Edit" onclick="editProfileMenu()"><br></div>'	
+			
+		document.getElementById("products").innerHTML = userInfo;
+	}
+	
 	function myAccountMenus(){
-		location.href = "account";
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				///Read resulting JSON
+				var jsonResult = JSON.parse(this.responseText);
+				//Create table from JSON
+				loadUserTableFromJson(jsonResult);
+			}
+		};
+		xhttp.open("GET", "auth/account");
+		xhttp.send();
+	}
+	
+	
+	function editProfileMenu(){
+		document.getElementById("editAccount").style.display = "block";
 	}
 </script>
 

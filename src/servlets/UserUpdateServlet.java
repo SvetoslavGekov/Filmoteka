@@ -55,7 +55,7 @@ public class UserUpdateServlet extends HttpServlet {
 			response.getWriter().println("<script type=\"text/javascript\">");
 			response.getWriter().println("alert('Successfully updated profile!');");
 			//Redirect to MyAccount.jsp
-			response.getWriter().println("location='MyAccount.jsp';");
+			response.getWriter().println("location='MainPage.html';");
 			response.getWriter().println("</script>");
 			
 		} catch (InvalidUserDataException | SQLException e) {
