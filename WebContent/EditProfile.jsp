@@ -77,24 +77,40 @@ button {
 	<form method= "POST" action="updateProfile" >
 	<% User user = (User) session.getAttribute("USER"); %>
 	
-	 First name: <input type="text" placeholder="<%= user.getFirstName() %>" name="firstname" maxlength="15"><br>
-	 Last name: <input type="text" placeholder="<%= user.getLastName() %>" name="lastname" maxlength="15"><br>
-	 Email: <input type="email" placeholder="<%= user.getEmail() %>" name="email" maxlength="15"><br>
-	 Phone number: <input type="number" placeholder="<%= user.getPhone() %>" name="phone" maxlenght="10"><br>
+	 First name: <input type="text" placeholder="<%= user.getFirstName() %>" name="firstname" 
+		 pattern="[A-Za-z]{1,32}" title="Not including numbers or special characters" style="text-transform: capitalize;"><br>
+	 Last name: <input type="text" placeholder="<%= user.getLastName() %>" name="lastname" 
+		 pattern="[A-Za-z]{1,32}" title="Not including numbers or special characters" style="text-transform: capitalize;"><br>
+	 Email: <input type="email" placeholder="<%= user.getEmail() %>" name="email" 
+	 	 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"><br>
+	 Phone number: <input type="text" placeholder="<%= user.getPhone() %>" name="phone" 
+	 	 pattern="08\d{8}" title="Starting with 08 and 10 symbols long"><br>
 	
 	 <div style="display:none" id="passwordfield">
-	 	 Current password: <input type="password" placeholder="Enter your password" name="currentPass" ><br>
-	 	 New Password: <input type="password" placeholder="Enter new passsword" name="newPass1"><br>
-	 	 <input type="password" placeholder="Repeat the new password" name="newPass2"><br>
+	 	 Current password: <input type="password" id="cpass" placeholder="Enter your password" name="currentPass" ><br>
+	 	 New Password: <input type="password" id="npass"  placeholder="Enter the new passsword" name="newPass1"><br>
+	 	 <input type="password" id="npass2"  placeholder="Repeat the new password" name="newPass2"><br>
 	 </div>
 	 
-	 <input type="button" onclick="openPassFields()" value="Change Password">
+	 <input type="button" id="change_pass_btn" onclick="openPassFields()" value="Change Password">
 	 <button type="submit" class="savebtn">Save Changes</button>
 	 <button type="reset"  class="resetbtn">Reset</button>
 	</form>
 	
 	<script type="text/javascript">
 		function openPassFields(){
+			document.getElementById("cpass").setAttribute("required", "");
+			document.getElementById("cpass").setAttribute("pattern","^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$");
+			document.getElementById("cpass").setAttribute("title", "At least 6 characters containing: 1 Uppercase letter, 1 Lowercase letter and 1 number");
+			
+			document.getElementById("npass").setAttribute("required", "");
+			document.getElementById("npass").setAttribute("pattern","^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$");
+			document.getElementById("npass").setAttribute("title", "At least 6 characters containing: 1 Uppercase letter, 1 Lowercase letter and 1 number");
+			
+			document.getElementById("npass2").setAttribute("required", "");
+			document.getElementById("npass2").setAttribute("pattern","^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$");
+			document.getElementById("npass2").setAttribute("title", "At least 6 characters containing: 1 Uppercase letter, 1 Lowercase letter and 1 number");
+			
 			document.getElementById("passwordfield").style.display = "block";
 		}
 	</script>
