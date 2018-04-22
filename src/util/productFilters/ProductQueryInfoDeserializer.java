@@ -12,6 +12,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import exceptions.InvalidProductQueryInfoException;
+import model.nomenclatures.Genre;
+import util.WebSite;
 
 public class ProductQueryInfoDeserializer implements JsonDeserializer<ProductQueryInfo> {
 
@@ -37,11 +39,15 @@ public class ProductQueryInfoDeserializer implements JsonDeserializer<ProductQue
 		boolean isAscending = jsonObject.get("isAscending").getAsBoolean();
 		
 		//Deserialize the array of genres
-		List<Integer> genres = new ArrayList<Integer>();
+		List<Genre> genres = new ArrayList<Genre>();
 		
 		JsonArray jsonGenres = jsonObject.get("genres").getAsJsonArray();
-		for (JsonElement jsonElement : jsonGenres) {
-			genres.add(jsonElement.getAsInt());
+		for (int i = 0; i< jsonGenres.size();i++) {
+			JsonObject genreObject = jsonGenres.get(i).getAsJsonObject();
+		
+			Integer genreId = genreObject.get("id").getAsInt();
+			genres.add(WebSite.getGenreById(genreId));
+			
 		}
 		
 		//Create new ProductQueryInfo instance and return it

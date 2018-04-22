@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<title>FilmotekaBG</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- HTML Imports -->
+<!--<link rel="import" href="../menus/menus.html">
+
+<!-- Color Libraries -->
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-metro.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-highway.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-2017.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-food.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-vivid.css">
+<link rel="stylesheet" href="css/color-theme.css">
+<link rel="stylesheet" href="css/html_slider.css">
+
+<!-- JavaScript -->
+<script src="js/utility.js"></script>
+<script src="js/productsFilter.js"></script>
+
+<body onload="loadGroupedProducts()" class="w3-theme-d5">
+<!-- Navbar -->
+<div id="navigation" class="w3-top">
+  <div class="w3-bar w3-2017-lapis-blue  w3-card-4">
+	<button class="w3-bar-item w3-button w3-padding-large" >FilmotekaBG</button>
+	<button class="w3-bar-item w3-button w3-padding-large" onclick ="viewAllProducts()">Browse</button>
+	<div class="w3-dropdown-hover">
+	  <button class="w3-padding-large w3-button" title="More">MORE <i class="fa fa-caret-down"></i></button>     
+	  <div class="w3-dropdown-content w3-bar-block w3-card-4">
+		<a href="#" class="w3-bar-item w3-button">Merchandise</a>
+	  </div>
+	</div>
+	<div class="w3-bar-item w3-padding-large" style="width:30%">
+		<i class="fa fa-search"></i>
+		<input type="text" placeholder="Search..."></input>
+	</div>
+	<button class="w3-bar-item w3-button w3-padding-large w3-right w3-hover-green">Sign In</button>
+  </div>
+</div>
+	
+
+
+
+<!-- Filters Section -->
+<div id="filters" class="w3-container w3-gray w3-hide w3-round-xxlarge menus w3-left">
+	<div class="w3-button w3-light-red" onclick="filterProducts()">Apply filter</div>
+	<!--Product name -->
+	<div class="w3-panel">
+        <button onclick="openOrCloseSection('productNameSection')" class="w3-small w3-btn w3-block w3-theme-d2  w3-left-align">Product Name</button>
+    	<div id="productNameSection" class="w3-container w3-show w3-padding ">
+			<input id="filterName" name="filterName" class="w3-container w3-input" type="text" placeholder="Enter product name"></input>
+    	</div>
+    </div>
+    
+    <!--Release year -->
+    <div class="w3-panel">
+        <button onclick="openOrCloseSection('releaseYearSection')" class="w3-small w3-btn w3-block w3-theme-d2 w3-left-align">Release Year</button>
+    	<div id="releaseYearSection" class="w3-container w3-show  w3-padding ">
+				<div class="slidecontainer">
+                <span>Minimum: <span id="minReleaseYear"></span></span>
+  				<input type="range" min="1" max="100" value="50" class="slider" id="minReleaseYearSlider" 
+  					oninput="getSliderValue('minReleaseYearSlider','minReleaseYear')">
+				</div>
+                <div class="slidecontainer">
+                <span>Maximum: <span id="maxReleaseYear"></span></span>
+  				<input type="range" min="1" max="100" value="50" class="slider" id="maxReleaseYearSlider" 
+  					oninput="getSliderValue('maxReleaseYearSlider','maxReleaseYear')">
+				</div>	
+    	</div>
+    </div>
+    
+    <!--Duration -->
+    <div class="w3-panel">
+        <button onclick="openOrCloseSection('durationSection')" class="w3-small w3-container w3-btn w3-block w3-theme-d2 w3-left-align">Duration</button>
+    	<div id="durationSection" class="w3-container w3-show  w3-padding ">
+				<div class="slidecontainer">
+                <span>Minimum duration: <span id="minDuration"></span></span>
+  				<input type="range" min="1" max="100" value="50" class="slider" id="minDurationSlider" 
+  					oninput="getSliderValue('minDurationSlider','minDuration')">
+				</div>
+                <div class="slidecontainer">
+                <span>Maximum duration: <span id="maxDuration"></span></span>
+  				<input type="range" min="1" max="100" value="50" class="slider" id="maxDurationSlider" 
+  					oninput="getSliderValue('maxDurationSlider','maxDuration')">
+				</div>	
+    	</div>
+    </div> 
+    <!--Buy cost -->
+    <div class="w3-panel">
+        <button onclick="openOrCloseSection('buyCostSection')" class="w3-small w3-container w3-btn w3-block w3-theme-d2 w3-left-align">Price</button>
+    	<div id="buyCostSection" class="w3-container w3-show  w3-padding ">
+				<div class="slidecontainer">
+                <span>Minimum: <span id="minBuyCost"></span></span>
+  				<input type="range" min="1" max="100" value="50" class="slider" id="minBuyCostSlider" 
+  					oninput="getSliderValue('minBuyCostSlider','minBuyCost')">
+				</div>
+                <div class="slidecontainer">
+                <span>Maximum: <span id="maxBuyCost"></span></span>
+  				<input type="range" min="1" max="100" value="50" class="slider" id="maxBuyCostSlider" 
+  					oninput="getSliderValue('maxBuyCostSlider','maxBuyCost')">
+				</div>	
+    	</div>
+    </div>
+    <!--Rent cost -->
+    <div class="w3-panel">
+        <button onclick="openOrCloseSection('rentCostSection')" class="w3-small w3-container w3-btn w3-block w3-theme-d2 w3-left-align">Rent cost</button>
+    	<div id="rentCostSection" class="w3-container w3-show  w3-padding ">
+				<div class="slidecontainer">
+                <span>Minimum: <span id="minRentCost"></span></span>
+  				<input type="range" min="1" max="100" value="50" class="slider" id="minRentCostSlider" 
+  					oninput="getSliderValue('minRentCostSlider','minRentCost')">
+				</div>
+                <div class="slidecontainer">
+                <span>Maximum: <span id="maxRentCost"></span></span>
+  				<input type="range" min="1" max="100" value="50" class="slider" id="maxRentCostSlider" 
+  					oninput="getSliderValue('maxRentCostSlider','maxRentCost')">
+				</div>	
+    	</div>
+    </div>   
+    <!--Same for the other min & max values -->
+    
+	<div class="w3-panel">
+        <button onclick="openOrCloseSection('genresSection')" class="w3-small w3-container w3-btn w3-block w3-theme-d2 w3-left-align">Genres</button>
+    	<div id="genresSection" class="w3-container w3-show  w3-padding ">
+    	</div>
+    </div>
+</div>
+<!-- Contents -->
+<div id = "content" class="w3-container w3-right">
+
+</div>
+
+
+  <!-- Error Modal -->
+  <div id="errorModal" class="w3-modal " style="max-width:100%">
+    <div class="w3-modal-content w3-card w3-animate-zoom" style="max-width:100%">
+
+      <div class="w3-center  w3-container "><br>
+        <span onclick="document.getElementById('errorModal').style.display='none'" class="w3-button w3-medium w3-black w3-hover-red w3-display-topright " title="Close Modal">&times;</span>
+        <img src="icons/error.jpg" alt="Error image" style="max-width:70%" class="w3-image w3-circle w3-margin-top">
+      </div>
+	  <div class="w3-container w3-2017-lapis-blue">
+      	<p class="w3-center w3-xlarge" ><b>Ooops, something went wrong!</b></p>
+      	<p id="errorMessage" class="w3-center w3-medium"></p>
+      </div>	
+    </div>
+  </div>
+  
+    <!-- Unauthorized Access Modal -->
+  <div id="unauthorizedAccess" class="w3-modal " style="max-width:100%">
+    <div class="w3-modal-content w3-card w3-animate-zoom" style="max-width:100%">
+
+      <div class="w3-center  w3-container "><br>
+        <span onclick="document.getElementById('errorModal').style.display='none'" class="w3-button w3-medium w3-black w3-hover-red w3-display-topright " title="Close Modal">&times;</span>
+        <img src="icons/login.png" alt="Login required image" style="max-width:70%" class="w3-image w3-circle w3-margin-top">
+      </div>
+	  <div class="w3-container w3-2017-lapis-blue">
+      	<p id = "unauthorizedAccessMessage" class="w3-center w3-xlarge" >You need to be logged in to access this content!</p>
+      </div>	
+    </div>
+  </div>
+<script type="text/javascript">
+	var errorModal = "errorModal";
+	var errorMessage = "errorMessage";
+	
+	var unauthorizedAccess = "unauthorizedAccess";
+	var unauthorizedAccessmessage = "unauthorizedAccessMessage";
+	var jsonFilter ="";
+
+
+	function loadGroupedProducts() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				///Read resulting JSON
+				var jsonResult = JSON.parse(this.responseText);
+				//Create table from JSON
+				loadProductsAtStartup(jsonResult);
+			}
+			if(this.readyState == 4 && this.status == 500){
+				loadErrorModal(errorModal,errorMessage,this.responseText);
+			}
+		};
+		xhttp.open("GET", "loadGrpPrd", true);
+		xhttp.send();
+	}
+	
+	function filterProducts(){
+		updateProductFilter();
+		loadAllProducts();
+	}
+	
+	function viewAllProducts(){
+		//If the filter is loaded properly
+		loadProductsFilter()
+	}
+	
+	function loadAllProducts(){
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				///Read resulting JSON
+				var jsonResult = JSON.parse(this.responseText);
+				//Create table from JSON ==> needs other parser
+				
+			}
+			if(this.readyState == 4 && this.status == 500){
+				loadErrorModal(errorModal,errorMessage,this.responseText);
+			}
+		};
+
+		xhttp.open("POST", "filter", true);
+		xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xhttp.send(JSON.stringify(jsonFilter));
+	}
+	
+	function loadProductsFilter(){
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				//Read result as JSON
+				jsonFilter = JSON.parse(this.responseText);
+				//Create the filter from JSON
+				createProductsFilter();
+				loadAllProducts();
+			}
+			if(this.readyState == 4 && this.status == 500){
+				loadErrorModal(errorModal,errorMessage,this.responseText);
+			}
+		};
+		xhttp.open("GET", "filter", true);
+		xhttp.send();
+	}
+	
+	
+	
+	function loadProductsAtStartup(json){
+		var content = "";
+		
+		//Clear the content page from any data and reset it's margin
+		var contentElement = document.getElementById("content");
+		contentElement.innerHTML = "";
+		contentElement.style.marginLeft = "1%";
+		contentElement.style.marginTop = "7%";
+		//Start iterating over the json
+		for ( var i in json) {
+			var group = i;
+			var products = json[i];
+			//Create a div for each group
+			content+= '<div class="w3-panel w3-padding w3-border w3-round-xxlarge">'
+			content+= '	<div class="w3-row-padding">';
+			content+= '		<p class="w3-panel w3-text-white w3-wide"><b>'+group.toUpperCase()+'</b></p>';
+			
+			//Iterate over each group's products
+			for (var j in products){
+				var product = products[j];
+				var name = product.name;
+				var poster = product.poster;
+				content+= '<div class="w3-col" style="width:15%">';
+				content+= '		<div class = "w3-border-5 w3-border-black w3-metro-light-green w3-round-large" style="border:16px"  >';
+				content+= '			<p class = "w3-center w3-small w3-wide"><b>'+name+'</b></p>';
+				content+= '			<div class="w3-display-container w3-white">';
+				content+= '				<img src="getPic?pic='+poster+'" class="w3-hover-opacity" style="width:100%; height:250px;">';
+				content+= '				<div class="w3-display-middle w3-display-hover">';
+				content+= '					<button class="w3-button w3-indigo w3-tiny">More Info</button>';		
+				content+= '</div></div></div></div>';
+
+			}
+			//Close the div
+			content+="</div></div>"
+		}
+		
+		//Set the resulting items in the content div
+		document.getElementById("content").innerHTML = content;
+	}
+
+
+</script>
+
+
+</body>
+</html>

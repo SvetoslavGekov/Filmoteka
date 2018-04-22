@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import exceptions.InvalidProductQueryInfoException;
+import model.nomenclatures.Genre;
 import validation.Supp;
 
 public class ProductQueryInfo {
@@ -18,12 +19,12 @@ public class ProductQueryInfo {
 	private double maxBuyCost;
 	private double minRentCost;
 	private double maxRentCost;
-	private List<Integer> genres = new ArrayList<Integer>();
+	private List<Genre> genres = new ArrayList<>();
 	private String orderedBy;
 	private boolean isAscending;
 
 	public ProductQueryInfo(String name, int minReleaseYear, int maxReleaseYear, int minDuration, int maxDuration,
-			double minBuyCost, double maxBuyCost, double minRentCost, double maxRentCost, List<Integer> genres,
+			double minBuyCost, double maxBuyCost, double minRentCost, double maxRentCost, List<Genre> genres,
 			String orderedBy, boolean isAscending) throws InvalidProductQueryInfoException {
 		setName(name);
 		setMinReleaseYear(minReleaseYear);
@@ -116,7 +117,7 @@ public class ProductQueryInfo {
 		}
 	}
 
-	private void setGenres(List<Integer> genres) {
+	private void setGenres(List<Genre> genres) {
 		if (genres != null) {
 			this.genres = genres;
 		}
@@ -174,7 +175,7 @@ public class ProductQueryInfo {
 		return this.maxRentCost;
 	}
 
-	public List<Integer> getGenres() {
+	public List<Genre> getGenres() {
 		return Collections.unmodifiableList(this.genres);
 	}
 

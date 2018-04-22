@@ -18,6 +18,7 @@ import java.util.TreeMap;
 
 import dbManager.DBManager;
 import exceptions.InvalidProductDataException;
+import exceptions.InvalidProductQueryInfoException;
 import model.Product;
 import model.SimpleProductFactory;
 import model.User;
@@ -28,6 +29,7 @@ import util.productFilters.ProductQueryInfo;
 import validation.Supp;
 
 public final class ProductDao implements IProductDao {
+	private static final String DEFAULT_FILTER_ORDERED_BY = "name";
 	// Fields
 	private static ProductDao instance;
 	private Connection con;
@@ -172,7 +174,7 @@ public final class ProductDao implements IProductDao {
 					
 					//Create the product
 					product = SimpleProductFactory.createProduct(productId, //Product id
-							rs.getString("name"),//Product name
+							rs.getString(DEFAULT_FILTER_ORDERED_BY),//Product name
 							productCategory,//Category id
 							rs.getDate("release_year").toLocalDate(), //Release year
 							rs.getString("pg_rating"), //Pg rating
@@ -263,7 +265,7 @@ public final class ProductDao implements IProductDao {
 					Date finishedAiring = rs.getDate("finished_airing");
 					
 					identifiers.add(rs.getInt("product_id"));
-					names.add(rs.getString("name"));
+					names.add(rs.getString(DEFAULT_FILTER_ORDERED_BY));
 					categories.add(WebSite.getProductCategoryById(rs.getInt("category_id")));
 					releaseYears.add(rs.getDate("release_year").toLocalDate());
 					pgRatings.add(rs.getString("pg_rating"));
@@ -435,6 +437,103 @@ public final class ProductDao implements IProductDao {
 		}
 	}
 
+	public Collection<Product> getProductsOnSale(Integer limit) throws SQLException, InvalidProductDataException{
+		List<Integer> identifiers = new ArrayList<>();
+		
+		//Get the list of cheapest products
+		String sql = "SELECT product_id FROM products " + 
+				"	WHERE sale_validity >= curdate()";
+		if(limit != null) {
+			sql = sql.concat("  LIMIT ?;");
+		}
+		
+		try(PreparedStatement st =con.prepareStatement(sql)){
+			if(limit != null) {
+				st.setInt(1, limit);
+			}
+			try(ResultSet rs = st.executeQuery()){
+				while(rs.next()) {
+					identifiers.add(rs.getInt("product_id"));
+				}
+			}
+		}
+		//Return the products
+		return getProducts(identifiers);
+	}
+	
+	public Collection<Product> getMostPopularProducts(Integer limit) throws SQLException, InvalidProductDataException{
+		List<Integer> identifiers = new ArrayList<>();
+		
+		//Get the list of cheapest products
+		String sql = "SELECT product_id, COUNT(product_id) AS times_bought FROM order_has_products " + 
+				"	GROUP BY product_id ORDER BY times_bought DESC ";
+		if(limit != null) {
+			sql = sql +"  LIMIT ?;";
+		}
+		
+		try(PreparedStatement st =con.prepareStatement(sql)){
+			if(limit != null) {
+				st.setInt(1, limit);
+			}
+			try(ResultSet rs = st.executeQuery()){
+				while(rs.next()) {
+					identifiers.add(rs.getInt("product_id"));
+				}
+			}
+		}
+		//Return the products
+		return getProducts(identifiers);
+	}
+	
+	public Collection<Product> getHighestRatedtProducts(Integer limit) throws SQLException, InvalidProductDataException{
+		List<Integer> identifiers = new ArrayList<>();
+		
+		//Get the list of cheapest products
+		String sql = "SELECT product_id, (SUM(rating)/COUNT(user_id)) AS rating" + 
+				"	FROM product_has_raters GROUP BY product_id ORDER BY rating DESC";
+		//Check if limit is ommited
+		if(limit != null) {
+			sql = sql +"  LIMIT ?;";
+		}
+		
+		try(PreparedStatement st =con.prepareStatement(sql)){
+			//Set limit if not ommited
+			if(limit != null) {
+				st.setInt(1, limit);
+			}
+			try(ResultSet rs = st.executeQuery()){
+				while(rs.next()) {
+					identifiers.add(rs.getInt("product_id"));
+				}
+			}
+		}
+		//Return the products
+		return getProducts(identifiers);
+	}
+	
+	public Collection<Product> getCheapestProducts(Integer limit) throws SQLException, InvalidProductDataException{
+		List<Integer> identifiers = new ArrayList<>();
+		
+		//Get the list of cheapest products
+		String sql = "SELECT product_id FROM products ORDER BY buy_cost ASC";
+		if(limit != null) {
+			sql = sql +"  LIMIT ?;";
+		}
+		
+		try(PreparedStatement st =con.prepareStatement(sql)){
+			if(limit != null) {
+				st.setInt(1, limit);
+			}
+			try(ResultSet rs = st.executeQuery()){
+				while(rs.next()) {
+					identifiers.add(rs.getInt("product_id"));
+				}
+			}
+		}
+		//Return the products
+		return getProducts(identifiers);
+	}
+	
 	@Override
 	public List<Integer> getFilteredProducts(ProductQueryInfo filter) throws SQLException{
 		List<Integer> filteredProducts = new ArrayList<>();
@@ -451,10 +550,15 @@ public final class ProductDao implements IProductDao {
 				+ "	AND (p.rent_cost IS NULL OR (p.rent_cost >= ? AND p.rent_cost <= ?)) ");
 				
 		//Add genres if any
-		List<Integer> genres = filter.getGenres();
-		if(genres != null && !genres.isEmpty()) {
+		List<Integer> genresIDs = new ArrayList<>();
+		for (Genre genre : filter.getGenres()) {
+			genresIDs.add(genre.getId());
+		}
+		
+		
+		if(genresIDs != null && !genresIDs.isEmpty()) {
 			query.append("AND (g.genre_id IS NULL OR g.genre_id IN(");
-			Supp.inClauseAppender(query, genres);
+			Supp.inClauseAppender(query, genresIDs);
 		}
 		
 		//Add the ordering part (
@@ -478,7 +582,7 @@ public final class ProductDao implements IProductDao {
 			ps.setDouble(paramCounter++, filter.getMaxRentCost());// Max rent cost
 			
 			//Setting the IN clause for the genres if any
-			for (Integer genre_id : genres) {
+			for (Integer genre_id : genresIDs) {
 				ps.setInt(paramCounter++, genre_id);
 			}
 			
@@ -524,5 +628,39 @@ public final class ProductDao implements IProductDao {
 				}	
 			}	
 		}
+	}
+
+	public ProductQueryInfo getFilterInfo() throws SQLException, InvalidProductQueryInfoException {
+		ProductQueryInfo filter = null;
+		//Create a query to select all neccessary data
+		String sql = "SELECT MIN(release_year) minReleaseYear, MAX(release_year) maxReleaseYear,\r\n" + 
+				"	MIN(duration) minDuration, MAX(duration) maxDuration,\r\n" + 
+				"	MIN(buy_cost) minBuyCost, MAX(buy_cost) maxBuyCost,\r\n" + 
+				"	MIN(rent_cost) minRentCost, MAX(rent_cost) maxRentCost FROM products;";
+		
+		List<Genre> genres = new ArrayList<>(WebSite.getAllGenres().values());
+		
+		//Create a statement
+		try(Statement st = con.createStatement()){
+			//Execute statement and collect data
+			try(ResultSet rs = st.executeQuery(sql)){
+				if(rs.next()) {
+					//Return the initial filter object
+					filter = new ProductQueryInfo(null, //No initial name should be given
+							rs.getInt("minReleaseYear"), //Min release year
+							rs.getInt("maxReleaseYear"), //Max release year
+							rs.getInt("minDuration"), //Min duration
+							rs.getInt("maxDuration"), // Max duration
+							rs.getDouble("minBuyCost"), //Min buy cost
+							rs.getDouble("maxBuyCost"),//Max buy cost
+							rs.getDouble("minRentCost"), //Min rent cost
+							rs.getDouble("maxRentCost"),//Max rent cost
+							genres, //Genres map
+							DEFAULT_FILTER_ORDERED_BY, //Default column for ordering
+							true);//Default ascending order
+				}
+			}
+		}
+		return filter;
 	}
 }

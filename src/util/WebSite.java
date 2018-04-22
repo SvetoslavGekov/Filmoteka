@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,9 +17,6 @@ import exceptions.InvalidOrderDataException;
 import exceptions.InvalidProductCategoryDataException;
 import exceptions.InvalidProductDataException;
 import exceptions.InvalidUserDataException;
-import model.Movie;
-import model.Product;
-import model.TVSeries;
 import model.dao.ProductDao;
 import model.dao.nomenclatures.GenreDao;
 import model.dao.nomenclatures.ProductCategoryDao;
@@ -55,6 +51,10 @@ public final class WebSite {
 		}
 	}
 	
+	public static Map<Integer,Genre> getAllGenres() {
+		return Collections.unmodifiableMap(GENRES);
+	}
+	
 	public static ProductCategory getProductCategoryById(int id) {
 		return PRODUCT_CATEGORIES.get(id);
 	}
@@ -87,22 +87,7 @@ public final class WebSite {
 		}
 		
 		//Example for a productQueryInfo deserialization
-		String json = "{\r\n" + 
-				"  \"name\": null,\r\n" + 
-				"  \"minReleaseYear\": 1990,\r\n" + 
-				"  \"maxReleaseYear\": 2005,\r\n" + 
-				"  \"minDuration\": 15,\r\n" + 
-				"  \"maxDuration\": 300,\r\n" + 
-				"  \"minBuyCost\": 3,\r\n" + 
-				"  \"maxBuyCost\": 20,\r\n" + 
-				"  \"minRentCost\": 3,\r\n" + 
-				"  \"maxRentCost\": 20,\r\n" + 
-				"  \"genres\":[\r\n" + 
-				"    1,2,3,8,10,16\r\n" + 
-				"    ],\r\n" + 
-				"  \"orderedBy\": \"product_id\",\r\n" + 
-				"  \"isAscending\": true\r\n" + 
-				"}";
+		String json = "{\"name\":null,\"minReleaseYear\":1984,\"maxReleaseYear\":2008,\"minDuration\":22,\"maxDuration\":194,\"minBuyCost\":5,\"maxBuyCost\":15,\"minRentCost\":3,\"maxRentCost\":10,\"genres\":[{\"id\":1,\"value\":\"ACTION\"},{\"id\":2,\"value\":\"ADVENTURE\"},{\"id\":3,\"value\":\"ANIMATION\"},{\"id\":4,\"value\":\"BIOGRAPHY\"},{\"id\":5,\"value\":\"COMEDY\"},{\"id\":6,\"value\":\"CRIME\"},{\"id\":7,\"value\":\"DOCUMENTARY\"},{\"id\":8,\"value\":\"DRAMA\"},{\"id\":9,\"value\":\"FAMILY\"},{\"id\":10,\"value\":\"FANTASY\"},{\"id\":11,\"value\":\"HISTORY\"},{\"id\":12,\"value\":\"HORROR\"},{\"id\":13,\"value\":\"MUSIC\"},{\"id\":14,\"value\":\"MUSICAL\"},{\"id\":15,\"value\":\"MYSTERY\"},{\"id\":16,\"value\":\"ROMANCE\"},{\"id\":17,\"value\":\"SCIFI\"},{\"id\":18,\"value\":\"SPORT\"},{\"id\":19,\"value\":\"SUPERHERO\"},{\"id\":20,\"value\":\"THRILLER\"},{\"id\":21,\"value\":\"WAR\"},{\"id\":22,\"value\":\"WESTERN\"},{\"id\":31,\"value\":\"tAKO\"}],\"orderedBy\":\"name\",\"isAscending\":true}";
 		
 		//Create GSON builder
 		GsonBuilder gBuilder = new GsonBuilder().setPrettyPrinting();
@@ -116,7 +101,5 @@ public final class WebSite {
 			System.out.println(inti);
 		}
 		
-		
-		//TODO --> 1) Implement a simple product factory / get product by id which calls the factory and the factory calls the first two methods.
 	}
 }
