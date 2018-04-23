@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controller.manager.UserManager;
+import exceptions.ExceptionHandler;
 import exceptions.InvalidProductDataException;
 import model.Product;
 import model.User;
@@ -51,12 +52,9 @@ public class AddProductToCartServlet extends HttpServlet {
 				System.out.println(String.format("%s	%s", e.getKey().getName(), e.getValue()));
 			}
 		}
-		catch (SQLException e) {
-			// TODO: handle exception
-		}
-		catch (InvalidProductDataException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		catch (SQLException | InvalidProductDataException e) {
+			//Tell user that an error occured while fetching the product from the database
+			ExceptionHandler.handleDatabaseProcessingException(response);
 		}
 	}
 

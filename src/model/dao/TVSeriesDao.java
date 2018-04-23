@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,10 +47,14 @@ public final class TVSeriesDao implements ITVSeriesDao {
 			try {
 				// Insert the TV Series in the products table
 				ProductDao.getInstance().saveProduct(tvs);
-
+				
+				LocalDate finishedAiring = tvs.getFinishedAiring();
 				// Insert the TV Series in the TV Series table
-				try (PreparedStatement ps = con.prepareStatement("INSERT INTO tvseries (product_id) VALUES (?);")) {
+				try (PreparedStatement ps = con.prepareStatement("INSERT INTO tvseries (product_id, season, finished_airing)"
+						+ " VALUES (?,?,?);")) {
 					ps.setInt(1, tvs.getId());
+					ps.setInt(2, tvs.getSeason());
+					ps.setDate(3, finishedAiring != null ? Date.valueOf(finishedAiring) : null);
 					ps.executeUpdate();
 				}
 				con.commit();
@@ -72,12 +77,14 @@ public final class TVSeriesDao implements ITVSeriesDao {
 			try {
 				// Update the product basic information
 				ProductDao.getInstance().updateProduct(tvs);
-
+				LocalDate finishedAiring = tvs.getFinishedAiring();
+				
 				// Update the TV Series specific information
 				try (PreparedStatement ps = con.prepareStatement(
 						"UPDATE tvseries SET season = ?, finished_airing = ? WHERE product_id = ?;")) {
-					ps.setInt(1, tvs.getSeason());
-					ps.setDate(2, java.sql.Date.valueOf(tvs.getFinishedAiring()));
+					ps.setInt(1, tvs.getSeason()); //Series season
+					ps.setDate(2, finishedAiring != null ? Date.valueOf(finishedAiring) : null); //Series finished airing date
+					ps.setInt(3, tvs.getId()); //Series id
 					ps.executeUpdate();
 				}
 				con.commit();

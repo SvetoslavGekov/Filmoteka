@@ -41,7 +41,6 @@ public final class ExpiringProductsNotifier implements Callable<Boolean> {
 			for (Entry<User,List<Product>> e: expiringProducts.entrySet()) {
 				User user = e.getKey();
 				List<Product> products = e.getValue();
-				
 				String message = buildEmailMessage(user, products);
 				
 				//Send each on of them an email (no attachments)

@@ -52,44 +52,30 @@ public class UserManager {
 		return true;
 	}
 
-	public User logIn(String username, String password) throws InvalidProductDataException {
-		try {
-			User u = this.dao.getUserByLoginCredentials(username, password);
-			if (u != null) {
-				u.setLastLogin(LocalDateTime.now());
-				dao.updateUser(u);
-			}
-			return u;
+	public User logIn(String username, String password) throws InvalidProductDataException, SQLException, InvalidUserDataException, InvalidOrderDataException {
+		User u = this.dao.getUserByLoginCredentials(username, password);
+		if (u != null) {
+			u.setLastLogin(LocalDateTime.now());
+			dao.updateUser(u);
 		}
-		catch (SQLException | InvalidUserDataException | InvalidOrderDataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return u;
 	}
 
-	public boolean addOrRemoveProductFromFavorites(User user, Product product) {
+	public boolean addOrRemoveProductFromFavorites(User user, Product product) throws SQLException {
 		// Check if user will add or remove the product
 		List<Integer> favorites = new ArrayList<>(user.getFavourites());
-
-		try {
-			// If the user already has the product in his favorites
-			if (Collections.binarySearch(favorites, product.getId()) >= 0) {
-				// Remove product from user's favorites in the DB and in the POJO
-				this.dao.removeProductFromFavorites(user, product);
-				user.removeFavoriteProduct(product.getId());
-			}
-			// If the user doesn't have the product in his favorites
-			else {
-				// Add product to user's favorites in the DB and in the POJO
-				this.dao.addProductToFavorites(user, product);
-				user.addFavoriteProduct(product.getId());
-			}
+		
+		// If the user already has the product in his favorites
+		if (Collections.binarySearch(favorites, product.getId()) >= 0) {
+			// Remove product from user's favorites in the DB and in the POJO
+			this.dao.removeProductFromFavorites(user, product);
+			user.removeFavoriteProduct(product.getId());
 		}
-		catch (SQLException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			return false;
+		// If the user doesn't have the product in his favorites
+		else {
+			// Add product to user's favorites in the DB and in the POJO
+			this.dao.addProductToFavorites(user, product);
+			user.addFavoriteProduct(product.getId());
 		}
 		return true;
 	}

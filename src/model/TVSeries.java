@@ -10,7 +10,7 @@ import model.nomenclatures.ProductCategory;
 
 public class TVSeries extends Product {
 	//Optional fields
-	private int season;
+	private Integer season;
 	private LocalDate finishedAiring;
 	
 	//Constructors
@@ -24,7 +24,7 @@ public class TVSeries extends Product {
 	//Constructor for creating a new TV Series with all available information
 	public TVSeries( String name, ProductCategory productCategory, LocalDate releaseDate, String pgRating, int duration, double rentCost,
 			double buyCost, String description,String poster, String trailer, String writers, String actors,
-			Set<Genre> genres, double salePercent, LocalDate saleValidity, int season, LocalDate finishedAiring) 
+			Set<Genre> genres, double salePercent, LocalDate saleValidity, Integer season, LocalDate finishedAiring) 
 					throws InvalidProductDataException {
 		super(name, productCategory, releaseDate, pgRating, duration, rentCost, buyCost, description,poster, trailer, writers, actors,
 				genres, salePercent, saleValidity);
@@ -35,7 +35,7 @@ public class TVSeries extends Product {
 	//Constructor for loading a TV Series from the DB
 	public TVSeries(int id, String name, ProductCategory productCategory, LocalDate releaseDate, String pgRating, int duration, double rentCost,
 			double buyCost, String description,String poster, String trailer, String writers, String actors,
-			Set<Genre> genres, Map<Integer,Double> raters, double salePercent, LocalDate saleValidity, int season, LocalDate finishedAiring)
+			Set<Genre> genres, Map<Integer,Double> raters, double salePercent, LocalDate saleValidity, Integer season, LocalDate finishedAiring)
 					throws InvalidProductDataException {
 		super(id, name, productCategory,releaseDate, pgRating, duration, rentCost, buyCost, description,poster, trailer, writers,
 				actors, genres,raters, salePercent, saleValidity);
@@ -54,9 +54,12 @@ public class TVSeries extends Product {
 	}
 	
 	//Setters
-	public void setSeason(int season) {
-		if(season >= 0) {
+	public void setSeason(Integer season) {
+		if(season != null && season >= 0) {
 			this.season = season;
+		}
+		else {
+			this.season = null;
 		}
 	}
 	
@@ -65,7 +68,7 @@ public class TVSeries extends Product {
 	}
 	
 	//Getters
-	public int getSeason() {
+	public Integer getSeason() {
 		return this.season;
 	}
 	

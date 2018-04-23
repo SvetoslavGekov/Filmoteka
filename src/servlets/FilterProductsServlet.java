@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import exceptions.InvalidProductDataException;
+import exceptions.ExceptionHandler;
 import exceptions.InvalidProductQueryInfoException;
 import model.Product;
 import model.dao.ProductDao;
@@ -51,10 +51,8 @@ public class FilterProductsServlet extends HttpServlet {
 			response.getWriter().write(jsonString);
 		}
 		catch (SQLException | InvalidProductQueryInfoException e) {
-			e.printStackTrace();
-			response.getWriter().write(
-					"An error occured while loading the filter information from the database. Please try again!");
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			ExceptionHandler.handleException(response, "An error occured while loading the filter information from the database."
+					+ " Please try again!", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -94,10 +92,9 @@ public class FilterProductsServlet extends HttpServlet {
 			response.getWriter().write(jsonString);
 		}
 
-		catch (SQLException | InvalidProductDataException e) {
-			e.printStackTrace();
-			response.getWriter().write("An error occured while loading the movies from the database. Please try again!");
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		catch (Exception e) {
+			ExceptionHandler.handleException(response, "An error occured while loading the movies from the database."
+					+ " Please try again!", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 

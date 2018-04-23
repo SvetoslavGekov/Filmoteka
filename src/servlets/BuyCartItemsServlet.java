@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controller.manager.UserManager;
+import exceptions.ExceptionHandler;
 import exceptions.InvalidOrderDataException;
 import model.Order;
 import model.User;
@@ -35,12 +36,13 @@ public class BuyCartItemsServlet extends HttpServlet {
 			UserManager.getInstance().buyProductsInCart(user);
 		}
 		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//Tell user that an error occured while processing his request
+			ExceptionHandler.handleDatabaseProcessingException(response);
 		}
 		catch (InvalidOrderDataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//Tell user that an error occured while creating his order
+			ExceptionHandler.handleException(response, "Sorry, an error occured while creating your order. Please try again!",
+					HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 		
 		for (Order order : user.getOrdersHistory()) {

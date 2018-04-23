@@ -26,33 +26,20 @@ public final class GenreManager {
 		return instance;
 	}
 	
-	public void createNewGenre(String genreName) {
-		Genre g;
-		try {
-			//Create new genre with the given data
-			g = new Genre(genreName);
-			//Add genre to DB
-			dao.saveGenre(g);
-			//Add genre to the GENRES collection
-			WebSite.addGenre(g);
-		}
-		catch (InvalidGenreDataException | SQLException e) {
-			// TODO Handle genre exception
-			e.printStackTrace();
-		}
+	public void createNewGenre(String genreName) throws SQLException, InvalidGenreDataException {
+		//Create new genre with the given data
+		Genre genre = new Genre(genreName);
+		//Add genre to DB
+		dao.saveGenre(genre);
+		//Add genre to the GENRES collection
+		WebSite.addGenre(genre);
 	}
 	
-	public void updateExistingGenre(Genre g, String newGenreName) {
-		try {
-			//Set new genre characteristics
-			g.setValue(newGenreName);
-			//Update characteristics in DB
-			dao.updateGenre(g);
-		}
-		catch (InvalidGenreDataException | SQLException e) {
-			// TODO Handle genre exception
-			e.printStackTrace();
-		}
+	public void updateExistingGenre(Genre g, String newGenreName) throws InvalidGenreDataException, SQLException {
+		//Set new genre characteristics
+		g.setValue(newGenreName);
+		//Update characteristics in DB
+		dao.updateGenre(g);
 
 	}
 }

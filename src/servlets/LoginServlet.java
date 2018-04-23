@@ -11,10 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controller.manager.UserManager;
+import exceptions.ExceptionHandler;
+import exceptions.InvalidOrderDataException;
 import exceptions.InvalidProductDataException;
-import model.Product;
+import exceptions.InvalidUserDataException;
 import model.User;
-import model.dao.ProductDao;
 
 /**
  * Servlet implementation class LoginServlet
@@ -33,29 +34,30 @@ public class LoginServlet extends HttpServlet {
 		User user = null;
 		try {
 			user = UserManager.getInstance().logIn(username, password);
-		}
-		catch (InvalidProductDataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			if(user != null) {
+				//Get a new session
+				HttpSession session = request.getSession();
+				
+				//Set the user in the session
+				session.setAttribute("USER", user);
+				
+				//Set the IP of the request which called the server
+				session.setAttribute("ip", request.getRemoteAddr());
+				
+				//Redirect to the main_servlet
+				response.sendRedirect("MainPage.html");
+			}
+			else {
+				String message = "Invalid Username or Password";
+				ExceptionHandler.handleException(response, message, HttpServletResponse.SC_UNAUTHORIZED);
+			}
 		} 
-		if(user != null) {
-			//Get a new session
-			HttpSession session = request.getSession();
-			
-			//Set the user in the session
-			session.setAttribute("USER", user);
-			
-			//Set the IP of the request which called the server
-			session.setAttribute("ip", request.getRemoteAddr());
-			
-			//Redirect to the main_servlet
-			response.sendRedirect("MainPage.html");
+		catch (SQLException | InvalidProductDataException | InvalidUserDataException | InvalidOrderDataException e) {
+			ExceptionHandler.handleException(response, "Sorry, an database error occured while attempting to log you in. Please try again later!",
+					HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-		else {
-			request.setAttribute("error","Invalid Username or Password");
-			request.getRequestDispatcher("LoginForm.jsp").forward(request, response);          
-			//response.sendRedirect("InvalidLogin.html");
-		}
+
 	}
 
 }

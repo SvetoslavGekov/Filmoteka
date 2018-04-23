@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import exceptions.ExceptionHandler;
 import exceptions.InvalidProductDataException;
 import model.Product;
 import model.dao.TVSeriesDao;
@@ -41,8 +42,8 @@ public class LoadAllTVSeriesAsJsonServlet extends HttpServlet {
 			response.getWriter().write(jsonString);
 		}
 		catch (SQLException | InvalidProductDataException e) {
-			// TODO handle exception with AJAX
-			e.printStackTrace();
+			ExceptionHandler.handleException(response, "Sorry, an error occured while loading the tv series from the database."
+					+ "Please try again later!", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
