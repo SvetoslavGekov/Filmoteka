@@ -337,7 +337,7 @@
 		userInfo += 'Date of registration: '+regDate.day+'/'+regDate.month+'/'+regDate.year+'<br>'
 		userInfo += 'Last login: '+lastLogin.date.day+'/'+lastLogin.date.month+'/'+lastLogin.date.year+' at '+lastLogin.time.hour+':'+lastLogin.time.minute+':'+lastLogin.time.second+'<br>'
 		userInfo += 'Money: '+user.money+'<br>'
-		userInfo += '<input type="button" value="Edit" onclick="editProfileMenu()"><br></div>'	
+		userInfo += '<input type="button" value="Edit" onclick="editProfileMenu(json)"><br></div>'	
 			
 		document.getElementById("products").innerHTML = userInfo;
 	}

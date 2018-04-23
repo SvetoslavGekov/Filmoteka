@@ -30,7 +30,7 @@ import util.taskExecutors.ExpiringProductsNotifier;
 
 public final class WebSite {
 	// Fields
-	private static final LocalTime TASKS_STARTING_TIME = LocalTime.now().withHour(17).withMinute(53).withSecond(00);
+	private static final LocalTime TASKS_STARTING_TIME = LocalTime.now().withHour(18).withMinute(20).withSecond(00);
 	private static final Map<Integer,Genre> GENRES = new TreeMap<>();
 	private static final Map<Integer, ProductCategory> PRODUCT_CATEGORIES = new TreeMap<>();
 	private static final List<CustomTaskExecutor> TASKS = new ArrayList<>();
