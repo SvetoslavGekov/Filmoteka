@@ -61,28 +61,21 @@ public class UserManager {
 		return u;
 	}
 
-	public boolean addOrRemoveProductFromFavorites(User user, Product product) {
+	public boolean addOrRemoveProductFromFavorites(User user, Product product) throws SQLException {
 		// Check if user will add or remove the product
 		List<Integer> favorites = new ArrayList<>(user.getFavourites());
-
-		try {
-			// If the user already has the product in his favorites
-			if (Collections.binarySearch(favorites, product.getId()) >= 0) {
-				// Remove product from user's favorites in the DB and in the POJO
-				this.dao.removeProductFromFavorites(user, product);
-				user.removeFavoriteProduct(product.getId());
-			}
-			// If the user doesn't have the product in his favorites
-			else {
-				// Add product to user's favorites in the DB and in the POJO
-				this.dao.addProductToFavorites(user, product);
-				user.addFavoriteProduct(product.getId());
-			}
+		
+		// If the user already has the product in his favorites
+		if (Collections.binarySearch(favorites, product.getId()) >= 0) {
+			// Remove product from user's favorites in the DB and in the POJO
+			this.dao.removeProductFromFavorites(user, product);
+			user.removeFavoriteProduct(product.getId());
 		}
-		catch (SQLException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			return false;
+		// If the user doesn't have the product in his favorites
+		else {
+			// Add product to user's favorites in the DB and in the POJO
+			this.dao.addProductToFavorites(user, product);
+			user.addFavoriteProduct(product.getId());
 		}
 		return true;
 	}
