@@ -83,7 +83,10 @@ public class FilterProductsServlet extends HttpServlet {
 			ArrayList<Integer> productIdentifiers = (ArrayList<Integer>) ProductDao.getInstance().getFilteredProducts(pqi);
 
 			// Collect the products
-			ArrayList<Product> filteredProducts = (ArrayList<Product>) ProductDao.getInstance()	.getProducts(productIdentifiers);
+			ArrayList<Product> filteredProducts = new ArrayList<>();
+			for (Integer identifier : productIdentifiers) {
+				filteredProducts.add(ProductDao.getInstance().getProductById(identifier));
+			}
 			
 			// Send products over as JSON
 			String jsonString = gson.toJson(filteredProducts);

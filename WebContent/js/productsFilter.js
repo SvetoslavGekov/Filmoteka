@@ -67,13 +67,10 @@ function createProductsFilter(){
 	    var genresContent = "";
 	    
 	    for(i in genres){
-	    	genresContent += '<input class="w3-check productgenre" type="checkbox" id="'+genres[i].value+'"';
+	    	genresContent += '<input class="w3-check productgenre" type="checkbox" checked id="'+genres[i].value+'"';
 	    	genresContent += 'value="'+genres[i].id+'">'+genres[i].value+'</input><br>';
 	    }
-		genresSection.innerHTML = genresContent;
-		
-        //<input class="w3-check productgenre" type="checkbox"><label></label><br>
-	    
+		genresSection.innerHTML = genresContent;  
 	    
 	    //Display the filters element
 		var filters = document.getElementById("filters");
@@ -93,15 +90,15 @@ function updateProductFilter(){
 	jsonFilter.maxBuyCost = document.getElementById("maxBuyCostSlider").value;
 	jsonFilter.minRentCost = document.getElementById("minRentCostSlider").value;
 	jsonFilter.maxRentCost = document.getElementById("maxRentCostSlider").value;
-	jsonFilter.orderedBy;
+	jsonFilter.orderedBy = document.getElementById("orderedBySelector").value;
 	jsonFilter.isAscending;
 	
 	
 	//Delete all previously checked genres
-	//delete jsonFilter.genres;
+	jsonFilter.genres.splice(0);
 	
 	//Create the genres item in jsonFilter
-	//collectGenresFromCheckboxes();
+	collectGenresFromCheckboxes();
 	
 	return true;
 }
@@ -114,10 +111,7 @@ function collectGenresFromCheckboxes(){
 			var genreId = genres[i].value;
 			var value = genres[i].id;
 			
-			jsonFilter.genres += '{"'+genreId+'":"'+value+'"}';
-			if(i != genres.length - 1){
-				jsonFilter.genres+=",";
-			}
+			jsonFilter.genres.push({"id":genreId,"value":value});
 		}
 	}
 }

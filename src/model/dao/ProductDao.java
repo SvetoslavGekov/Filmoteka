@@ -559,10 +559,11 @@ public final class ProductDao implements IProductDao {
 		if(genresIDs != null && !genresIDs.isEmpty()) {
 			query.append("AND (g.genre_id IS NULL OR g.genre_id IN(");
 			Supp.inClauseAppender(query, genresIDs);
+			query.append(")");
 		}
 		
 		//Add the ordering part (
-		query.append(")GROUP BY p.name ORDER BY ? " + (filter.isAscending() ? "ASC" : "DESC"));
+		query.append("GROUP BY p.name ORDER BY "+filter.getOrderedBy()+" " + (filter.isAscending() ? "ASC" : "DESC"));
 		
 		
 		//Initialize a counter for setting the parameters
@@ -585,9 +586,6 @@ public final class ProductDao implements IProductDao {
 			for (Integer genre_id : genresIDs) {
 				ps.setInt(paramCounter++, genre_id);
 			}
-			
-			//Setting the final set of parameters
-			ps.setString(paramCounter++, filter.getOrderedBy());
 			
 			try(ResultSet rs = ps.executeQuery()){
 				while(rs.next()) {
