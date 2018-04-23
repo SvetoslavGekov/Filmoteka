@@ -37,7 +37,7 @@ public class LoadGroupedProductsAsJsonServlet extends HttpServlet {
 			//Get top 5 of
 			groupedProducts.put("On Sale", (List<Product>) ProductDao.getInstance().getProductsOnSale(new Integer(5))); //On sale
 			groupedProducts.put("Most Popular", (List<Product>) ProductDao.getInstance().getMostPopularProducts(new Integer(5))); //Most Popular
-			groupedProducts.put("Highest Rated", (List<Product>) ProductDao.getInstance().getHighestRatedtProducts(new Integer(5))); //Highest rated
+			groupedProducts.put("Highest Rated", (List<Product>) ProductDao.getInstance().getHighestRatedProducts(new Integer(5))); //Highest rated
 			groupedProducts.put("Cheapest", (List<Product>) ProductDao.getInstance().getCheapestProducts(new Integer(5))); //Cheapest
 			
 			//Turn map into JSON

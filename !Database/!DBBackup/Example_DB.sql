@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS `filmoteka`;
 CREATE DATABASE  IF NOT EXISTS `filmoteka` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `filmoteka`;
 -- MySQL dump 10.13  Distrib 5.6.17, for Win32 (x86)
@@ -54,7 +55,7 @@ CREATE TABLE `movies` (
   `director` varchar(80) DEFAULT NULL COMMENT 'Movie''s director',
   PRIMARY KEY (`product_id`),
   KEY `fk_MOVIE_Product1_idx` (`product_id`),
-  CONSTRAINT `fk_MOVIE_Product1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_MOVIE_Product1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -82,7 +83,7 @@ CREATE TABLE `order_has_products` (
   PRIMARY KEY (`order_id`,`product_id`),
   KEY `fk_order_has_products_PRODUCTS1_idx` (`product_id`),
   CONSTRAINT `fk_order_has_products_ORDERS1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_order_has_products_PRODUCTS1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_order_has_products_PRODUCTS1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -163,7 +164,7 @@ CREATE TABLE `product_has_genres` (
   PRIMARY KEY (`product_id`,`genre_id`),
   KEY `fk_PRODUCT_HAS_GENRE_GENRE1_idx` (`genre_id`),
   CONSTRAINT `GENRE_HAS_PRODUCT` FOREIGN KEY (`genre_id`) REFERENCES `genres` (`genre_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `PRODUCT_HAS_GENRE` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `PRODUCT_HAS_GENRE` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -190,7 +191,7 @@ CREATE TABLE `product_has_raters` (
   `rating` decimal(3,1) NOT NULL,
   PRIMARY KEY (`product_id`,`user_id`),
   KEY `fk_PRODUCT_HAS_RATERS_User1_idx` (`user_id`),
-  CONSTRAINT `fk_PRODUCT_HAS_RATERS_Product1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_PRODUCT_HAS_RATERS_Product1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_PRODUCT_HAS_RATERS_User1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -259,7 +260,7 @@ CREATE TABLE `tvseries` (
   `finished_airing` date DEFAULT NULL COMMENT 'TVSeries'' date of last episode airing',
   PRIMARY KEY (`product_id`),
   KEY `fk_tvseries_products_idx` (`product_id`),
-  CONSTRAINT `fk_tvseries_products` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_tvseries_products` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -285,7 +286,7 @@ CREATE TABLE `user_has_favorite_products` (
   `product_id` int(11) NOT NULL,
   PRIMARY KEY (`user_id`,`product_id`),
   KEY `fk_USER_HAS_FAVORITE_PRODUCTS_Product1_idx` (`product_id`),
-  CONSTRAINT `fk_USER_HAS_FAVORITE_PRODUCTS_Product1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_USER_HAS_FAVORITE_PRODUCTS_Product1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_USER_HAS_FAVORITE_PRODUCTS_User1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -313,7 +314,7 @@ CREATE TABLE `user_has_products` (
   `validity` date DEFAULT NULL COMMENT 'Validity for a product - null if bought and a date if rented',
   PRIMARY KEY (`product_id`,`user_id`),
   KEY `fk_USER_HAS_PRODUCT_User1_idx` (`user_id`),
-  CONSTRAINT `fk_USER_HAS_PRODUCT_Product1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_USER_HAS_PRODUCT_Product1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_USER_HAS_PRODUCT_User1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -340,7 +341,7 @@ CREATE TABLE `user_has_watchlist_products` (
   `product_id` int(11) NOT NULL,
   PRIMARY KEY (`user_id`,`product_id`),
   KEY `fk_USER_HAS_WATCHLIST_PRODUCTS_Product1_idx` (`product_id`),
-  CONSTRAINT `fk_USER_HAS_WATCHLIST_PRODUCTS_Product1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_USER_HAS_WATCHLIST_PRODUCTS_Product1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_USER_HAS_WATCHLIST_PRODUCTS_User1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

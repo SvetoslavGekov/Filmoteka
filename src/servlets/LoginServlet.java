@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +12,9 @@ import javax.servlet.http.HttpSession;
 
 import controller.manager.UserManager;
 import exceptions.InvalidProductDataException;
+import model.Product;
 import model.User;
+import model.dao.ProductDao;
 
 /**
  * Servlet implementation class LoginServlet

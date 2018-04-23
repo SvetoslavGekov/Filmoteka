@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import exceptions.InvalidUserDataException;
 import model.User;
 import model.dao.UserDao;
+import validation.BCrypt;
 
 /**
  * Servlet implementation class UpdateUserServlet
@@ -32,26 +33,46 @@ public class UserUpdateServlet extends HttpServlet {
 		String lastName = request.getParameter("lastname").isEmpty() ? user.getLastName() : request.getParameter("lastname");
 		String email = request.getParameter("email").isEmpty() ? user.getEmail() : request.getParameter("email");
 		String phone = request.getParameter("phone").isEmpty() ? user.getPhone(): request.getParameter("phone");
-		String currentPass = request.getParameter("currentPass").isEmpty() ? user.getPassword(): request.getParameter("currentPass");
-		String newPass1 = request.getParameter("newPass1").isEmpty() ? user.getPassword(): request.getParameter("newPass1");
-		String newPass2 = request.getParameter("newPass2").isEmpty() ? user.getPassword(): request.getParameter("newPass2");
+		String currentPass = request.getParameter("currentPass");
+		String newPass1 = request.getParameter("newPass1");
+		String newPass2 = request.getParameter("newPass2");
 		
 		try {
-			//TODO check the currnetPassword is quals to user.getPassword() (hash)
-			//check if newPass1 equals newPass2 nd only then change the password
+			//Hash entered current pass so can be compared with user's from DB 
+			currentPass = BCrypt.hashpw(currentPass, BCrypt.gensalt());
+			//If all three password fields are empty set all of them as the users's password
+			if(currentPass.isEmpty() && newPass1.isEmpty() && newPass2.isEmpty()){
+				currentPass = user.getPassword();
+				newPass1 = currentPass;
+				newPass2 = currentPass;
+			}
+			//Otherwise check if current coincides with users's
+			else if(currentPass.equals(user.getPassword())){
+				//Check if newPass1 isn't equals to newPass2
+				if(!newPass1.equals(newPass2)){
+					throw new InvalidUserDataException("New passwords didn't match!");
+				}
+				
+				//If everything has passed successfully, hash the new password to be set to the user
+				newPass1 = BCrypt.hashpw(newPass1, BCrypt.gensalt());
+			}
+			else{
+				throw new InvalidUserDataException("This is not your current password!");
+			}
 			
 			//Test if can create user with these data (Will throw an exception if cannot)
-			User test = new User(firstName, lastName, user.getUsername(), user.getPassword() , email);
+			User test = new User(firstName, lastName, user.getUsername(), newPass1 , email);
 			test.setPhone(phone);
 			
-			//Updating current user
+			//Update current user
 			user.setFirstName(firstName);
 			user.setLastName(lastName);
 			user.setEmail(email);
 			user.setPhone(phone);
+			user.setPassword(newPass1);
 			UserDao.getInstance().updateUser(user);
 			
-			//Show an alert for sucessfully updated profile
+			//Show an alert for successfully updated profile
 			response.getWriter().println("<script type=\"text/javascript\">");
 			response.getWriter().println("alert('Successfully updated profile!');");
 			//Redirect to MyAccount.jsp
