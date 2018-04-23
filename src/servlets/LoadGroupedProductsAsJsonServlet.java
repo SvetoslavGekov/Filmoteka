@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import exceptions.ExceptionHandler;
 import exceptions.InvalidProductDataException;
 import model.Product;
 import model.dao.ProductDao;
@@ -52,9 +53,8 @@ public class LoadGroupedProductsAsJsonServlet extends HttpServlet {
 			response.getWriter().write(jsonString);
 		}
 		catch (SQLException |InvalidProductDataException e) {
-			e.printStackTrace();
-			response.getWriter().write("An error occured while loading the movies from the database. Please try again!");
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			ExceptionHandler.handleException(response, "An error occured while loading the movies from the database. Please try again!", 
+					HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 }

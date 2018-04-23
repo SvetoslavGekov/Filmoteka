@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,10 +47,14 @@ public final class TVSeriesDao implements ITVSeriesDao {
 			try {
 				// Insert the TV Series in the products table
 				ProductDao.getInstance().saveProduct(tvs);
-
+				
+				LocalDate finishedAiring = tvs.getFinishedAiring();
 				// Insert the TV Series in the TV Series table
-				try (PreparedStatement ps = con.prepareStatement("INSERT INTO tvseries (product_id) VALUES (?);")) {
+				try (PreparedStatement ps = con.prepareStatement("INSERT INTO tvseries (product_id, season, finished_airing)"
+						+ " VALUES (?,?,?);")) {
 					ps.setInt(1, tvs.getId());
+					ps.setInt(2, tvs.getSeason() != null ? tvs.getSeason() : null);
+					ps.setDate(3, finishedAiring != null ? Date.valueOf(finishedAiring) : null);
 					ps.executeUpdate();
 				}
 				con.commit();

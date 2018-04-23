@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import controller.manager.UserManager;
+import exceptions.ExceptionHandler;
 import exceptions.InvalidFormDataException;
 import exceptions.InvalidUserDataException;
 
@@ -39,9 +40,8 @@ public class UserRegisterServlet extends HttpServlet {
 			
 			//Check if there are no users with the same username or email
 			if(UserManager.getInstance().hasUserWithSameCredentials(username, email)) {
-				//TODO --> make this into AJAX and check for username and email separately
-				request.setAttribute("error", "The selected username or email is already taken by another user.");
-				request.getRequestDispatcher("Error.jsp").forward(request, response);
+				String message= "The selected username or email is already taken by another user.";
+				ExceptionHandler.handleException(response, message, HttpServletResponse.SC_CONFLICT);
 				return;
 			}
 			//Register user
@@ -50,12 +50,10 @@ public class UserRegisterServlet extends HttpServlet {
 			response.sendRedirect("LoginForm.jsp");
 		}
 		catch (InvalidFormDataException | InvalidUserDataException e ) {
-			request.setAttribute("error", e.getMessage());
-			request.getRequestDispatcher("Error.jsp").forward(request, response);
+			ExceptionHandler.handleException(response, e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 		catch (SQLException e) {
-			request.setAttribute("error", "We appear to be having some issues with our database, please try again later.");
-			request.getRequestDispatcher("Error.jsp").forward(request, response);
+			ExceptionHandler.handleDatabaseProcessingException(response);
 		}
 	}
 

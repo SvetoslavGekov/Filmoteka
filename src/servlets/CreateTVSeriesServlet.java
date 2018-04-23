@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controller.manager.MovieManager;
+import controller.manager.TVSeriesManager;
 import exceptions.ExceptionHandler;
 import exceptions.InvalidGenreDataException;
 import exceptions.InvalidProductDataException;
@@ -20,10 +20,10 @@ import model.nomenclatures.Genre;
 import util.WebSite;
 
 /**
- * Servlet implementation class CreateMovieServlet
+ * Servlet implementation class CreateTVSeriesServlet
  */
-@WebServlet("/adm/movies")
-public class CreateMovieServlet extends HttpServlet {
+@WebServlet("/adm/tvseries")
+public class CreateTVSeriesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -50,20 +50,26 @@ public class CreateMovieServlet extends HttpServlet {
 			String actors = request.getParameter("actors").trim();
 			
 			String salePercentString = request.getParameter("salePercent").trim();
-			Integer salePercent = !salePercentString.isEmpty() ? Integer.parseInt(salePercentString):0;
+			Integer salePercent = !salePercentString.isEmpty() ? Integer.parseInt(salePercentString) : 0;
 			
 			String saleValidityString = request.getParameter("saleValidity").trim();
 			LocalDate saleValidity = !saleValidityString.isEmpty() ? LocalDate.parse(saleValidityString) : null;
 			
-			String director = request.getParameter("director").trim();
+			String seasonString = request.getParameter("season").trim();
+			Integer season = !seasonString.isEmpty() ? Integer.parseInt(seasonString) : 0;
+			
+			String finishedAiringString = request.getParameter("finishedAiring").trim();
+			LocalDate finishedAiring = !finishedAiringString.isEmpty() ? LocalDate.parse(finishedAiringString) : null;
+			
 			String genresString = request.getParameter("genres").trim();
 			
 			Set<Genre> genres = WebSite.getGenresFromString(genresString);
 			
-			//Create new movie
+			//Create new tv series
 			
-			MovieManager.getInstance().createNewMovie(name, categoryId, releaseDate, pgRating, duration, rentCost,
-					buyCost, description, poster, trailer, writers, actors, genres, salePercent, saleValidity, director);
+			TVSeriesManager.getInstance().createNewTVSeries(name, categoryId, releaseDate, pgRating, duration,
+					rentCost, buyCost, description, poster, trailer, writers, actors, genres,
+					salePercent, saleValidity, season, finishedAiring);
 		}
 		catch(NumberFormatException | DateTimeParseException e) {
 			//Tell the user that there was something wrong with the input
@@ -72,12 +78,12 @@ public class CreateMovieServlet extends HttpServlet {
 		}
 		catch (InvalidProductDataException | InvalidGenreDataException e ) {
 			//Tell the user that there was an error with creating the product 
-			ExceptionHandler.handleException(response, "Sorry, an error occured while creating your movie. The error was " +e.getMessage(),
+			ExceptionHandler.handleException(response, "Sorry, an error occured while creating your tv series. The error was " +e.getMessage(),
 					HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 		catch (SQLException e) {
 			//Tell the user that there was an issue with the database
-			ExceptionHandler.handleException(response, "Sorry, an error occured while saving your movie to the database. Please try agian!",
+			ExceptionHandler.handleException(response, "Sorry, an error occured while saving your tv series to the database. Please try agian!",
 					HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}

@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import exceptions.ExceptionHandler;
+
 /**
  * Servlet Filter implementation class AuthorizationFilter
  */
@@ -37,7 +39,7 @@ public class AuthorizationFilter implements Filter {
 
 		// If there is no session at all -> nobody has logged in
 		if (session == null) {
-			res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			ExceptionHandler.handleException(res, "You need to be logged in to access this content.", HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
 
@@ -55,9 +57,8 @@ public class AuthorizationFilter implements Filter {
 			if (sessionIp == null || !sessionIp.equals(req.getRemoteAddr()) || (session.getAttribute("USER") == null)) {
 				// If not (potential session highjacking) -> invalidate session and set status
 				// as unauthorized access
-				System.out.println("No set IP (nobody logged), no user or cookie");
 				session.invalidate();
-				res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				ExceptionHandler.handleException(res, "You need to be logged in to access this content.", HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
 		}

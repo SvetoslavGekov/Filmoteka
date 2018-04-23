@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controller.manager.UserManager;
+import exceptions.ExceptionHandler;
 import exceptions.InvalidProductDataException;
 import model.Product;
 import model.User;
@@ -37,24 +38,18 @@ public class AddOrRemoveWatchlistProductServlet extends HttpServlet {
 
 			// Get product from database
 			Integer productId = Integer.valueOf(request.getParameter("productId"));
-			
-			Product	product = ProductDao.getInstance().getProductById(productId);
-			
+
+			Product product = ProductDao.getInstance().getProductById(productId);
+
 			// Check if productId is valid
 			if (product != null) {
 				// Add or remove product from favorites
-				try {
-					UserManager.getInstance().addOrRemoveProductFromWatchlist(user, product);
-				}
-				catch (SQLException e) {
-					// TODO Handle SQL exception
-					e.printStackTrace();
-				}
+				UserManager.getInstance().addOrRemoveProductFromWatchlist(user, product);
 			}
 		}
 		catch (SQLException | InvalidProductDataException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			// Tell user that an error occured while fetching the product from the database
+			ExceptionHandler.handleDatabaseProcessingException(response);
 		}
 	}
 

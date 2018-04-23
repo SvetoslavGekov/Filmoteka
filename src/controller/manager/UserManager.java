@@ -52,20 +52,13 @@ public class UserManager {
 		return true;
 	}
 
-	public User logIn(String username, String password) throws InvalidProductDataException {
-		try {
-			User u = this.dao.getUserByLoginCredentials(username, password);
-			if (u != null) {
-				u.setLastLogin(LocalDateTime.now());
-				dao.updateUser(u);
-			}
-			return u;
+	public User logIn(String username, String password) throws InvalidProductDataException, SQLException, InvalidUserDataException, InvalidOrderDataException {
+		User u = this.dao.getUserByLoginCredentials(username, password);
+		if (u != null) {
+			u.setLastLogin(LocalDateTime.now());
+			dao.updateUser(u);
 		}
-		catch (SQLException | InvalidUserDataException | InvalidOrderDataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return u;
 	}
 
 	public boolean addOrRemoveProductFromFavorites(User user, Product product) {

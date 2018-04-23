@@ -17,7 +17,6 @@ import exceptions.InvalidProductDataException;
 import model.Product;
 import model.User;
 import model.dao.ProductDao;
-import util.WebSite;
 
 /**
  * Servlet implementation class RemoveProductFromCartServlet

@@ -37,8 +37,8 @@ public class UserUpdateServlet extends HttpServlet {
 		String newPass2 = request.getParameter("newPass2").isEmpty() ? user.getPassword(): request.getParameter("newPass2");
 		
 		try {
-			//TODO check the currnetPassword is quals to user.getPassword() (hash)
-			//check if newPass1 equals newPass2 nd only then change the password
+			//TODO check the currnetPassword equals the user.getPassword() (hash)
+			//check if newPass1 equals newPass2 and only then change the password
 			
 			//Test if can create user with these data (Will throw an exception if cannot)
 			User test = new User(firstName, lastName, user.getUsername(), user.getPassword() , email);

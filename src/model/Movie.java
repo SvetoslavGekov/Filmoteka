@@ -7,6 +7,7 @@ import java.util.Set;
 import exceptions.InvalidProductDataException;
 import model.nomenclatures.Genre;
 import model.nomenclatures.ProductCategory;
+import validation.Supp;
 
 public class Movie extends Product {
 	//Optional fields
@@ -52,7 +53,9 @@ public class Movie extends Product {
 	
 	//Setters
 	public void setDirector(String director) {
-		this.director = director;
+		if(Supp.isValidStr(director)) {
+			this.director = director;
+		}
 	}
 	
 	//Getters

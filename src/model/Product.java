@@ -182,23 +182,33 @@ public abstract class Product implements Comparable<Product>{
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		if(Supp.isValidStr(description)) {
+			this.description = description;
+		}
 	}
 
 	public void setPoster(String poster) {
-		this.poster = poster;
+		if(Supp.isValidStr(poster)) {
+			this.poster = poster;
+		}
 	}
 	
 	public void setTrailer(String trailer) {
-		this.trailer = trailer;
+		if(Supp.isValidStr(trailer)) {
+			this.trailer = trailer;
+		}
 	}
 
 	public void setWriters(String writers) {
-		this.writers = writers;
+		if(Supp.isValidStr(writers)) {
+			this.writers = writers;
+		}
 	}
 
 	public void setActors(String actors) {
-		this.actors = actors;
+		if(Supp.isValidStr(actors)) {
+			this.actors = actors;
+		}
 	}
 
 	public void setViewerRating(double viewerRating) {

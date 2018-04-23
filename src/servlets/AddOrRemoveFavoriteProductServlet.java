@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controller.manager.UserManager;
+import exceptions.ExceptionHandler;
 import exceptions.InvalidProductDataException;
 import model.Product;
 import model.User;
 import model.dao.ProductDao;
-import util.WebSite;
 
 /**
  * Servlet implementation class AddOrRemoveFavoriteProductServlet
@@ -47,8 +47,8 @@ public class AddOrRemoveFavoriteProductServlet extends HttpServlet {
 			}
 		}
 		catch (SQLException | InvalidProductDataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//Tell user that an error occured while fetching the product from the database
+			ExceptionHandler.handleDatabaseProcessingException(response);
 		}
 
 
