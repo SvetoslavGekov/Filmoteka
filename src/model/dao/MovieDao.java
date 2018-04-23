@@ -76,8 +76,8 @@ public final class MovieDao implements IMovieDao {
 				
 				//Update the movie specific information
 				try(PreparedStatement ps = con.prepareStatement("UPDATE movies SET director = ? WHERE product_id = ?;")){
-					ps.setString(1, m.getDirector());
-					ps.setInt(2, m.getId());
+					ps.setString(1, m.getDirector()); //Movie director
+					ps.setInt(2, m.getId()); //Movie Id
 					ps.executeUpdate();
 				}
 				con.commit();

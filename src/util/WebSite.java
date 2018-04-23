@@ -20,6 +20,9 @@ import exceptions.InvalidOrderDataException;
 import exceptions.InvalidProductCategoryDataException;
 import exceptions.InvalidProductDataException;
 import exceptions.InvalidUserDataException;
+import model.Product;
+import model.TVSeries;
+import model.dao.ProductDao;
 import model.dao.nomenclatures.GenreDao;
 import model.dao.nomenclatures.ProductCategoryDao;
 import model.nomenclatures.Genre;
@@ -116,5 +119,6 @@ public final class WebSite {
 		for (CustomTaskExecutor taskExecutor : TASKS) {
 			taskExecutor.startExecutionAt(TASKS_STARTING_TIME.getHour(), TASKS_STARTING_TIME.getMinute(), TASKS_STARTING_TIME.getSecond());
 		}
+		
 	}
 }

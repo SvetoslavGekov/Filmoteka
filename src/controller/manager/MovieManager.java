@@ -29,6 +29,23 @@ public class MovieManager {
 		}
 		return instance;
 	}
+	
+	public synchronized void updateMovie(int originalID, String name, int categoryId, LocalDate releaseDate, String pgRating, int duration,
+			double rentCost, double buyCost, String description, String poster, String trailer, String writers,
+			String actors, Set<Genre> genres, double salePercent, LocalDate saleValidity, String director ) 
+					throws InvalidProductDataException, SQLException {
+		
+		//Create the category
+		ProductCategory productCategory = WebSite.getProductCategoryById(categoryId);
+		
+		//Set the movie's fields
+		Movie m = new Movie(name, productCategory,releaseDate, pgRating, duration, rentCost, buyCost, description, poster,
+				trailer, writers, actors, genres, salePercent, saleValidity, director);
+		m.setId(originalID);
+		
+		//Update the move in the database
+		dao.updateMovie(m);
+	}
 
 	public synchronized void createNewMovie(String name, int categoryId, LocalDate releaseDate, String pgRating, int duration,
 			double rentCost, double buyCost, String description, String poster, String trailer, String writers,

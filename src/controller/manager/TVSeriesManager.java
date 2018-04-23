@@ -30,6 +30,23 @@ public class TVSeriesManager {
 		return instance;
 	}
 
+	public void updateTVSeries(int originalID, String name, int categoryId, LocalDate releaseDate, String pgRating, int duration, double rentCost,
+			double buyCost, String description,String poster, String trailer, String writers, String actors,
+			Set<Genre> genres, double salePercent, LocalDate saleValidity, Integer season, LocalDate finishedAiring) 
+					throws InvalidProductDataException, SQLException {
+		
+		//Create the category
+		ProductCategory productCategory = WebSite.getProductCategoryById(categoryId);
+		
+		//Create new TV Series with the given data and set it's id to the original
+		TVSeries tvs = new TVSeries(name, productCategory, releaseDate, pgRating, duration, rentCost, buyCost, description, poster,
+				trailer, writers, actors, genres, salePercent, saleValidity, season, finishedAiring);
+		tvs.setId(originalID);
+		
+		//Update tv series in DB
+		dao.updateTVSeries(tvs);
+	}
+	
 	public void createNewTVSeries( String name, int categoryId, LocalDate releaseDate, String pgRating, int duration, double rentCost,
 			double buyCost, String description,String poster, String trailer, String writers, String actors,
 			Set<Genre> genres, double salePercent, LocalDate saleValidity, Integer season, LocalDate finishedAiring) 
