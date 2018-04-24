@@ -1,8 +1,6 @@
 package servlets;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,11 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import exceptions.InvalidProductDataException;
-import model.Product;
 import model.User;
-import model.dao.ProductDao;
 
 @WebServlet("/auth/account")
 public class MyAccountServlet extends HttpServlet {

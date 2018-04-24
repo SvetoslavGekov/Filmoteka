@@ -80,6 +80,12 @@ public final class OrderDao implements IOrderDao {
 				
 				//Fill the final collection
 				for(int i = 0; i < products.size(); i++){
+					
+					if(validities.isEmpty()){
+						// TODO Try ON DELETE SET NULL on fk_order_has_products_ORDERS1 in TABLE order_has_products
+						System.out.println("Validities are empty! IN OrderDao -> getOrderProductsById(id)");
+						return orderProducts;
+					}
 					Date validity = validities.get(i);
 					orderProducts.put(products.get(i), validity != null ? validity.toLocalDate() : null);
 				}

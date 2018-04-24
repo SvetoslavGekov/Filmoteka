@@ -35,8 +35,8 @@ public class RateProductServlet extends HttpServlet {
 			product = ProductDao.getInstance().getProductById(productId);
 		}
 		catch (SQLException | InvalidProductDataException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			request.setAttribute("error", e1.getMessage());
+			request.getRequestDispatcher("Error.jsp").forward(request, response);
 		}
 		
 		//Get rating parameter

@@ -485,10 +485,10 @@ public final class ProductDao implements IProductDao {
 		return getProducts(identifiers);
 	}
 	
-	public Collection<Product> getHighestRatedtProducts(Integer limit) throws SQLException, InvalidProductDataException{
+	public Collection<Product> getHighestRatedProducts(Integer limit) throws SQLException, InvalidProductDataException{
 		List<Integer> identifiers = new ArrayList<>();
 		
-		//Get the list of cheapest products
+		//Get the list of most rated products
 		String sql = "SELECT product_id, (SUM(rating)/COUNT(user_id)) AS rating" + 
 				"	FROM product_has_raters GROUP BY product_id ORDER BY rating DESC";
 		//Check if limit is ommited
@@ -596,21 +596,19 @@ public final class ProductDao implements IProductDao {
 		return filteredProducts;
 	}
 
-	public void rateProduct(User user, Product product, int rating) throws SQLException{
+	public void rateProduct(User user, Product product, double rating) throws SQLException{
 		
 		// Useless checking but recommended
 		if(product != null && user != null){
-			// Add the rater so can get the calculated rating
+			// Add the rater so can calculate rating
 			product.addRater(user, rating);
 		}
-		
-		double newRating = product.calculateRating();
 		
 		String updateRatingOfProduct = "UPDATE product_has_raters SET rating = ? WHERE product_id = ? AND user_id = ?;";
 		String insertRatingOfProduct = "INSERT INTO product_has_raters(product_id, user_id, rating) VALUES(?,?,?);";
 		// Check if this user already has rated the product
 		try(PreparedStatement ps1 = con.prepareStatement(updateRatingOfProduct)){
-			ps1.setDouble(1, newRating);
+			ps1.setDouble(1, rating);
 			ps1.setInt(2, product.getId());
 			ps1.setInt(3, user.getUserId());
 			// Get affected rows
@@ -622,15 +620,36 @@ public final class ProductDao implements IProductDao {
 				try(PreparedStatement ps2 = con.prepareStatement(insertRatingOfProduct);){
 					ps2.setInt(1, product.getId());
 					ps2.setInt(2, user.getUserId());
-					ps2.setDouble(3, newRating);
+					ps2.setDouble(3, rating);
+					ps2.executeUpdate();
 				}	
-			}	
+				System.out.println("(for first time) User "+user.getFirstName()+" rated "+product.getName()+" with rating = "+rating+
+									". Now product's rating is "+product.calculateRating());
+				return;
+			}
+			System.out.println("(NOT for first time) User "+user.getFirstName()+" rated "+product.getName()+" with rating = "+rating+
+								". Now product's rating is "+product.calculateRating());
 		}
+	}
+	
+	public void deleteProduct(int productID) throws SQLException, InvalidProductDataException{
+		
+		//For testing
+		Product testProduct = this.getProductById(productID);
+		
+		String delProductQuery = "DELETE FROM products WHERE product_id = ?;";
+		
+		try(PreparedStatement ps = con.prepareStatement(delProductQuery)){
+			ps.setInt(1, productID);
+			ps.executeUpdate();
+		}
+		
+		System.out.println(testProduct.getName()+" with product_id "+productID+" has been deleted from the Database!");
 	}
 
 	public ProductQueryInfo getFilterInfo() throws SQLException, InvalidProductQueryInfoException {
 		ProductQueryInfo filter = null;
-		//Create a query to select all neccessary data
+		//Create a query to select all necessary data
 		String sql = "SELECT MIN(release_year) minReleaseYear, MAX(release_year) maxReleaseYear,\r\n" + 
 				"	MIN(duration) minDuration, MAX(duration) maxDuration,\r\n" + 
 				"	MIN(buy_cost) minBuyCost, MAX(buy_cost) maxBuyCost,\r\n" + 
